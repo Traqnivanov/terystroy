@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -398,6 +399,182 @@ function calcPrice() {
     </div>
 </section>
 </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background: #111; padding: 20px 0; margin-top: 40px; border-top: 1px solid rgba(212,175,55,0.2);">
+    <div class="container" style="text-align: center;">
+        <p style="color: var(--text-secondary);">© 2025 Иванов Ремонти — Всички права запазени.</p>
+    </div>
+</footer>
+
+<!-- MOBILE MENU SCRIPT -->
+<script>
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+const overlay = document.getElementById("overlay");
+
+hamburger.addEventListener("click", () => {
+    mobileMenu.classList.toggle("active");
+    overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+    mobileMenu.classList.remove("active");
+    overlay.classList.remove("active");
+});
+</script>
+
+</body>
+</html><!-- SERVICES -->
+<section id="services">
+    <div class="container">
+        <h2>Нашите услуги</h2>
+        <div class="grid-3">
+
+            <div class="card">
+                <h3>Ремонт на баня</h3>
+                <p>Плочки, ВиК, ел. инсталации, монтаж на мебели и оборудване.</p>
+            </div>
+
+            <div class="card">
+                <h3>Шпакловка и боядисване</h3>
+                <p>Гипсова, финна, мрежа, латекс, декоративни мазилки.</p>
+            </div>
+
+            <div class="card">
+                <h3>Гипсокартон</h3>
+                <p>Окачени тавани, предстенни обшивки, скрити осветления.</p>
+            </div>
+
+            <div class="card">
+                <h3>Плочки и настилки</h3>
+                <p>Гранитогрес, фаянс, ламиниран паркет, винил.</p>
+            </div>
+
+            <div class="card">
+                <h3>Ел. и ВиК услуги</h3>
+                <p>Пълно изграждане и подмяна на инсталации.</p>
+            </div>
+
+            <div class="card">
+                <h3>Обръщане на прозорци</h3>
+                <p>Професионално и прецизно изпълнение с перфектен финиш.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+    <div class="container">
+        <h2>Галерия</h2>
+        <p>Снимки от реални обекти и завършени ремонти.</p>
+
+        <div class="grid-3">
+            <div class="card"><p>Снимка 1</p></div>
+            <div class="card"><p>Снимка 2</p></div>
+            <div class="card"><p>Снимка 3</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+    <div class="container">
+        <h2>Наши проекти</h2>
+        <p>Прецизност, качество и внимание към детайла.</p>
+
+        <div class="grid-3">
+            <div class="card"><h3>Апартамент – София</h3><p>Пълен ремонт.</p></div>
+            <div class="card"><h3>Баня – Пловдив</h3><p>Луксозно изпълнение.</p></div>
+            <div class="card"><h3>Офис – Варна</h3><p>Модерен дизайн.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculator">
+    <div class="container">
+        <h2>Калкулатор за ремонт</h2>
+        <p>Въведете квадратурата и вижте ориентировъчна цена.</p>
+
+        <div class="card">
+            <input id="areaInput" type="number" placeholder="Квадратура (м²)" 
+                   style="padding: 12px; width: 100%; margin-bottom: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
+
+            <button onclick="calcPrice()" class="btn-primary">Изчисли</button>
+
+            <p id="result" style="margin-top: 15px; font-size: 18px; color: var(--gold);"></p>
+        </div>
+    </div>
+</section>
+
+<script>
+function calcPrice() {
+    let area = document.getElementById("areaInput").value;
+    if (!area || area <= 0) {
+        document.getElementById("result").innerText = "Моля въведете валидна квадратура.";
+        return;
+    }
+    let price = area * 120;
+    document.getElementById("result").innerText = "Ориентировъчна цена: " + price + " лв.";
+}
+</script>
+
+<!-- ABOUT -->
+<section id="about">
+    <div class="container">
+        <h2>За нас</h2>
+        <p>Над 15 години опит в строителството и ремонтите. Работим чисто, качествено и в срок.</p>
+    </div>
+</section>
+
+<!-- CONTACTS -->
+<section id="contacts">
+    <div class="container">
+        <h2>Контакти</h2>
+
+        <div class="grid-3">
+
+            <div class="card">
+                <h3>Основни контакти</h3>
+                <p><strong>Email:</strong> traqnivanov1@gmail.com</p>
+                <p><strong>Viber:</strong> добави линк</p>
+                <p><strong>Работно време:</strong><br>Пон–Съб: 09:00–19:00</p>
+            </div>
+
+            <div class="card">
+                <h3>Райони на работа</h3>
+                <p>София, Пловдив, Варна, Бургас, Стара Загора, Плевен, Монтана, Видин и др.</p>
+            </div>
+
+            <div class="card">
+                <h3>Форма за запитване</h3>
+
+                <div style="display: grid; gap: 10px;">
+
+                    <input type="text" placeholder="Вашето име"
+                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
+
+                    <input type="text" placeholder="Телефон"
+                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
+
+                    <input type="email" placeholder="Email"
+                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
+
+                    <textarea placeholder="Вашето съобщение" rows="4"
+                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);"></textarea>
+
+                    <button class="btn-primary">Изпрати</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section></div>
 </section>
 
 <!-- FOOTER -->
