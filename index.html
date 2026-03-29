@@ -1,422 +1,641 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Иванов Ремонти – Премиум ремонти</title>
 
+<style>
 
-    });
-  }, { threshold: 0.1 });
-  const statsEl = document.querySelector('.hero-stats');
-  if (statsEl) counterObserver.observe(statsEl);
+/* -------------------- ОСНОВНИ ЦВЕТОВЕ -------------------- */
+:root {
+    --bg-main: #0D0D0D;
+    --bg-secondary: #1A1A1A;
+    --gold: #D4AF37;
+    --gold-light: #E5C45A;
+    --text-main: #FFFFFF;
+    --text-secondary: #BFBFBF;
+}
 
-  // LIGHTBOX
-  // ====== ULTRA GALLERY SYSTEM ======
-  const allPhotos = [
-    // Реални снимки от GitHub
-    { src: 'https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20230322_094845.jpg', cat: 'Шпакловка' },
-    { src: 'https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20230322_134120.jpg', cat: 'Боядисване' },
-    { src: 'https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20240724_172122.jpg', cat: 'Гипсокартон' },
-    { src: 'https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20260325_170739.jpg', cat: 'Довършване' },
-    // Снимки от услуги
-    { src: 'https://i.ibb.co/xPrzh8f/1774643392522.png', cat: 'Шпакловка' },
-    { src: 'https://i.ibb.co/d4wZxV2p/1774643448332.png', cat: 'Боядисване' },
-    { src: 'https://i.ibb.co/mFPRXC0P/1774643492006.png', cat: 'Гипсокартон' },
-    { src: 'https://i.ibb.co/DDW7rk4t/1774643538857.png', cat: 'ВиК' },
-    { src: 'https://i.ibb.co/VpwjBMtC/1774643274293.png', cat: 'Дограма' },
-    { src: 'https://i.ibb.co/NgYBpwQw/1774643803100.png', cat: 'Мазилка' },
-    { src: 'https://i.ibb.co/LXrdSWPB/casa-pr-pria-1024x712-01.jpg', cat: 'Портфолио' },
-  ];
-  let visibleCount = 6;
-  let ultraLbIndex = 0;
+/* -------------------- RESET -------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-  function buildMasonry() {
-    const grid = document.getElementById('masonryGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    const shown = allPhotos.slice(0, visibleCount);
-    shown.forEach((ph, i) => {
-      const div = document.createElement('div');
-      div.className = 'gall-item';
-      div.innerHTML = `
-        <img src="${ph.src}" alt="${ph.cat}" loading="lazy"/>
-        <div class="gall-overlay">
-          <div class="gall-zoom-icon">+</div>
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: system-ui, sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* -------------------- HEADER -------------------- */
+header {
+    position: sticky;
+    top: 0;
+    background: rgba(13, 13, 13, 0.95);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 16px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+}
+
+.logo {
+    color: var(--gold);
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* Desktop menu */
+.nav-links {
+    display: flex;
+    gap: 24px;
+}
+
+.nav-links a {
+    color: var(--text-main);
+    position: relative;
+    font-size: 15px;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gold);
+    transition: 0.3s;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* -------------------- HAMBURGER -------------------- */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 3px;
+}
+
+/* -------------------- MOBILE MENU -------------------- */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -260px;
+    width: 260px;
+    height: 100vh;
+    background: #111;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: 0.4s ease;
+    z-index: 999;
+}
+
+.mobile-menu a {
+    color: var(--gold);
+    font-size: 18px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.mobile-menu.active {
+    right: 0;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* -------------------- HERO -------------------- */
+section {
+    padding: 60px 0;
+}
+
+h1, h2, h3 {
+    font-family: "Montserrat", sans-serif;
+    margin-bottom: 16px;
+}
+
+h1 { font-size: 40px; }
+h2 { font-size: 28px; }
+h3 { font-size: 20px; }
+
+p { color: var(--text-secondary); margin-bottom: 12px; }
+
+.btn-primary {
+    background: var(--gold);
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #000;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+}
+
+/* -------------------- GRID -------------------- */
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+}
+
+/* -------------------- MOBILE -------------------- */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+}
+
+</style>
+</head>
+<body>
+   <header>
+    <div class="container nav">
+        <div class="logo">ИВАНОВ РЕМОНТИ</div>
+
+        <nav class="nav-links">
+            <a href="#home">Начало</a>
+            <a href="#services">Услуги</a>
+            <a href="#gallery">Галерия</a>
+            <a href="#projects">Проекти</a>
+            <a href="#calculator">Калкулатор</a>
+            <a href="#about">За нас</a>
+            <a href="#contacts">Контакти</a>
+        </nav>
+
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
         </div>
-        <span class="gall-cat-badge">${ph.cat}</span>
-      `;
-      div.addEventListener('click', () => ultraLbOpen(i));
-      // Staggered entrance
-      div.style.opacity = '0';
-      div.style.transform = 'translateY(20px)';
-      div.style.transition = `opacity .5s ${i * .06}s, transform .5s ${i * .06}s`;
-      grid.appendChild(div);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => { div.style.opacity = '1'; div.style.transform = ''; });
-      });
-    });
-    const btn = document.getElementById('loadMoreBtn');
-    if (btn) btn.style.display = visibleCount >= allPhotos.length ? 'none' : '';
-  }
-
-  function loadMorePhotos() {
-    visibleCount = allPhotos.length;
-    buildMasonry();
-  }
-
-  function ultraLbOpen(i) {
-    ultraLbIndex = i;
-    const lb = document.getElementById('ultraLightbox');
-    lb.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    ultraLbRender();
-    ultraLbBuildThumbs();
-  }
-  function ultraLbClose(e) {
-    if (e && e.target !== document.getElementById('ultraLightbox')) return;
-    document.getElementById('ultraLightbox').style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  function ultraLbNav(dir) {
-    ultraLbIndex = (ultraLbIndex + dir + allPhotos.length) % allPhotos.length;
-    ultraLbRender();
-    ultraLbSyncThumbs();
-  }
-  function ultraLbRender() {
-    const img = document.getElementById('ultraLbImg');
-    const counter = document.getElementById('ultraLbCounter');
-    img.style.opacity = '0';
-    setTimeout(() => {
-      img.src = allPhotos[ultraLbIndex].src;
-      img.style.opacity = '1';
-    }, 150);
-    if (counter) counter.textContent = (ultraLbIndex + 1) + ' / ' + allPhotos.length + '  ·  ' + allPhotos[ultraLbIndex].cat;
-  }
-  function ultraLbBuildThumbs() {
-    const strip = document.getElementById('ultraLbThumbs');
-    if (!strip) return;
-    strip.innerHTML = '';
-    allPhotos.forEach((ph, i) => {
-      const t = document.createElement('img');
-      t.src = ph.src;
-      t.className = 'lb-thumb' + (i === ultraLbIndex ? ' active' : '');
-      t.onclick = (e) => { e.stopPropagation(); ultraLbIndex = i; ultraLbRender(); ultraLbSyncThumbs(); };
-      strip.appendChild(t);
-    });
-  }
-  function ultraLbSyncThumbs() {
-    document.querySelectorAll('.lb-thumb').forEach((t, i) => {
-      t.classList.toggle('active', i === ultraLbIndex);
-    });
-  }
-  document.addEventListener('keydown', e => {
-    const lb = document.getElementById('ultraLightbox');
-    if (!lb || lb.style.display === 'none') return;
-    if (e.key === 'Escape') { lb.style.display = 'none'; document.body.style.overflow = ''; }
-    if (e.key === 'ArrowRight') ultraLbNav(1);
-    if (e.key === 'ArrowLeft') ultraLbNav(-1);
-  });
-
-  // TAB SWITCHING
-  function switchGallTab(tab) {
-    const pp = document.getElementById('panelPhotos');
-    const pv = document.getElementById('panelVideos');
-    const tp = document.getElementById('tabPhotos');
-    const tv = document.getElementById('tabVideos');
-    if (tab === 'photos') {
-      pp.style.display = ''; pv.style.display = 'none';
-      tp.style.background = 'linear-gradient(135deg,#c9943a,#e8b84b)'; tp.style.color = '#07090f';
-      tv.style.background = 'transparent'; tv.style.color = 'rgba(255,255,255,.5)';
-    } else {
-      pp.style.display = 'none'; pv.style.display = '';
-      tv.style.background = 'linear-gradient(135deg,#c9943a,#e8b84b)'; tv.style.color = '#07090f';
-      tp.style.background = 'transparent'; tp.style.color = 'rgba(255,255,255,.5)';
-    }
-  }
-
-  // Legacy compatibility (service modal gallery still uses old lightbox names)
-  function openLightbox(i) { ultraLbOpen(i); }
-  function closeLightbox() { document.getElementById('ultraLightbox').style.display='none'; document.body.style.overflow=''; }
-  function changePhoto(dir) { ultraLbNav(dir); }
-
-  buildMasonry();
-
-  // BEFORE/AFTER SLIDER
-  const slider = document.getElementById('baSlider');
-  const before = document.getElementById('baBefore');
-  const handle = document.getElementById('baHandle');
-  if (slider) {
-    let dragging = false;
-    function setPos(x) {
-      const rect = slider.getBoundingClientRect();
-      let pct = Math.min(Math.max((x - rect.left) / rect.width, 0.05), 0.95);
-      before.style.width = (pct * 100) + '%';
-      handle.style.left = (pct * 100) + '%';
-    }
-    slider.addEventListener('mousedown', e => { dragging = true; setPos(e.clientX); });
-    window.addEventListener('mouseup', () => dragging = false);
-    window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
-    slider.addEventListener('touchstart', e => { dragging = true; setPos(e.touches[0].clientX); }, {passive:true});
-    window.addEventListener('touchend', () => dragging = false);
-    window.addEventListener('touchmove', e => { if (dragging) setPos(e.touches[0].clientX); }, {passive:true});
-  }
-
-  // FAQ
-  document.querySelectorAll('.faq-q').forEach(q => {
-    q.addEventListener('click', () => q.parentElement.classList.toggle('active'));
-  });
-
-  // CONTACT FORM
-  function handleSubmit(e) {
-    e.preventDefault();
-    window.location.href = 'thanks.html';
-    
-  }
-
-  // ── SHOW MORE REVIEWS ──────────────────────────────────────────────────────
-  var reviewsOpen = false;
-  function toggleMoreReviews() {
-    reviewsOpen = !reviewsOpen;
-    document.querySelectorAll('[data-hidden="1"]').forEach(function(el) {
-      el.style.display = reviewsOpen ? 'block' : 'none';
-    });
-    document.getElementById('showMoreText').textContent = reviewsOpen ? 'Скрий отзивите' : 'Покажи още 10 отзива';
-    document.getElementById('showMoreArrow').style.transform = reviewsOpen ? 'rotate(180deg)' : '';
-    document.getElementById('reviewCount').textContent = reviewsOpen ? '14' : '4';
-  }
-
-  // ── КАЛКУЛАТОР ─────────────────────────────────────────────────────────────
-  var calcSel = {};
-  var calcNotes = {};
-  var calcList = [
-    {n:'Шпакловка', i:'🪣', ph:'напр. 3 стаи, Q4 огледална, с тавани'},
-    {n:'Боядисване', i:'🎨', ph:'напр. само хол и спалня, бяло'},
-    {n:'Гипсокартон & Тавани', i:'🏗️', ph:'напр. окачен таван с LED в 2 стаи'},
-    {n:'ВиК инсталации', i:'🔧', ph:'напр. подмяна в баня, нова мивка'},
-    {n:'Декоративна мазилка', i:'✨', ph:'напр. венецианска в хол'},
-    {n:'Обръщане дограма', i:'🪟', ph:'напр. 5 прозореца + 2 врати'},
-    {n:'Ремонт на баня', i:'🛁', ph:'напр. плочки, санитария, ВиК'},
-    {n:'Плочки & Фаянс', i:'🔲', ph:'напр. баня и тоалетна, 25 кв.м.'},
-    {n:'LED осветление', i:'💡', ph:'напр. скрито LED в таван хол'},
-    {n:'Цялостен ремонт', i:'🏠', ph:'напр. двустаен, всичко включено'}
-  ];
-
-  function buildCalc() {
-    var g = document.getElementById('calcGrid');
-    if (!g) return;
-    g.innerHTML = calcList.map(function(s) {
-      var id = 'cs_' + s.n.replace(/[^a-zA-Z0-9]/g, '_');
-      return '<div id="' + id + '" data-svc="' + s.n + '" class="calc-svc-btn" style="display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;border:1.5px solid #e0e0e0;border-radius:8px;background:white;cursor:pointer;font-size:.88rem;transition:all .15s;user-select:none;">'
-        + '<span>' + s.i + '</span>'
-        + '<span style="flex:1;color:#333;">' + s.n + '</span>'
-        + '<span class="cchk" style="width:18px;height:18px;border:1.5px solid #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;"></span>'
-        + '</div>';
-    }).join('');
-    g.addEventListener('click', function(e) {
-      var btn = e.target.closest('.calc-svc-btn');
-      if (btn) calcToggle(btn.getAttribute('data-svc'));
-    });
-  }
-
-  function calcToggle(name) {
-    var svc = calcList.filter(function(s){ return s.n === name; })[0];
-    if (calcSel[name]) {
-      delete calcSel[name];
-      delete calcNotes[name];
-    } else {
-      calcSel[name] = true;
-      calcNotes[name] = '';
-    }
-    // Обнови бутона
-    var id = 'cs_' + name.replace(/[^a-zA-Z0-9]/g, '_');
-    var btn = document.getElementById(id);
-    if (btn) {
-      var on = !!calcSel[name];
-      btn.style.borderColor = on ? '#333' : '#e0e0e0';
-      btn.style.background = on ? '#f0f0f0' : 'white';
-      var chk = btn.querySelector('.cchk');
-      chk.style.background = on ? '#333' : '';
-      chk.style.borderColor = on ? '#333' : '#ccc';
-      chk.style.color = on ? 'white' : '';
-      chk.textContent = on ? '✓' : '';
-    }
-    calcRenderBasket();
-  }
-
-  function calcRenderBasket() {
-    var keys = Object.keys(calcSel);
-    var basket = document.getElementById('calcBasket');
-    var items = document.getElementById('calcItems');
-    var details = document.getElementById('calcDetails');
-    var send = document.getElementById('calcSend');
-    if (!basket) return;
-
-    if (!keys.length) {
-      basket.style.display = 'none';
-      details.style.display = 'none';
-      send.style.display = 'none';
-      return;
-    }
-    basket.style.display = 'block';
-    details.style.display = 'block';
-    send.style.display = 'block';
-
-    items.innerHTML = '';
-    keys.forEach(function(name) {
-      var svc = calcList.filter(function(s){ return s.n === name; })[0];
-      var ph = svc ? svc.ph : '';
-      var icon = svc ? svc.i : '';
-      var div = document.createElement('div');
-      div.style.cssText = 'background:white;border:1.5px solid #e0e0e0;border-radius:8px;padding:.8rem 1rem;margin-bottom:.5rem;';
-      var rmBtn = document.createElement('button');
-      rmBtn.setAttribute('data-rmname', name);
-      rmBtn.style.cssText = 'background:none;border:none;cursor:pointer;color:#aaa;font-size:1rem;padding:.1rem .3rem;border-radius:4px;';
-      rmBtn.innerHTML = '&#215;';
-      rmBtn.title = 'Премахни';
-      rmBtn.addEventListener('click', function() { calcRemove(this.getAttribute('data-rmname')); });
-
-      var topRow = document.createElement('div');
-      topRow.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;';
-      topRow.innerHTML = '<span>' + icon + '</span><strong style="flex:1;font-size:.9rem;">' + name + '</strong>';
-      topRow.appendChild(rmBtn);
-
-      var ta = document.createElement('textarea');
-      ta.placeholder = ph;
-      ta.rows = 1;
-      ta.style.cssText = 'width:100%;border:1px solid #ddd;border-radius:6px;padding:.5rem .7rem;font-size:.82rem;font-family:inherit;resize:none;color:#333;outline:none;';
-      ta.value = calcNotes[name] || '';
-      ta.addEventListener('input', function() {
-        calcNotes[name] = this.value;
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
-      });
-
-      div.appendChild(topRow);
-      div.appendChild(ta);
-      items.appendChild(div);
-    });
-  }
-
-  function calcRemove(name) {
-    delete calcSel[name];
-    delete calcNotes[name];
-    var id = 'cs_' + name.replace(/[^a-zA-Z0-9]/g, '_');
-    var btn = document.getElementById(id);
-    if (btn) {
-      btn.style.borderColor = '#e0e0e0'; btn.style.background = 'white';
-      var chk = btn.querySelector('.cchk');
-      chk.style.background = ''; chk.style.borderColor = '#ccc'; chk.textContent = '';
-    }
-    calcRenderBasket();
-  }
-
-  function calcBuildMsg() {
-    var keys = Object.keys(calcSel);
-    var msg = 'Запитване за оферта:\n\n';
-    keys.forEach(function(name, i) {
-      msg += (i + 1) + '. ' + name;
-      if (calcNotes[name] && calcNotes[name].trim()) msg += ' — ' + calcNotes[name].trim();
-      msg += '\n';
-    });
-    var type = (document.getElementById('calcType') || {}).value || '';
-    var size = (document.getElementById('calcSize') || {}).value || '';
-    var when = (document.getElementById('calcWhen') || {}).value || '';
-    if (type || size || when) {
-      msg += '\n';
-      if (type) msg += 'Тип: ' + type + '\n';
-      if (size) msg += 'Квадратура: ' + size + '\n';
-      if (when) msg += 'Кога: ' + when + '\n';
-    }
-    return msg;
-  }
-
-  function calcSendViber() {
-    var keys = Object.keys(calcSel);
-    if (!keys.length) {
-      var warn = document.getElementById('calcWarn');
-      if (warn) { warn.style.display = 'block'; setTimeout(function(){ warn.style.display='none'; }, 3000); }
-      return;
-    }
-    var msg = calcBuildMsg();
-    // На десктоп viber:// протоколът не работи — копираме текста и информираме потребителя
-    var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    try { navigator.clipboard.writeText(msg); } catch(e) {}
-    if (isMobile) {
-      window.location.href = 'viber://chat?number=%2B359877810418&text=' + encodeURIComponent(msg.substring(0, 500));
-    } else {
-      var toast = document.createElement('div');
-      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#7360f2;color:white;padding:1rem 1.8rem;border-radius:12px;font-weight:600;font-size:.88rem;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.3);white-space:nowrap;font-family:inherit;text-align:center;max-width:90vw;white-space:normal;';
-      toast.innerHTML = '📋 Запитването е копирано!<br><small style="font-weight:400;opacity:.85;">Отворете Viber и го поставете в чат с 0877 810 418</small>';
-      document.body.appendChild(toast);
-      setTimeout(function(){ toast.style.opacity='0'; toast.style.transition='opacity .4s'; }, 3500);
-      setTimeout(function(){ if(toast.parentNode) toast.parentNode.removeChild(toast); }, 4000);
-    }
-  }
-
-  function calcSendEmail() {
-    var keys = Object.keys(calcSel);
-    if (!keys.length) {
-      var warn = document.getElementById('calcWarn');
-      if (warn) { warn.style.display = 'block'; setTimeout(function(){ warn.style.display='none'; }, 3000); }
-      return;
-    }
-    var msg = calcBuildMsg();
-    window.location.href = 'mailto:trqnivanov1@gmail.com?subject=' + encodeURIComponent('Запитване за оферта') + '&body=' + encodeURIComponent(msg);
-  }
-
-  // "Добави към офертата" от модала на услугата
-  function addToQuote() {
-    var title = (document.getElementById('svcModalTitle') || {}).textContent || '';
-    if (!title) return;
-    if (!calcSel[title]) { calcSel[title] = true; calcNotes[title] = ''; }
-    var id = 'cs_' + title.replace(/[^a-zA-Z0-9]/g, '_');
-    var btn = document.getElementById(id);
-    if (btn) {
-      btn.style.borderColor = '#333'; btn.style.background = '#f0f0f0';
-      var chk = btn.querySelector('.cchk');
-      if (chk) { chk.style.background = '#333'; chk.style.borderColor = '#333'; chk.style.color = 'white'; chk.textContent = '✓'; }
-    }
-    calcRenderBasket();
-    closeServiceModalDirect();
-    var t = document.createElement('div');
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:.8rem 1.5rem;border-radius:10px;font-weight:700;font-size:.85rem;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.2);white-space:nowrap;font-family:inherit;';
-    t.textContent = '✓ ' + title + ' е добавена!';
-    document.body.appendChild(t);
-    setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .4s'; }, 1800);
-    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 2300);
-    setTimeout(function(){
-      var s = document.getElementById('calculator');
-      if (s) s.scrollIntoView({behavior:'smooth', block:'start'});
-    }, 400);
-  }
-
-  buildCalc();
-</script>
-
-<!-- SERVICE MODAL -->
-<div id="serviceOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9998;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);" onclick="closeServiceModal(event)">
-  <div style="background:#111827;border-radius:24px;border:1px solid rgba(201,148,58,.3);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;">
-    <div id="svcModalTop" style="height:180px;position:relative;overflow:hidden;border-radius:24px 24px 0 0;">
-      <img id="svcModalImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;"/>
-      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,11,17,.8) 0%,transparent 50%);"></div>
-      <button onclick="closeServiceModalDirect()" style="position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,.5);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:2;">×</button>
     </div>
-    <div style="padding:2rem;">
-      <h2 id="svcModalTitle" style="font-size:1.5rem;color:white;margin-bottom:.5rem;"></h2>
-      <div style="width:40px;height:2px;background:linear-gradient(90deg,#c9943a,#e8b84b);margin-bottom:1.2rem;"></div>
-      <p id="svcModalDesc" style="color:#9ca3af;font-size:.9rem;margin-bottom:1.5rem;line-height:1.8;"></p>
-      <div style="margin-bottom:1.5rem;">
-        <h4 style="color:#c9943a;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;">✦ Включено в услугата</h4>
-        <div id="svcModalIncludes"></div>
-      </div>
-      <div style="margin-bottom:1.5rem;">
-        <h4 style="color:#c9943a;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;">✦ Изберете опция</h4>
-        <div id="svcModalOptions"></div>
-      </div>
-      <button onclick="addToQuote()" style="width:100%;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:1rem;border-radius:12px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;margin-bottom:.8rem;">&#10133; Добави към офертата</button>
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-        <button onclick="window.location.href='tel:0877810418'" style="background:linear-gradient(135deg,#c9943a,#e8b84b);color:#0d1b2e;border:none;padding:.9rem 1.8rem;border-radius:12px;font-weight:700;font-size:.9rem;cursor:pointer;flex:1;font-family:inherit;">📞 0877 810 418</button>
-        <button onclick="sendServiceViber()" style="background:rgba(115,96,242,.2);color:#9b8df7;border:1px solid rgba(115,96,242,.3);padding:.9rem 1.8rem;border-radius:12px;font-weight:700;font-size:.9rem;cursor:pointer;flex:1;font-family:inherit;">📲 Изпрати на Viber</button>
-      </div>
-    </div>
-  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#home">Начало</a>
+    <a href="#services">Услуги</a>
+    <a href="#gallery">Галерия</a>
+    <a href="#projects">Проекти</a>
+    <a href="#calculator">Калкулатор</a>
+    <a href="#about">За нас</a>
+    <a href="#contacts">Контакти</a>
 </div>
 
+<div class="overlay" id="overlay"></div>
+
+<!-- HERO SECTION -->
+<section id="home">
+    <div class="container">
+        <h1>Премиум ремонти на домове и апартаменти</h1>
+        <p>Качество, стил и професионализъм във всеки детайл. Ремонт на баня, апартамент, шпакловка, плочки, гипсокартон, окачени тавани, обръщане на прозорци и още.</p>
+        <a href="#contacts" class="btn-primary">Вземи премиум оферта</a>
+    </div>
+</section> 
+    <!-- УСЛУГИ -->
+<section id="services">
+    <div class="container">
+        <h2>Нашите услуги</h2>
+        <p>Пълна гама от вътрешни ремонти – професионално, качествено и с гаранция.</p>
+
+        <div class="grid-3">
+
+            <!-- Ремонт на баня -->
+            <div class="card">
+                <h3>Ремонт на баня</h3>
+                <p>Пълен ремонт на баня – демонтаж, ВиК, хидроизолация, плочки, монтаж на санитария.</p>
+                <ul>
+                    <li>Хидроизолация</li>
+                    <li>Плочки и гранитогрес</li>
+                    <li>Монтаж на санитария</li>
+                </ul>
+            </div>
+
+            <!-- Ремонт на апартамент -->
+            <div class="card">
+                <h3>Ремонт на апартамент</h3>
+                <p>Цялостен ремонт – стени, под, баня, кухня, ВиК, електро, шпакловка и боядисване.</p>
+                <ul>
+                    <li>Шпакловка и боядисване</li>
+                    <li>Подови настилки</li>
+                    <li>Пълно вътрешно обновяване</li>
+                </ul>
+            </div>
+
+            <!-- Шпакловка и боядисване -->
+            <div class="card">
+                <h3>Шпакловка и боядисване</h3>
+                <p>Професионална шпакловка и боядисване с перфектно гладък финиш.</p>
+                <ul>
+                    <li>Гладене на стени и тавани</li>
+                    <li>Грунд и боя</li>
+                    <li>Фино заглаждане</li>
+                </ul>
+            </div>
+
+            <!-- Плочки и настилки -->
+            <div class="card">
+                <h3>Плочки и настилки</h3>
+                <p>Редене на плочки, гранитогрес, ламинат и други настилки с прецизност.</p>
+                <ul>
+                    <li>Бани и кухни</li>
+                    <li>Подови настилки</li>
+                    <li>Тераси и коридори</li>
+                </ul>
+            </div>
+
+            <!-- ВиК услуги -->
+            <div class="card">
+                <h3>ВиК услуги</h3>
+                <p>Подмяна и изграждане на ВиК инсталации според всички стандарти.</p>
+                <ul>
+                    <li>Тръби, сифони, батерии</li>
+                    <li>Монтаж на санитария</li>
+                    <li>Отстраняване на течове</li>
+                </ul>
+            </div>
+
+            <!-- Електро услуги -->
+            <div class="card">
+                <h3>Електро услуги</h3>
+                <p>Професионално изграждане и подмяна на електро инсталации.</p>
+                <ul>
+                    <li>Осветление</li>
+                    <li>Контакти и ключове</li>
+                    <li>Ел. табла и защити</li>
+                </ul>
+            </div>
+
+            <!-- Обръщане на прозорци -->
+            <div class="card">
+                <h3>Обръщане на прозорци и дограма</h3>
+                <p>Професионално обръщане с мрежа, ъгли, шпакловка и изолация.</p>
+                <ul>
+                    <li>Вътрешно и външно обръщане</li>
+                    <li>Мрежа, ъгли, шпакловка</li>
+                    <li>Гладък финиш</li>
+                </ul>
+                <p style="margin-top: 8px; color: var(--gold); font-size: 14px;">
+                    Цена: 40–70 лв/л.м
+                </p>
+            </div>
+
+            <!-- Гипсокартон -->
+            <div class="card">
+                <h3>Гипсокартон</h3>
+                <p>Монтаж на гипсокартон по стени и прегради с качествени профили.</p>
+                <ul>
+                    <li>Преградни стени</li>
+                    <li>Двуслойни конструкции</li>
+                    <li>Минерална вата и шпакловка</li>
+                </ul>
+                <p style="margin-top: 8px; color: var(--gold); font-size: 14px;">
+                    Цена: 35–55 лв/кв.м
+                </p>
+            </div>
+
+            <!-- Окачени тавани -->
+            <div class="card">
+                <h3>Окачени тавани</h3>
+                <p>Модерни окачени тавани с LED осветление и дизайнерски форми.</p>
+                <ul>
+                    <li>Еднониво и двуниво</li>
+                    <li>Скрито LED осветление</li>
+                    <li>Изолация и финиш</li>
+                </ul>
+                <p style="margin-top: 8px; color: var(--gold); font-size: 14px;">
+                    Цена: 45–80 лв/кв.м
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- ГАЛЕРИЯ -->
+<section id="gallery">
+    <div class="container">
+        <h2>Галерия</h2>
+        <p>Разгледайте снимки от реални ремонти и 3D визуализации.</p>
+
+        <div class="grid-3">
+
+            <div class="card">
+                <h3>Баня – реален ремонт</h3>
+                <p>Модерна баня с гранитогрес, LED осветление и душ зона.</p>
+            </div>
+
+            <div class="card">
+                <h3>3D визуализация – кухня</h3>
+                <p>Фотореалистичен проект за модерна кухня с вградени уреди.</p>
+            </div>
+
+            <div class="card">
+                <h3>Дневна – ремонт</h3>
+                <p>Светла дневна с окачен таван и LED акценти.</p>
+            </div>
+
+            <div class="card">
+                <h3>Окачен таван – LED</h3>
+                <p>Двуниво окачен таван със скрито осветление.</p>
+            </div>
+
+            <div class="card">
+                <h3>Гипсокартон – преграда</h3>
+                <p>Преградна стена с вата и двуслойна конструкция.</p>
+            </div>
+
+            <div class="card">
+                <h3>Обръщане на прозорци</h3>
+                <p>Професионално обръщане с мрежа, ъгли и шпакловка.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ПРОЕКТИ -->
+<section id="projects">
+    <div class="container">
+        <h2>Нашите проекти</h2>
+        <p>Подбрани ремонти, изпълнени с внимание към детайла.</p>
+
+        <div class="grid-3">
+
+            <div class="card">
+                <h3>Луксозна баня – София</h3>
+                <p>Пълен ремонт с висок клас материали, душ зона и LED осветление.</p>
+                <p style="color: var(--gold); font-size: 14px;">Срок: 14 дни</p>
+            </div>
+
+            <div class="card">
+                <h3>Ремонт на апартамент – Пловдив</h3>
+                <p>Цялостен ремонт – стени, под, баня, кухня, ВиК, електро.</p>
+                <p style="color: var(--gold); font-size: 14px;">Срок: 45 дни</p>
+            </div>
+
+            <div class="card">
+                <h3>3D визуализация – модерна кухня</h3>
+                <p>Дизайн с LED акценти, каменен плот и вградени уреди.</p>
+                <p style="color: var(--gold); font-size: 14px;">Концепция</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- КАЛКУЛАТОР -->
+<section id="calculator">
+    <div class="container">
+        <h2>Калкулатор за ремонт</h2>
+        <p>Попълнете данните и ще получите ориентировъчна цена. За точна оферта – свържете се с нас.</p>
+
+        <div class="card" style="margin-top: 20px;">
+            <h3>Изчисли ориентировъчна цена</h3>
+
+            <div style="display: grid; gap: 16px; margin-top: 16px;">
+
+                <div>
+                    <label>Тип ремонт</label>
+                    <select id="calcType" style="width: 100%; padding: 10px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--gold); border-radius: 6px;">
+                        <option>Ремонт на баня</option>
+                        <option>Ремонт на апартамент</option>
+                        <option>Шпакловка и боядисване</option>
+                        <option>Плочки и настилки</option>
+                        <option>Гипсокартон</option>
+                        <option>Окачени тавани</option>
+                        <option>Обръщане на прозорци / дограма</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Площ (кв.м)</label>
+                    <input id="calcArea" type="number" placeholder="Пример: 12" style="width: 100%; padding: 10px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--gold); border-radius: 6px;">
+                </div>
+
+                <div>
+                    <label>Град / квартал</label>
+                    <input id="calcCity" type="text" placeholder="Пример: София, Младост" style="width: 100%; padding: 10px; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--gold); border-radius: 6px;">
+                </div>
+
+                <button onclick="calculatePrice()" class="btn-primary" style="width: fit-content;">Изчисли</button>
+
+                <p id="calcResult" style="font-size: 18px; color: var(--gold); margin-top: 10px;"></p>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ЗА НАС -->
+<section id="about">
+    <div class="container">
+        <h2>За нас</h2>
+        <p>Иванов Ремонти е фирма, специализирана в качествени вътрешни ремонти, довършителни дейности и модерни 3D визуализации. Работим с внимание към детайла, висококачествени материали и професионален подход към всеки проект.</p>
+
+        <div class="grid-3" style="margin-top: 20px;">
+
+            <div class="card">
+                <h3>Нашият подход</h3>
+                <p>Работим с индивидуален подход към всеки клиент, като гарантираме качество и точност.</p>
+            </div>
+
+            <div class="card">
+                <h3>Гаранции</h3>
+                <p>Даваме гаранция за всяка дейност, работим с договор и ясни условия.</p>
+            </div>
+
+            <div class="card">
+                <h3>Материали</h3>
+                <p>Използваме само доказани материали и системи от водещи производители.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- КОНТАКТИ -->
+<section id="contacts">
+    <div class="container">
+        <h2>Контакти</h2>
+        <p>Свържете се с нас за оферта или въпроси.</p>
+
+        <div class="grid-3" style="margin-top: 20px;">
+
+            <div class="card">
+                <h3>Основни контакти</h3>
+                <p><strong>Email:</strong> traqnivanov1@gmail.com</p>
+                <p><strong>Viber:</strong> добави линк</p>
+                <p><strong>Работно време:</strong><br>Пон–Съб: 09:00–19:00<br>Неделя: по уговорка</p>
+            </div>
+
+            <div class="card">
+                <h3>Райони на работа</h3>
+                <p>София, Пловдив, Варна, Бургас, Стара Загора, Плевен, Монтана, Видин и др.</p>
+            </div>
+
+            <div class="card">
+                <h3>Форма за запитване</h3>
+
+                <div style="display: grid; gap: 10px;">
+
+                    <input type="text" placeholder="Вашето име" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--gold); border-radius: 6px; color: var(--text-main);">
+
+                    <input type="text" placeholder="Телефон" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--gold); border-radius: 6px; color: var(--text-main);">
+
+                    <input type="email" placeholder="Email" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--gold); border-radius: 6px; color: var(--text-main);">
+
+                    <textarea placeholder="Вашето съобщение" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--gold); border-radius: 6px; color: var(--text-main); min-height: 100px;"></textarea>
+
+                    <button class="btn-primary">Изпрати</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- FOOTER -->
+<footer style="background: #050505; padding: 40px 0; margin-top: 40px; border-top: 1px solid rgba(212,175,55,0.3);">
+    <div class="container">
+        <div class="grid-3">
+
+            <div>
+                <h3 style="color: var(--gold);">Иванов Ремонти</h3>
+                <p>Премиум ремонти, модерни решения и професионално изпълнение.</p>
+            </div>
+
+            <div>
+                <h3 style="color: var(--gold);">Навигация</h3>
+                <p><a href="#home">Начало</a></p>
+                <p><a href="#services">Услуги</a></p>
+                <p><a href="#gallery">Галерия</a></p>
+                <p><a href="#projects">Проекти</a></p>
+                <p><a href="#calculator">Калкулатор</a></p>
+                <p><a href="#about">За нас</a></p>
+                <p><a href="#contacts">Контакти</a></p>
+            </div>
+
+            <div>
+                <h3 style="color: var(--gold);">Контакти</h3>
+                <p>Email: traqnivanov1@gmail.com</p>
+                <p>Viber: добави линк</p>
+                <p>Работно време: Пон–Съб 09:00–19:00</p>
+            </div>
+
+        </div>
+
+        <p style="text-align:center; margin-top:20px; color:var(--text-secondary); font-size:14px;">
+            © 2026 Иванов Ремонти – Всички права запазени.
+        </p>
+    </div>
+</footer>
+
+<!-- JAVASCRIPT -->
+<script>
+/* -------------------- MOBILE MENU -------------------- */
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+const overlay = document.getElementById("overlay");
+
+hamburger.onclick = () => {
+    mobileMenu.classList.toggle("active");
+    overlay.classList.toggle("active");
+};
+
+overlay.onclick = () => {
+    mobileMenu.classList.remove("active");
+    overlay.classList.remove("active");
+};
+
+document.querySelectorAll(".mobile-menu a").forEach(link => {
+    link.onclick = () => {
+        mobileMenu.classList.remove("active");
+        overlay.classList.remove("active");
+    };
+});
+
+/* -------------------- CALCULATOR -------------------- */
+function calculatePrice() {
+    let type = document.getElementById("calcType").value;
+    let area = Number(document.getElementById("calcArea").value);
+
+    if (!area || area <= 0) {
+        document.getElementById("calcResult").innerHTML = "Моля въведете площ.";
+        return;
+    }
+
+    let basePrice = 0;
+
+    switch(type) {
+        case "Ремонт на баня": basePrice = 350; break;
+        case "Ремонт на апартамент": basePrice = 180; break;
+        case "Шпакловка и боядисване": basePrice = 22; break;
+        case "Плочки и настилки": basePrice = 45; break;
+        case "Гипсокартон": basePrice = 38; break;
+        case "Окачени тавани": basePrice = 55; break;
+        case "Обръщане на прозорци / дограма": basePrice = 60; break;
+    }
+
+    let total = basePrice * area;
+
+    document.getElementById("calcResult").innerHTML =
+        "Ориентировъчна цена: <strong style='color:var(--gold);'>" + total + " лв</strong>";
+}
+</script>
 
 </body>
 </html>
