@@ -1,605 +1,196 @@
 
-<!DOCTYPE html>
-<html lang="bg">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Иванов Ремонти – Премиум ремонти</title>
-
-<style>
-
-/* -------------------- ОСНОВНИ ЦВЕТОВЕ -------------------- */
-:root {
-    --bg-main: #0D0D0D;
-    --bg-secondary: #1A1A1A;
-    --gold: #D4AF37;
-    --gold-light: #E5C45A;
-    --text-main: #FFFFFF;
-    --text-secondary: #BFBFBF;
-}
-
-/* -------------------- RESET -------------------- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: var(--bg-main);
-    color: var(--text-main);
-    font-family: system-ui, sans-serif;
-    scroll-behavior: smooth;
-}
-
-/* -------------------- HEADER -------------------- */
-header {
-    position: sticky;
-    top: 0;
-    background: rgba(13, 13, 13, 0.95);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-}
-
-.container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 0 16px;
-}
-
-.nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0;
-}
-
-.logo {
-    color: var(--gold);
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-/* Desktop menu */
-.nav-links {
-    display: flex;
-    gap: 24px;
-}
-
-.nav-links a {
-    color: var(--text-main);
-    position: relative;
-    font-size: 15px;
-}
-
-.nav-links a::after {
-    content: "";
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--gold);
-    transition: 0.3s;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-/* -------------------- HAMBURGER -------------------- */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-}
-
-.hamburger span {
-    width: 28px;
-    height: 3px;
-    background: var(--gold);
-    border-radius: 3px;
-}
-
-/* -------------------- MOBILE MENU -------------------- */
-.mobile-menu {
-    position: fixed;
-    top: 0;
-    right: -260px;
-    width: 260px;
-    height: 100vh;
-    background: #111;
-    padding: 40px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: 0.4s ease;
-    z-index: 999;
-}
-
-.mobile-menu a {
-    color: var(--gold);
-    font-size: 18px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-}
-
-/* Overlay */
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s;
-}
-
-.mobile-menu.active {
-    right: 0;
-}
-
-.overlay.active {
-    opacity: 1;
-    pointer-events: all;
-}
-
-/* -------------------- HERO -------------------- */
-section {
-    padding: 60px 0;
-}
-
-h1, h2, h3 {
-    font-family: "Montserrat", sans-serif;
-    margin-bottom: 16px;
-}
-
-h1 { font-size: 40px; }
-h2 { font-size: 28px; }
-h3 { font-size: 20px; }
-
-p { color: var(--text-secondary); margin-bottom: 12px; }
-
-.btn-primary {
-    background: var(--gold);
-    color: #000;
-    padding: 12px 24px;
-    border-radius: 6px;
-    display: inline-block;
-    margin-top: 10px;
-    font-weight: 600;
-    transition: 0.3s;
-}
-
-.btn-primary:hover {
-    background: #000;
-    color: var(--gold);
-    border: 1px solid var(--gold);
-}
-
-/* -------------------- GRID -------------------- */
-.grid-3 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-}
-
-.card {
-    background: var(--bg-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    border-color: var(--gold);
-}
-
-/* -------------------- MOBILE -------------------- */
-@media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
-}
-
-</style>
-</head>
-<body>
-
-<header>
-    <div class="container nav">
-        <div class="logo">ИВАНОВ РЕМОНТИ</div>
-
-        <nav class="nav-links">
-            <a href="#home">Начало</a>
-            <a href="#services">Услуги</a>
-            <a href="#gallery">Галерия</a>
-            <a href="#projects">Проекти</a>
-            <a href="#calculator">Калкулатор</a>
-            <a href="#about">За нас</a>
-            <a href="#contacts">Контакти</a>
-        </nav>
-
-        <div class="hamburger" id="hamburger">
-            <span></span><span></span><span></span>
-        </div>
-    </div>
-</header>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-    <a href="#home">Начало</a>
-    <a href="#services">Услуги</a>
-    <a href="#gallery">Галерия</a>
-    <a href="#projects">Проекти</a>
-    <a href="#calculator">Калкулатор</a>
-    <a href="#about">За нас</a>
-    <a href="#contacts">Контакти</a>
-</div>
-
-<div class="overlay" id="overlay"></div>
-
-<!-- HERO SECTION -->
-<section id="home">
-    <div class="container">
-        <h1>Премиум ремонти на домове и апартаменти</h1>
-        <p>Качество, стил и професионализъм във всеки детайл. Ремонт на баня, апартамент, шпакловка, плочки, гипсокартон, окачени тавани, обръщане на прозорци и още.</p>
-        <a href="#contacts" class="btn-primary">Вземи премиум оферта</a>
-    </div>
-</section>
-<!-- SERVICES -->
-<section id="services">
-    <div class="container">
-        <h2>Нашите услуги</h2>
-        <div class="grid-3">
-
-            <div class="card">
-                <h3>Ремонт на баня</h3>
-                <p>Плочки, ВиК, ел. инсталации, монтаж на мебели и оборудване.</p>
-            </div>
-
-            <div class="card">
-                <h3>Шпакловка и боядисване</h3>
-                <p>Гипсова, финна, мрежа, латекс, декоративни мазилки.</p>
-            </div>
-
-            <div class="card">
-                <h3>Гипсокартон</h3>
-                <p>Окачени тавани, предстенни обшивки, скрити осветления.</p>
-            </div>
-
-            <div class="card">
-                <h3>Плочки и настилки</h3>
-                <p>Гранитогрес, фаянс, ламиниран паркет, винил.</p>
-            </div>
-
-            <div class="card">
-                <h3>Ел. и ВиК услуги</h3>
-                <p>Пълно изграждане и подмяна на инсталации.</p>
-            </div>
-
-            <div class="card">
-                <h3>Обръщане на прозорци</h3>
-                <p>Професионално и прецизно изпълнение с перфектен финиш.</p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY -->
-<section id="gallery">
-    <div class="container">
-        <h2>Галерия</h2>
-        <p>Снимки от реални обекти и завършени ремонти.</p>
-
-        <div class="grid-3">
-            <div class="card"><p>Снимка 1</p></div>
-            <div class="card"><p>Снимка 2</p></div>
-            <div class="card"><p>Снимка 3</p></div>
-        </div>
-    </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-    <div class="container">
-        <h2>Наши проекти</h2>
-        <p>Прецизност, качество и внимание към детайла.</p>
-
-        <div class="grid-3">
-            <div class="card"><h3>Апартамент – София</h3><p>Пълен ремонт.</p></div>
-            <div class="card"><h3>Баня – Пловдив</h3><p>Луксозно изпълнение.</p></div>
-            <div class="card"><h3>Офис – Варна</h3><p>Модерен дизайн.</p></div>
-        </div>
-    </div>
-</section>
-
 <!-- CALCULATOR -->
 <section id="calculator">
     <div class="container">
-        <h2>Калкулатор за ремонт</h2>
-        <p>Въведете квадратурата и вижте ориентировъчна цена.</p>
+        <h2>Калкулатор за строителни ремонти</h2>
+        <p>Изберете дейности, въведете площ и вижте ориентировъчна стойност.</p>
 
-        <div class="card">
-            <input id="areaInput" type="number" placeholder="Квадратура (м²)" 
-                   style="padding: 12px; width: 100%; margin-bottom: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
+        <div class="card" style="display:grid; gap:16px;">
 
-            <button onclick="calcPrice()" class="btn-primary">Изчисли</button>
-
-            <p id="result" style="margin-top: 15px; font-size: 18px; color: var(--gold);"></p>
-        </div>
-    </div>
-</section>
-
-<script>
-function calcPrice() {
-    let area = document.getElementById("areaInput").value;
-    if (!area || area <= 0) {
-        document.getElementById("result").innerText = "Моля въведете валидна квадратура.";
-        return;
-    }
-    let price = area * 120;
-    document.getElementById("result").innerText = "Ориентировъчна цена: " + price + " лв.";
-}
-</script>
-
-<!-- ABOUT -->
-<section id="about">
-    <div class="container">
-        <h2>За нас</h2>
-        <p>Над 15 години опит в строителството и ремонтите. Работим чисто, качествено и в срок.</p>
-    </div>
-</section>
-
-<!-- CONTACTS -->
-<section id="contacts">
-    <div class="container">
-        <h2>Контакти</h2>
-
-        <div class="grid-3">
-
-            <div class="card">
-                <h3>Основни контакти</h3>
-                <p><strong>Email:</strong> traqnivanov1@gmail.com</p>
-                <p><strong>Viber:</strong> добави линк</p>
-                <p><strong>Работно време:</strong><br>Пон–Съб: 09:00–19:00</p>
+            <!-- Площ -->
+            <div>
+                <label>Площ (м²)</label>
+                <input id="areaInput" type="number" min="1" placeholder="Пример: 65"
+                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
             </div>
 
-            <div class="card">
-                <h3>Райони на работа</h3>
-                <p>София, Пловдив, Варна, Бургас, Стара Загора, Плевен, Монтана, Видин и др.</p>
-            </div>
-
-            <div class="card">
-                <h3>Форма за запитване</h3>
-
-                <div style="display: grid; gap: 10px;">
-
-                    <input type="text" placeholder="Вашето име"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
-
-                    <input type="text" placeholder="Телефон"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
-
-                    <input type="email" placeholder="Email"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
-
-                    <textarea placeholder="Вашето съобщение" rows="4"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);"></textarea>
-
-                    <button class="btn-primary">Изпрати</button>
-
+            <!-- Основни дейности -->
+            <div>
+                <label>Основни дейности</label>
+                <div style="display:grid; gap:4px; font-size:14px; color:var(--text-secondary);">
+                    <label><input type="checkbox" class="activity" data-key="shpaklovka"> Шпакловка и подготовка на стени</label>
+                    <label><input type="checkbox" class="activity" data-key="boqdisvane"> Боядисване / латекс</label>
+                    <label><input type="checkbox" class="activity" data-key="obrushtane"> Обръщане на прозорци</label>
+                    <label><input type="checkbox" class="activity" data-key="gipsokarton"> Гипсокартон (тавани / предстенни обшивки)</label>
+                    <label><input type="checkbox" class="activity" data-key="plochki"> Плочки / настилки</label>
+                    <label><input type="checkbox" class="activity" data-key="elvik"> Ел. и ВиК работи</label>
+                    <label><input type="checkbox" class="activity" data-key="banq"> Ремонт на баня</label>
+                    <label><input type="checkbox" class="activity" data-key="kuhnq"> Ремонт на кухня</label>
                 </div>
             </div>
 
-        </div>
-    </div>
-</section>
-</div>
-</section>
-
-<!-- FOOTER -->
-<footer style="background: #111; padding: 20px 0; margin-top: 40px; border-top: 1px solid rgba(212,175,55,0.2);">
-    <div class="container" style="text-align: center;">
-        <p style="color: var(--text-secondary);">© 2025 Иванов Ремонти — Всички права запазени.</p>
-    </div>
-</footer>
-
-<!-- MOBILE MENU SCRIPT -->
-<script>
-const hamburger = document.getElementById("hamburger");
-const mobileMenu = document.getElementById("mobileMenu");
-const overlay = document.getElementById("overlay");
-
-hamburger.addEventListener("click", () => {
-    mobileMenu.classList.toggle("active");
-    overlay.classList.toggle("active");
-});
-
-overlay.addEventListener("click", () => {
-    mobileMenu.classList.remove("active");
-    overlay.classList.remove("active");
-});
-</script>
-
-</body>
-</html><!-- SERVICES -->
-<section id="services">
-    <div class="container">
-        <h2>Нашите услуги</h2>
-        <div class="grid-3">
-
-            <div class="card">
-                <h3>Ремонт на баня</h3>
-                <p>Плочки, ВиК, ел. инсталации, монтаж на мебели и оборудване.</p>
+            <!-- Качество -->
+            <div>
+                <label>Качество на материали</label>
+                <select id="qualitySelect"
+                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
+                    <option value="standard">Стандартно</option>
+                    <option value="premium">Премиум (+25%)</option>
+                    <option value="budget">Бюджетно (-15%)</option>
+                </select>
             </div>
 
-            <div class="card">
-                <h3>Шпакловка и боядисване</h3>
-                <p>Гипсова, финна, мрежа, латекс, декоративни мазилки.</p>
+            <!-- Регион -->
+            <div>
+                <label>Регион</label>
+                <select id="regionSelect"
+                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
+                    <option value="normal">Извън София</option>
+                    <option value="sofia">София / голям град (+20%)</option>
+                </select>
             </div>
 
-            <div class="card">
-                <h3>Гипсокартон</h3>
-                <p>Окачени тавани, предстенни обшивки, скрити осветления.</p>
-            </div>
-
-            <div class="card">
-                <h3>Плочки и настилки</h3>
-                <p>Гранитогрес, фаянс, ламиниран паркет, винил.</p>
-            </div>
-
-            <div class="card">
-                <h3>Ел. и ВиК услуги</h3>
-                <p>Пълно изграждане и подмяна на инсталации.</p>
-            </div>
-
-            <div class="card">
-                <h3>Обръщане на прозорци</h3>
-                <p>Професионално и прецизно изпълнение с перфектен финиш.</p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY -->
-<section id="gallery">
-    <div class="container">
-        <h2>Галерия</h2>
-        <p>Снимки от реални обекти и завършени ремонти.</p>
-
-        <div class="grid-3">
-            <div class="card"><p>Снимка 1</p></div>
-            <div class="card"><p>Снимка 2</p></div>
-            <div class="card"><p>Снимка 3</p></div>
-        </div>
-    </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-    <div class="container">
-        <h2>Наши проекти</h2>
-        <p>Прецизност, качество и внимание към детайла.</p>
-
-        <div class="grid-3">
-            <div class="card"><h3>Апартамент – София</h3><p>Пълен ремонт.</p></div>
-            <div class="card"><h3>Баня – Пловдив</h3><p>Луксозно изпълнение.</p></div>
-            <div class="card"><h3>Офис – Варна</h3><p>Модерен дизайн.</p></div>
-        </div>
-    </div>
-</section>
-
-<!-- CALCULATOR -->
-<section id="calculator">
-    <div class="container">
-        <h2>Калкулатор за ремонт</h2>
-        <p>Въведете квадратурата и вижте ориентировъчна цена.</p>
-
-        <div class="card">
-            <input id="areaInput" type="number" placeholder="Квадратура (м²)" 
-                   style="padding: 12px; width: 100%; margin-bottom: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
-
-            <button onclick="calcPrice()" class="btn-primary">Изчисли</button>
-
-            <p id="result" style="margin-top: 15px; font-size: 18px; color: var(--gold);"></p>
-        </div>
-    </div>
-</section>
-
-<script>
-function calcPrice() {
-    let area = document.getElementById("areaInput").value;
-    if (!area || area <= 0) {
-        document.getElementById("result").innerText = "Моля въведете валидна квадратура.";
-        return;
-    }
-    let price = area * 120;
-    document.getElementById("result").innerText = "Ориентировъчна цена: " + price + " лв.";
-}
-</script>
-
-<!-- ABOUT -->
-<section id="about">
-    <div class="container">
-        <h2>За нас</h2>
-        <p>Над 15 години опит в строителството и ремонтите. Работим чисто, качествено и в срок.</p>
-    </div>
-</section>
-
-<!-- CONTACTS -->
-<section id="contacts">
-    <div class="container">
-        <h2>Контакти</h2>
-
-        <div class="grid-3">
-
-            <div class="card">
-                <h3>Основни контакти</h3>
-                <p><strong>Email:</strong> traqnivanov1@gmail.com</p>
-                <p><strong>Viber:</strong> добави линк</p>
-                <p><strong>Работно време:</strong><br>Пон–Съб: 09:00–19:00</p>
-            </div>
-
-            <div class="card">
-                <h3>Райони на работа</h3>
-                <p>София, Пловдив, Варна, Бургас, Стара Загора, Плевен, Монтана, Видин и др.</p>
-            </div>
-
-            <div class="card">
-                <h3>Форма за запитване</h3>
-
-                <div style="display: grid; gap: 10px;">
-
-                    <input type="text" placeholder="Вашето име"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
-
-                    <input type="text" placeholder="Телефон"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
-
-                    <input type="email" placeholder="Email"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);">
-
-                    <textarea placeholder="Вашето съобщение" rows="4"
-                        style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--bg-secondary);"></textarea>
-
-                    <button class="btn-primary">Изпрати</button>
-
+            <!-- Допълнителни дейности -->
+            <div>
+                <label>Допълнителни услуги</label>
+                <div style="display:grid; gap:4px; font-size:14px; color:var(--text-secondary);">
+                    <label><input type="checkbox" id="demolition"> Демонтаж / къртене (+10%)</label>
+                    <label><input type="checkbox" id="waste"> Извозване на отпадъци (+5%)</label>
+                    <label><input type="checkbox" id="design"> Проектиране / консултация (+8%)</label>
                 </div>
             </div>
 
+            <!-- Резерв -->
+            <div>
+                <label>Резерв за непредвидени разходи (%)</label>
+                <input id="reserveInput" type="number" min="0" max="50" value="20"
+                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
+            </div>
+
+            <!-- Бутони -->
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+                <button onclick="calcActivities()" class="btn-primary">Изчисли</button>
+                <button onclick="resetActivities()" class="btn-primary" style="background:#333; color:#fff; border:none;">
+                    Изчисти
+                </button>
+            </div>
+
+            <!-- Резултат -->
+            <div id="resultBox" style="margin-top:10px; border-top:1px solid rgba(212,175,55,0.3); padding-top:10px;">
+                <p id="resultMain" style="font-size:18px; color:var(--gold); margin-bottom:6px;"></p>
+                <p id="resultDetails" style="font-size:14px; color:var(--text-secondary); white-space:pre-line;"></p>
+            </div>
         </div>
     </div>
-</section></div>
 </section>
 
-<!-- FOOTER -->
-<footer style="background: #111; padding: 20px 0; margin-top: 40px; border-top: 1px solid rgba(212,175,55,0.2);">
-    <div class="container" style="text-align: center;">
-        <p style="color: var(--text-secondary);">© 2025 Иванов Ремонти — Всички права запазени.</p>
-    </div>
-</footer>
-
-<!-- MOBILE MENU SCRIPT -->
 <script>
-const hamburger = document.getElementById("hamburger");
-const mobileMenu = document.getElementById("mobileMenu");
-const overlay = document.getElementById("overlay");
+const ACTIVITY_PRICES = {
+    shpaklovka: { label: "Шпакловка и подготовка", perM2: 18 },
+    boqdisvane: { label: "Боядисване / латекс", perM2: 10 },
+    obrushtane: { label: "Обръщане на прозорци", perM2: 25 },
+    gipsokarton: { label: "Гипсокартон", perM2: 35 },
+    plochki: { label: "Плочки / настилки", perM2: 40 },
+    elvik: { label: "Ел. и ВиК работи", perM2: 30 },
+    banq: { label: "Ремонт на баня", perM2: 120 },
+    kuhnq: { label: "Ремонт на кухня", perM2: 100 }
+};
 
-hamburger.addEventListener("click", () => {
-    mobileMenu.classList.toggle("active");
-    overlay.classList.toggle("active");
-});
+function calcActivities() {
+    const area = parseFloat(document.getElementById("areaInput").value);
+    const quality = document.getElementById("qualitySelect").value;
+    const region = document.getElementById("regionSelect").value;
+    const demolition = document.getElementById("demolition").checked;
+    const waste = document.getElementById("waste").checked;
+    const design = document.getElementById("design").checked;
+    const reservePercent = parseFloat(document.getElementById("reserveInput").value) || 0;
 
-overlay.addEventListener("click", () => {
-    mobileMenu.classList.remove("active");
-    overlay.classList.remove("active");
-});
+    const mainEl = document.getElementById("resultMain");
+    const detailsEl = document.getElementById("resultDetails");
+
+    if (!area || area <= 0) {
+        mainEl.innerText = "Моля, въведете валидна площ.";
+        detailsEl.innerText = "";
+        return;
+    }
+
+    const activityCheckboxes = document.querySelectorAll(".activity");
+    let selectedActivities = [];
+    let laborBase = 0;
+
+    activityCheckboxes.forEach(cb => {
+        if (cb.checked) {
+            const key = cb.getAttribute("data-key");
+            const info = ACTIVITY_PRICES[key];
+            if (info) {
+                const price = info.perM2 * area;
+                laborBase += price;
+                selectedActivities.push({
+                    label: info.label,
+                    perM2: info.perM2,
+                    total: price
+                });
+            }
+        }
+    });
+
+    if (selectedActivities.length === 0) {
+        mainEl.innerText = "Моля, изберете поне една дейност.";
+        detailsEl.innerText = "";
+        return;
+    }
+
+    // Качество
+    let qualityCoef = 1;
+    if (quality === "premium") qualityCoef = 1.25;
+    if (quality === "budget") qualityCoef = 0.85;
+
+    // Регион
+    let regionCoef = region === "sofia" ? 1.20 : 1;
+
+    // Допълнителни дейности
+    let extraCoef = 1;
+    if (demolition) extraCoef += 0.10;
+    if (waste) extraCoef += 0.05;
+    if (design) extraCoef += 0.08;
+
+    // Прилагане на коефициенти
+    laborBase = laborBase * qualityCoef * regionCoef * extraCoef;
+
+    // Резерв
+    let reserve = laborBase * (reservePercent / 100);
+    let laborWithReserve = laborBase + reserve;
+
+    // Материали (ориентировъчно)
+    let materials = laborBase * 0.9;
+
+    let total = laborWithReserve + materials;
+
+    mainEl.innerText = "Ориентировъчна обща стойност: " + Math.round(total).toLocaleString("bg-BG") + " лв.";
+
+    let text = "Дейности:\n";
+    selectedActivities.forEach(a => {
+        text += "- " + a.label + ": " + Math.round(a.total).toLocaleString("bg-BG") + " лв. (" + a.perM2 + " лв./м²)\n";
+    });
+    text += "\nТруд (без резерв): " + Math.round(laborBase).toLocaleString("bg-BG") + " лв.\n";
+    text += "Резерв (" + reservePercent + "%): " + Math.round(reserve).toLocaleString("bg-BG") + " лв.\n";
+    text += "Труд с резерв: " + Math.round(laborWithReserve).toLocaleString("bg-BG") + " лв.\n";
+    text += "Материали (ориентировъчно): " + Math.round(materials).toLocaleString("bg-BG") + " лв.\n";
+    text += "Цена на м² (общо): " + Math.round(total / area).toLocaleString("bg-BG") + " лв./м²";
+
+    detailsEl.innerText = text;
+}
+
+function resetActivities() {
+    document.getElementById("areaInput").value = "";
+    document.getElementById("qualitySelect").value = "standard";
+    document.getElementById("regionSelect").value = "normal";
+    document.getElementById("reserveInput").value = 20;
+    document.getElementById("demolition").checked = false;
+    document.getElementById("waste").checked = false;
+    document.getElementById("design").checked = false;
+    document.querySelectorAll(".activity").forEach(cb => cb.checked = false);
+    document.getElementById("resultMain").innerText = "";
+    document.getElementById("resultDetails").innerText = "";
+}
 </script>
-
-</body>
-</html>
