@@ -1,196 +1,243 @@
 
-<!-- CALCULATOR -->
-<section id="calculator">
-    <div class="container">
-        <h2>Калкулатор за строителни ремонти</h2>
-        <p>Изберете дейности, въведете площ и вижте ориентировъчна стойност.</p>
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Иванов Ремонти | Специализирани Калкулатори за Ремонт в София</title>
+    <meta name="description" content="Изчислете цената за ремонт на баня, гипсокартон или шпакловка в София. Писмена гаранция и професионално изпълнение.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --gold: #fbbf24; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; scroll-behavior: smooth; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gradient-text { background: linear-gradient(90deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        input, select { background: #1e293b !important; color: white !important; border: 1px solid #334155 !important; border-radius: 8px; padding: 10px; outline: none; }
+        input:focus, select:focus { border-color: #3b82f6 !important; }
+        .tab-btn.active { background-color: #2563eb !important; border-color: #60a5fa; }
+    </style>
+</head>
+<body class="antialiased">
 
-        <div class="card" style="display:grid; gap:16px;">
-
-            <!-- Площ -->
-            <div>
-                <label>Площ (м²)</label>
-                <input id="areaInput" type="number" min="1" placeholder="Пример: 65"
-                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
+    <nav class="sticky top-0 z-50 glass-card py-4 px-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-black gradient-text tracking-tighter uppercase">Иванов Ремонти</div>
+            <div class="hidden md:flex gap-6 text-sm font-bold text-slate-300">
+                <a href="#pro-calculators" class="hover:text-blue-400">Калкулатори</a>
+                <a href="#contact" class="hover:text-blue-400">Контакти</a>
             </div>
-
-            <!-- Основни дейности -->
-            <div>
-                <label>Основни дейности</label>
-                <div style="display:grid; gap:4px; font-size:14px; color:var(--text-secondary);">
-                    <label><input type="checkbox" class="activity" data-key="shpaklovka"> Шпакловка и подготовка на стени</label>
-                    <label><input type="checkbox" class="activity" data-key="boqdisvane"> Боядисване / латекс</label>
-                    <label><input type="checkbox" class="activity" data-key="obrushtane"> Обръщане на прозорци</label>
-                    <label><input type="checkbox" class="activity" data-key="gipsokarton"> Гипсокартон (тавани / предстенни обшивки)</label>
-                    <label><input type="checkbox" class="activity" data-key="plochki"> Плочки / настилки</label>
-                    <label><input type="checkbox" class="activity" data-key="elvik"> Ел. и ВиК работи</label>
-                    <label><input type="checkbox" class="activity" data-key="banq"> Ремонт на баня</label>
-                    <label><input type="checkbox" class="activity" data-key="kuhnq"> Ремонт на кухня</label>
-                </div>
-            </div>
-
-            <!-- Качество -->
-            <div>
-                <label>Качество на материали</label>
-                <select id="qualitySelect"
-                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
-                    <option value="standard">Стандартно</option>
-                    <option value="premium">Премиум (+25%)</option>
-                    <option value="budget">Бюджетно (-15%)</option>
-                </select>
-            </div>
-
-            <!-- Регион -->
-            <div>
-                <label>Регион</label>
-                <select id="regionSelect"
-                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
-                    <option value="normal">Извън София</option>
-                    <option value="sofia">София / голям град (+20%)</option>
-                </select>
-            </div>
-
-            <!-- Допълнителни дейности -->
-            <div>
-                <label>Допълнителни услуги</label>
-                <div style="display:grid; gap:4px; font-size:14px; color:var(--text-secondary);">
-                    <label><input type="checkbox" id="demolition"> Демонтаж / къртене (+10%)</label>
-                    <label><input type="checkbox" id="waste"> Извозване на отпадъци (+5%)</label>
-                    <label><input type="checkbox" id="design"> Проектиране / консултация (+8%)</label>
-                </div>
-            </div>
-
-            <!-- Резерв -->
-            <div>
-                <label>Резерв за непредвидени разходи (%)</label>
-                <input id="reserveInput" type="number" min="0" max="50" value="20"
-                    style="padding: 10px; width: 100%; background: var(--bg-secondary); border: 1px solid var(--bg-secondary); color: white;">
-            </div>
-
-            <!-- Бутони -->
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
-                <button onclick="calcActivities()" class="btn-primary">Изчисли</button>
-                <button onclick="resetActivities()" class="btn-primary" style="background:#333; color:#fff; border:none;">
-                    Изчисти
-                </button>
-            </div>
-
-            <!-- Резултат -->
-            <div id="resultBox" style="margin-top:10px; border-top:1px solid rgba(212,175,55,0.3); padding-top:10px;">
-                <p id="resultMain" style="font-size:18px; color:var(--gold); margin-bottom:6px;"></p>
-                <p id="resultDetails" style="font-size:14px; color:var(--text-secondary); white-space:pre-line;"></p>
-            </div>
+            <a href="tel:0877810418" class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-full font-bold text-sm transition-all">0877 810 418</a>
         </div>
-    </div>
-</section>
+    </nav>
 
-<script>
-const ACTIVITY_PRICES = {
-    shpaklovka: { label: "Шпакловка и подготовка", perM2: 18 },
-    boqdisvane: { label: "Боядисване / латекс", perM2: 10 },
-    obrushtane: { label: "Обръщане на прозорци", perM2: 25 },
-    gipsokarton: { label: "Гипсокартон", perM2: 35 },
-    plochki: { label: "Плочки / настилки", perM2: 40 },
-    elvik: { label: "Ел. и ВиК работи", perM2: 30 },
-    banq: { label: "Ремонт на баня", perM2: 120 },
-    kuhnq: { label: "Ремонт на кухня", perM2: 100 }
-};
+    <header class="max-w-4xl mx-auto px-6 text-center py-16 space-y-6">
+        <h1 class="text-5xl md:text-6xl font-black leading-tight uppercase">Вашият ремонт под <span class="gradient-text">пълен контрол</span></h1>
+        <p class="text-slate-400 text-lg">Използвайте нашите специализирани калкулатори, за да планирате бюджета си за Младост и цяла София.</p>
+    </header>
 
-function calcActivities() {
-    const area = parseFloat(document.getElementById("areaInput").value);
-    const quality = document.getElementById("qualitySelect").value;
-    const region = document.getElementById("regionSelect").value;
-    const demolition = document.getElementById("demolition").checked;
-    const waste = document.getElementById("waste").checked;
-    const design = document.getElementById("design").checked;
-    const reservePercent = parseFloat(document.getElementById("reserveInput").value) || 0;
+    <main class="max-w-6xl mx-auto px-6 pb-24 space-y-20">
 
-    const mainEl = document.getElementById("resultMain");
-    const detailsEl = document.getElementById("resultDetails");
+        <section id="pro-calculators" class="space-y-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold mb-2">Специализирани калкулатори</h2>
+                <p class="text-slate-400">Изберете категория и въведете параметри за ориентировъчна цена.</p>
+            </div>
 
-    if (!area || area <= 0) {
-        mainEl.innerText = "Моля, въведете валидна площ.";
-        detailsEl.innerText = "";
-        return;
-    }
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button id="btn-bath" class="tab-btn active bg-slate-800 border border-slate-700 px-6 py-3 rounded-xl font-bold transition-all" onclick="openCalcTab('bathroomTab', this)">🛀 Калкулатор Баня</button>
+                <button id="btn-gk" class="tab-btn bg-slate-800 border border-slate-700 px-6 py-3 rounded-xl font-bold transition-all" onclick="openCalcTab('gkTab', this)">🏗️ Калкулатор Гипсокартон</button>
+                <button id="btn-shpakla" class="tab-btn bg-slate-800 border border-slate-700 px-6 py-3 rounded-xl font-bold transition-all" onclick="openCalcTab('shpaklaTab', this)">🎨 Шпакловка & Боя</button>
+            </div>
 
-    const activityCheckboxes = document.querySelectorAll(".activity");
-    let selectedActivities = [];
-    let laborBase = 0;
+            <div class="max-w-2xl mx-auto">
+                <div id="bathroomTab" class="calc-tab glass-card p-8 rounded-3xl space-y-6">
+                    <h3 class="text-2xl font-bold text-blue-400">Ремонт на Баня</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Площ (м²)</label>
+                        <input id="bathArea" type="number" placeholder="Пример: 4"></div>
+                        <div class="flex flex-col"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Ниво на изпълнение</label>
+                        <select id="bathLevel">
+                            <option value="standard">Стандартна баня</option>
+                            <option value="premium">Луксозна баня (+30%)</option>
+                        </select></div>
+                        <div class="flex flex-col md:col-span-2"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Смяна на ВиК и Ел.</label>
+                        <select id="bathSystems">
+                            <option value="full">Пълна смяна (Препоръчително)</option>
+                            <option value="partial">Частична</option>
+                            <option value="none">Без смяна</option>
+                        </select></div>
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button class="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold" onclick="calcBathroom()">ИЗЧИСЛИ</button>
+                        <button class="px-6 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-bold" onclick="resetBathroom()">❌</button>
+                    </div>
+                    <div id="bathResult" class="hidden p-6 bg-blue-600/10 border border-blue-600/30 rounded-2xl">
+                        <p id="bathResultMain" class="text-2xl font-black text-blue-400"></p>
+                        <p id="bathResultDetails" class="text-sm text-slate-400 mt-2 whitespace-pre-line"></p>
+                    </div>
+                </div>
 
-    activityCheckboxes.forEach(cb => {
-        if (cb.checked) {
-            const key = cb.getAttribute("data-key");
-            const info = ACTIVITY_PRICES[key];
-            if (info) {
-                const price = info.perM2 * area;
-                laborBase += price;
-                selectedActivities.push({
-                    label: info.label,
-                    perM2: info.perM2,
-                    total: price
-                });
-            }
+                <div id="gkTab" class="calc-tab hidden glass-card p-8 rounded-3xl space-y-6">
+                    <h3 class="text-2xl font-bold text-blue-400">Монтаж на Гипсокартон</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Площ (м²)</label>
+                        <input id="gkArea" type="number" placeholder="Пример: 40"></div>
+                        <div class="flex flex-col"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Тип конструкция</label>
+                        <select id="gkType">
+                            <option value="ceiling">Окачен таван</option>
+                            <option value="wall">Предстенна обшивка</option>
+                            <option value="partition">Преградна стена</option>
+                        </select></div>
+                        <div class="flex flex-col md:col-span-2"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Сложност</label>
+                        <select id="gkComplex">
+                            <option value="normal">Стандартна</option>
+                            <option value="complex">Сложна (нива, куфари) (+25%)</option>
+                        </select></div>
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button class="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold" onclick="calcGK()">ИЗЧИСЛИ</button>
+                        <button class="px-6 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-bold" onclick="resetGK()">❌</button>
+                    </div>
+                    <div id="gkResult" class="hidden p-6 bg-blue-600/10 border border-blue-600/30 rounded-2xl">
+                        <p id="gkResultMain" class="text-2xl font-black text-blue-400"></p>
+                        <p id="gkResultDetails" class="text-sm text-slate-400 mt-2 whitespace-pre-line"></p>
+                    </div>
+                </div>
+
+                <div id="shpaklaTab" class="calc-tab hidden glass-card p-8 rounded-3xl space-y-6">
+                    <h3 class="text-2xl font-bold text-blue-400">Шпакловка & Боядисване</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Площ стени/тавани (м²)</label>
+                        <input id="shpArea" type="number" placeholder="Пример: 120"></div>
+                        <div class="flex flex-col"><label class="text-xs mb-1 uppercase font-bold text-slate-500">Брой ръце</label>
+                        <select id="shpCoats">
+                            <option value="1">1 ръка</option>
+                            <option value="2" selected>2 ръце</option>
+                            <option value="3">3 ръце</option>
+                        </select></div>
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button class="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold" onclick="calcShp()">ИЗЧИСЛИ</button>
+                        <button class="px-6 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-bold" onclick="resetShp()">❌</button>
+                    </div>
+                    <div id="shpResult" class="hidden p-6 bg-blue-600/10 border border-blue-600/30 rounded-2xl">
+                        <p id="shpResultMain" class="text-2xl font-black text-blue-400"></p>
+                        <p id="shpResultDetails" class="text-sm text-slate-400 mt-2 whitespace-pre-line"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4 mt-12">
+                <button onclick="sendEmailOffer()" class="text-sm font-bold border border-slate-700 px-6 py-2 rounded-full hover:bg-slate-800 transition-all">📧 ИЗПРАТИ ОФЕРТА ПО ИМЕЙЛ</button>
+                <button onclick="window.print()" class="text-sm font-bold border border-slate-700 px-6 py-2 rounded-full hover:bg-slate-800 transition-all">📄 ИЗТЕГЛИ PDF</button>
+            </div>
+        </section>
+
+        <section id="contact" class="bg-blue-600 rounded-[3rem] p-8 md:p-16 text-white flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
+            <div class="md:w-1/2 z-10 space-y-6">
+                <h2 class="text-4xl md:text-5xl font-black leading-tight">ГОТОВИ ЗА <br>БЕЗПЛАТЕН ОГЛЕД?</h2>
+                <p class="text-blue-100 italic">Свържете се с нас за Младост и цяла София. Работим по договор с фиксирани срокове.</p>
+                <div class="text-2xl font-black">📞 0877 810 418</div>
+            </div>
+            <div class="md:w-1/2 w-full z-10 bg-white p-8 rounded-3xl text-slate-900 shadow-2xl">
+                <form action="https://formspree.io/f/YOUR_ID" method="POST" class="space-y-4">
+                    <input type="text" name="name" placeholder="Вашето Име" required class="w-full">
+                    <input type="tel" name="phone" placeholder="Телефон" required class="w-full">
+                    <textarea name="msg" placeholder="Опишете накратко проекта..." rows="3" class="w-full"></textarea>
+                    <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black hover:bg-slate-800 transition-all">ИЗПРАТИ ЗАПИТВАНЕ →</button>
+                </form>
+            </div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+        </section>
+
+    </main>
+
+    <footer class="py-12 text-center text-slate-600 text-xs uppercase tracking-widest border-t border-slate-800">
+        &copy; 2026 ИВАНОВ РЕМОНТИ - СОФИЯ. №1 В КАЧЕСТВОТО.
+    </footer>
+
+    <script>
+        // TAB LOGIC
+        function openCalcTab(id, btn) {
+            document.querySelectorAll('.calc-tab').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.remove('hidden');
+            btn.classList.add('active');
         }
-    });
 
-    if (selectedActivities.length === 0) {
-        mainEl.innerText = "Моля, изберете поне една дейност.";
-        detailsEl.innerText = "";
-        return;
-    }
+        // CALCULATION LOGIC
+        function calcBathroom() {
+            const area = parseFloat(document.getElementById("bathArea").value);
+            const level = document.getElementById("bathLevel").value;
+            const systems = document.getElementById("bathSystems").value;
+            if (!area) return alert("Въведете площ!");
+            
+            let base = 950;
+            if (level === "premium") base *= 1.35;
+            if (systems === "full") base *= 1.25;
+            
+            const labor = base * area;
+            const materials = labor * 0.85;
+            const total = labor + materials;
+            
+            showResult('bathResult', 'bathResultMain', 'bathResultDetails', total, labor, materials, area);
+        }
 
-    // Качество
-    let qualityCoef = 1;
-    if (quality === "premium") qualityCoef = 1.25;
-    if (quality === "budget") qualityCoef = 0.85;
+        function calcGK() {
+            const area = parseFloat(document.getElementById("gkArea").value);
+            const type = document.getElementById("gkType").value;
+            const complex = document.getElementById("gkComplex").value;
+            if (!area) return alert("Въведете площ!");
 
-    // Регион
-    let regionCoef = region === "sofia" ? 1.20 : 1;
+            let base = type === "ceiling" ? 40 : (type === "partition" ? 50 : 35);
+            if (complex === "complex") base *= 1.3;
 
-    // Допълнителни дейности
-    let extraCoef = 1;
-    if (demolition) extraCoef += 0.10;
-    if (waste) extraCoef += 0.05;
-    if (design) extraCoef += 0.08;
+            const labor = base * area;
+            const materials = labor * 0.9;
+            const total = labor + materials;
+            
+            showResult('gkResult', 'gkResultMain', 'gkResultDetails', total, labor, materials, area);
+        }
 
-    // Прилагане на коефициенти
-    laborBase = laborBase * qualityCoef * regionCoef * extraCoef;
+        function calcShp() {
+            const area = parseFloat(document.getElementById("shpArea").value);
+            const coats = parseInt(document.getElementById("shpCoats").value);
+            if (!area) return alert("Въведете площ!");
 
-    // Резерв
-    let reserve = laborBase * (reservePercent / 100);
-    let laborWithReserve = laborBase + reserve;
+            let base = (12 * coats) + 7; // Труд за шпакловка + боя
+            const labor = base * area;
+            const materials = labor * 0.6;
+            const total = labor + materials;
+            
+            showResult('shpResult', 'shpResultMain', 'shpResultDetails', total, labor, materials, area);
+        }
 
-    // Материали (ориентировъчно)
-    let materials = laborBase * 0.9;
+        function showResult(boxId, mainId, detailId, total, labor, materials, area) {
+            document.getElementById(boxId).classList.remove('hidden');
+            document.getElementById(mainId).innerText = "ОБЩО: " + Math.round(total).toLocaleString() + " лв.";
+            document.getElementById(detailId).innerText = `Труд: ${Math.round(labor).toLocaleString()} лв.\nМатериали: ~${Math.round(materials).toLocaleString()} лв.\nЦена на м²: ${Math.round(total/area)} лв.`;
+        }
 
-    let total = laborWithReserve + materials;
+        // RESET LOGIC
+        function resetBathroom() { document.getElementById('bathResult').classList.add('hidden'); document.getElementById('bathArea').value = ''; }
+        function resetGK() { document.getElementById('gkResult').classList.add('hidden'); document.getElementById('gkArea').value = ''; }
+        function resetShp() { document.getElementById('shpResult').classList.add('hidden'); document.getElementById('shpArea').value = ''; }
 
-    mainEl.innerText = "Ориентировъчна обща стойност: " + Math.round(total).toLocaleString("bg-BG") + " лв.";
-
-    let text = "Дейности:\n";
-    selectedActivities.forEach(a => {
-        text += "- " + a.label + ": " + Math.round(a.total).toLocaleString("bg-BG") + " лв. (" + a.perM2 + " лв./м²)\n";
-    });
-    text += "\nТруд (без резерв): " + Math.round(laborBase).toLocaleString("bg-BG") + " лв.\n";
-    text += "Резерв (" + reservePercent + "%): " + Math.round(reserve).toLocaleString("bg-BG") + " лв.\n";
-    text += "Труд с резерв: " + Math.round(laborWithReserve).toLocaleString("bg-BG") + " лв.\n";
-    text += "Материали (ориентировъчно): " + Math.round(materials).toLocaleString("bg-BG") + " лв.\n";
-    text += "Цена на м² (общо): " + Math.round(total / area).toLocaleString("bg-BG") + " лв./м²";
-
-    detailsEl.innerText = text;
-}
-
-function resetActivities() {
-    document.getElementById("areaInput").value = "";
-    document.getElementById("qualitySelect").value = "standard";
-    document.getElementById("regionSelect").value = "normal";
-    document.getElementById("reserveInput").value = 20;
-    document.getElementById("demolition").checked = false;
-    document.getElementById("waste").checked = false;
-    document.getElementById("design").checked = false;
-    document.querySelectorAll(".activity").forEach(cb => cb.checked = false);
-    document.getElementById("resultMain").innerText = "";
-    document.getElementById("resultDetails").innerText = "";
-}
-</script>
+        // EMAIL
+        function sendEmailOffer() {
+            let body = "Здравейте, искам оферта за ремонт на база калкулациите в сайта:%0D%0A%0D%0A";
+            const results = ["bathResultMain", "gkResultMain", "shpResultMain"];
+            let hasData = false;
+            results.forEach(id => {
+                const text = document.getElementById(id).innerText;
+                if(text) { body += text + "%0D%0A"; hasData = true; }
+            });
+            if(!hasData) return alert("Първо направете изчисление!");
+            window.location.href = `mailto:ivanov-remonti@example.com?subject=Запитване за ремонт&body=${body}`;
+        }
+    </script>
+</body>
+</html>
