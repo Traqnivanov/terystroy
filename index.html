@@ -1,22 +1,85 @@
-import { useState, useRef, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ivanov Remonti — Асистент</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:system-ui,sans-serif;font-weight:300;background:#080807;color:#e4dfd5;display:flex;flex-direction:column;}
 
-// ====== КОНФИГУРАЦИЯ — смени тук за всеки сайт ======
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0f0f0d;border-bottom:1px solid #272722;flex-shrink:0;}
+.hdr-logo{font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c4993a;font-family:monospace;}
+.hdr-logo span{color:#e4dfd5;font-weight:400;}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.hdr-tel{font-size:11px;color:#6a6660;font-family:monospace;}
+.hdr-total{font-size:10px;color:#c4993a;font-family:monospace;display:none;}
+
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
+
+.msg{max-width:88%;padding:10px 14px;font-size:16px;line-height:1.65;word-break:break-word;white-space:pre-wrap;}
+.msg-bot{background:#161614;border:1px solid #272722;border-left:3px solid #c4993a;color:#e4dfd5;font-weight:400;align-self:flex-start;}
+.msg-user{background:#c4993a;color:#080807;align-self:flex-end;}
+.msg-guarantee{margin-top:8px;padding-top:8px;border-top:1px solid #272722;font-size:11px;color:#c4993a;font-family:Georgia,'Times New Roman',serif;font-style:italic;opacity:0.85;letter-spacing:0.02em;}
+
+.quick{padding:8px 14px 6px;display:flex;flex-wrap:wrap;gap:6px;flex-shrink:0;border-top:1px solid #272722;}
+.qb{background:transparent;border:1px solid #272722;color:#6a6660;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.qb:hover,.qb:active{border-color:#c4993a;color:#c4993a;}
+
+.bar{display:flex;border-top:1px solid #272722;flex-shrink:0;}
+.bar input{flex:1;padding:13px 15px;background:#0f0f0d;border:none;color:#e4dfd5;font-family:inherit;font-size:14px;outline:none;}
+.bar input:disabled{opacity:.5;}
+.bar input::placeholder{color:#2e2c28;}
+.send{font-family:monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:0 20px;background:#c4993a;color:#080807;border:none;cursor:pointer;min-width:80px;font-weight:700;transition:background .18s;}
+.send:hover{background:#debb6a;}
+.send:disabled{opacity:.5;cursor:not-allowed;}
+
+.dots{display:inline-flex;gap:5px;align-items:center;padding:6px 0;}
+.dot{width:7px;height:7px;border-radius:50%;background:#c4993a;display:inline-block;animation:db 1s infinite ease-in-out;}
+.dot:nth-child(2){animation-delay:.16s;}
+.dot:nth-child(3){animation-delay:.32s;}
+@keyframes db{0%,80%,100%{transform:translateY(0);opacity:.25;}40%{transform:translateY(-6px);opacity:1;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-logo">IVANOV <span>REMONTI</span></div>
+  <div class="hdr-right">
+    <div class="hdr-tel" id="telEl">08XXXXXXXX</div>
+    <div class="hdr-total" id="totalEl">СМЕТКА: 0 €</div>
+  </div>
+</div>
+
+<div class="msgs" id="msgs"></div>
+
+<div class="quick" id="quick">
+  <button class="qb" onclick="q('Шпакловка + боядисване?')">Шпакловка + боядисване?</button>
+  <button class="qb" onclick="q('Пълен ремонт баня?')">Пълен ремонт баня?</button>
+  <button class="qb" onclick="q('Гипсокартон таван?')">Гипсокартон таван?</button>
+  <button class="qb" onclick="q('Какви гаранции давате?')">Какви гаранции давате?</button>
+</div>
+
+<div class="bar">
+  <input type="text" id="inp" placeholder="Пишете тук..." onkeydown="if(event.key==='Enter'&&!busy)send()">
+  <button class="send" id="btn" onclick="send()">ПИТАЙ</button>
+</div>
+
+<script>
+// ====== КОНФИГУРАЦИЯ ======
 const CONFIG = {
-  brand:    "IVANOV",
-  sub:      "REMONTI",
-  tel:      "08XXXXXXXX",   // ← Лом телефон
-  location: "Лом, Монтана и Видин",
-  greeting: "Здравей! Аз съм асистентът на Ivanov Remonti.\n\nРаботим с гаранция за качество и фиксирани цени по договор — без изненади.\n\nКажи ми какъв ремонт планираш — ще изчисля цената веднага и ще събера всичко в обща сметка.",
+  brand:   "IVANOV",
+  sub:     "REMONTI",
+  tel:     "08XXXXXXXX",
+  location:"Лом, Монтана и Видин",
 };
-// =====================================================
+// ==========================
 
-const G = {
-  bg:"#080807", bg2:"#0f0f0d", bg3:"#161614",
-  border:"#272722", gold:"#c4993a", gold2:"#debb6a",
-  text:"#e4dfd5", text2:"#b0aa98", text3:"#6a6660"
-};
+document.querySelector('.hdr-logo').innerHTML = CONFIG.brand + ' <span>' + CONFIG.sub + '</span>';
+document.getElementById('telEl').textContent = CONFIG.tel;
+const TEL = CONFIG.tel;
 
-const QUICK = ["Шпакловка + боядисване?", "Пълен ремонт баня?", "Гипсокартон таван?", "Какви гаранции давате?"];
 const GUARANTEES = [
   "Работим с гаранция за качество и срокове. Фиксирана цена по договор — без изненади.",
   "10+ години опит, 100+ завършени обекта. Предаваме чисто и в срок.",
@@ -27,7 +90,6 @@ const GUARANTEES = [
 ];
 let gIdx = 0;
 const GUARANTEE = () => GUARANTEES[gIdx++ % GUARANTEES.length];
-const TEL = "08XXXXXXXX";
 
 const P = {
   shp2:10.8, shp1:9, shpGK:7.2,
@@ -36,16 +98,27 @@ const P = {
   plPod:27, plDiag:31.5, plGoliam:36,
   banHidro:7, banZam:16.5, banPl:32, banFug:9,
   zam:16.5,
-  elTochka:13.5, elKliuch:9, elSvet:18, elTablo:72,
-  vikTochka:22.5, vikTrubi:18, vikBat:22.5, vikMivka:31.5, vikToal:36,
+  elTochka:13.5, vikTochka:22.5, vikTrubi:18,
 };
 
-function fCart(cart) {
-  if (!cart||!cart.length) return "";
-  const uniqueCart = Array.from(new Map(cart.map(i=>[i.name,i])).values());
-  const total = uniqueCart.filter(i=>i.price>0).reduce((s,i)=>s+i.price,0);
-  const lines = uniqueCart.map(i=>`  • ${i.name}: ${i.price>0?i.price+" евро":"по оглед"}`).join("\n");
+let cart = [];
+let history = [];
+let busy = false;
+
+function fCart() {
+  if (!cart.length) return "";
+  const unique = Array.from(new Map(cart.map(i=>[i.name,i])).values());
+  const total = unique.filter(i=>i.price>0).reduce((s,i)=>s+i.price,0);
+  const lines = unique.map(i=>`  • ${i.name}: ${i.price>0?i.price+" евро":"по оглед"}`).join("\n");
   return `\n\n📋 Обща сметка:\n${lines}\n  ──────────\n  ОБЩО: ${total} евро (труд, без материали)`;
+}
+
+function addCart(svc) {
+  cart.push(svc);
+  const total = cart.filter(i=>i.price>0).reduce((s,i)=>s+i.price,0);
+  const el = document.getElementById('totalEl');
+  el.textContent = 'СМЕТКА: ' + total + ' €';
+  el.style.display = total > 0 ? 'block' : 'none';
 }
 
 function gkType(l) {
@@ -54,14 +127,13 @@ function gkType(l) {
   if (l.includes("преградна")||l.includes("преград")) return "преградна стена";
   return null;
 }
-function gkPrice(t) {
+function gkPr(t) {
   if (t==="таван") return {p1:P.gkTavan1,p2:P.gkTavan2};
   if (t==="предстенна обшивка") return {p1:P.gkObshivka,p2:18};
-  if (t==="преградна стена") return {p1:P.gkStena,p2:18.5};
-  return {p1:15,p2:22};
+  return {p1:P.gkStena,p2:18.5};
 }
 
-function smartReply(text, history, cart, setCart) {
+function smartReply(text) {
   const l = text.toLowerCase().trim();
   const num = parseFloat(text.match(/\d+(\.\d+)?/)?.[0]||"0");
 
@@ -74,30 +146,24 @@ function smartReply(text, history, cart, setCart) {
   const hasVik  = l.includes("вик")||l.includes("тръб")||l.includes("мивк")||l.includes("тоалет");
   const hasZam  = l.includes("замазк");
 
-  const botMsgs = (history||[]).filter(m=>m.role==="bot"&&m.text&&!m.loading);
-  const lastBotText = botMsgs.length>0?botMsgs[botMsgs.length-1].text:"";
+  const botMsgs = history.filter(m=>m.role==="bot");
+  const lastBotText = botMsgs.length>0 ? botMsgs[botMsgs.length-1].text : "";
   const lb = lastBotText.toLowerCase();
-
-  // Търсим число из цялата история (потребителски съобщения + бот съобщения)
-  const allTexts = (history||[]).map(m=>m.text||"").join(" ");
+  const allTexts = history.map(m=>m.text||"").join(" ");
   const lastNum = parseFloat(
-    // Първо в последното бот съобщение
     lastBotText.match(/(\d+)\s*(м²|кв)/)?.[1] ||
-    // После в цялата история
-    allTexts.match(/(\d+)\s*(м²|кв|кв\.)/)?.[1] ||
-    // После всяко число
-    allTexts.match(/\b(\d+)\b/)?.[1] ||
-    "0"
+    allTexts.match(/(\d+)\s*(м²|кв)/)?.[1] ||
+    allTexts.match(/\b(\d+)\b/)?.[1] || "0"
   );
 
   const isYes = ["да","добре","включи","да включи","разбира се","ok","ок","искам","хайде"].includes(l)||(l.startsWith("да")&&l.length<15);
   const isNo  = ["не","не трябва","без него","не искам"].includes(l)||(l.startsWith("не")&&l.length<10);
-  const isNum = /^\d+(\.\d+)?$/.test(l)&&num>0;
+  const isNum = /^\d+(\.\d+)?$/.test(l) && num>0;
 
   // СМЕТКА
   if (l.includes("общо")||l.includes("сметка")||(l.includes("колко")&&(l.includes("сега")||l.includes("досега")||l.includes("всичко")||l.includes("излиза")))) {
     return cart.length>0
-      ? `Ето текущата сметка:${fCart(cart)}\n\nИскате ли да добавим нещо, или да подготвя оферта?\n\n${GUARANTEE()}`
+      ? `Ето текущата сметка:${fCart()}\n\nИскате ли да добавим нещо, или да подготвя оферта?\n\n${GUARANTEE()}`
       : `Все още няма добавени услуги. Кажете какво планирате.`;
   }
 
@@ -108,109 +174,97 @@ function smartReply(text, history, cart, setCart) {
 
   // ОФЕРТА
   if (l.includes("оферт")||l.includes("телефон")||l.includes("обади")||l.includes("огле")||l.includes("свържи")) {
-    return `Чудесно!${fCart(cart)}\n\nОставете телефон и ще се свържем до края на деня за безплатен оглед.\nТел: ${TEL} — работим всеки ден.`;
+    return `Чудесно!${fCart()}\n\nОставете телефон и ще се свържем до края на деня за безплатен оглед.\nТел: ${TEL} — работим всеки ден.`;
   }
 
-  // ОТГОВОР НА "КАКЪВ ВИД ПЛОЧКИ?"
+  // ВИД ПЛОЧКИ
   const askingPlType = lb.includes("какъв вид са")&&lb.includes("подови")&&lb.includes("диагонал");
   if (askingPlType) {
-    const isDiag   = l.includes("диагон");
-    const isGranit = l.includes("гранит");
-    const isGoliam = l.includes("голям")||l.includes("формат")||l.includes("мозайк");
-    const isStenni = l.includes("стенни")||l.includes("стен");
-    const isPodovi = l.includes("подов");
-    const hasT = isDiag||isGranit||isGoliam||isStenni||isPodovi;
+    const isDiag=l.includes("диагон"),isGranit=l.includes("гранит"),isGoliam=l.includes("голям")||l.includes("формат")||l.includes("мозайк"),isStenni=l.includes("стенни")||l.includes("стен"),isPodovi=l.includes("подов");
+    const hasT=isDiag||isGranit||isGoliam||isStenni||isPodovi;
     if (!hasT) return `Не разбрах. Моля изберете:\n  • Подови\n  • Диагонал\n  • Гранитогрес\n  • Стенни\n  • Голям формат / мозайка`;
-    const typeName = isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
-    const price = isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
+    const tn=isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
+    const pr=isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
     if (lastNum>0) {
-      const svc={name:`Плочки ${typeName} ${lastNum} м²`,price:Math.round(lastNum*price)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Плочки ${typeName} ${lastNum} м²: ${svc.price} евро${fCart(nc)}\n\nЩе правите ли замазка преди? Само ${Math.round(lastNum*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
+      const svc={name:`Плочки ${tn} ${lastNum} м²`,price:Math.round(lastNum*pr)};
+      addCart(svc);
+      return `Плочки ${tn} ${lastNum} м²: ${svc.price} евро${fCart()}\n\nЩе правите ли замазка преди? Само ${Math.round(lastNum*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
     }
-    return `Плочки ${typeName} — разбрано! Колко квадратни метра са?`;
+    return `Плочки ${tn} — разбрано! Колко квадратни метра са?`;
   }
 
-  // ОТГОВОР НА "КАКЪВ ВИД ГИПСОКАРТОН?"
-  const askingType = lb.includes("окачен таван")&&lb.includes("предстенна")&&lb.includes("преградна");
-  if (askingType) {
-    const t = gkType(l);
+  // ВИД ГИПСОКАРТОН
+  const askingGKType = lb.includes("окачен таван")&&lb.includes("предстенна")&&lb.includes("преградна");
+  if (askingGKType) {
+    const t=gkType(l);
     if (!t) return `Не разбрах. Моля изберете:\n  • Окачен таван\n  • Предстенна обшивка\n  • Преградна стена`;
-    const {p1,p2} = gkPrice(t);
+    const {p1,p2}=gkPr(t);
     if (lastNum>0) {
       const svc={name:`Гипсокартон ${t} ${lastNum} м²`,price:Math.round(lastNum*p1)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Гипсокартон ${t} ${lastNum} м²: ${svc.price} евро\n(2 слоя: ${Math.round(lastNum*p2)} евро)${fCart(nc)}\n\nСамо ${Math.round(lastNum*(P.shpGK+P.boya2))} евро повече за шпакловка на гипсокартона и боядисване. Да включа?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Гипсокартон ${t} ${lastNum} м²: ${svc.price} евро\n(2 слоя: ${Math.round(lastNum*p2)} евро)${fCart()}\n\nСамо ${Math.round(lastNum*(P.shpGK+P.boya2))} евро повече за шпакловка на гипсокартона и боядисване. Да включа?\n\n${GUARANTEE()}`;
     }
     return `Гипсокартон ${t} — разбрано! Колко квадратни метра са?`;
   }
 
-  // УТОЧНЕНИЕ НА ВИД след въпрос "Колко квадратни метра са?"
-  const askingM2 = lb.includes("колко квадратни метра") || lb.includes("колко кв");
+  // УТОЧНЕНИЕ НА ВИД
+  const askingM2 = lb.includes("колко квадратни метра")||lb.includes("колко кв");
   if (askingM2 && !isNum) {
-    // Клиентът уточнява вида вместо да дава число
-    const isSteni  = l.includes("стен") || l.includes("стени");
-    const isTavan2 = l.includes("таван");
-    const isPl2    = l.includes("плоч") || l.includes("подов") || l.includes("диагон") || l.includes("гранит");
-
-    if (isSteni && lb.includes("шпак")) return `Шпакловка на стени — разбрано!\n\nКолко квадратни метра са стените?`;
-    if (isTavan2 && lb.includes("шпак")) return `Шпакловка на таван — разбрано!\n\nКолко квадратни метра е таванът?`;
-    if (isSteni && lb.includes("бояд")) return `Боядисване на стени — разбрано!\n\nКолко квадратни метра са стените?`;
-    if (isTavan2 && lb.includes("бояд")) return `Боядисване на таван — разбрано!\n\nКолко квадратни метра е таванът?`;
-    if (isSteni && lb.includes("гипс")) return `Гипсокартон стена — разбрано!\n\nКолко квадратни метра са?`;
-    if (isTavan2 && lb.includes("гипс")) return `Гипсокартон таван — разбрано!\n\nКолко квадратни метра е таванът?`;
+    const isSteni=l.includes("стен"),isTavan2=l.includes("таван"),isPl2=l.includes("плоч")||l.includes("подов")||l.includes("диагон")||l.includes("гранит");
+    if (isSteni&&lb.includes("шпак")) return `Шпакловка на стени — разбрано!\n\nКолко квадратни метра са стените?`;
+    if (isTavan2&&lb.includes("шпак")) return `Шпакловка на таван — разбрано!\n\nКолко квадратни метра е таванът?`;
+    if (isSteni&&lb.includes("бояд")) return `Боядисване на стени — разбрано!\n\nКолко квадратни метра са стените?`;
+    if (isTavan2&&lb.includes("бояд")) return `Боядисване на таван — разбрано!\n\nКолко квадратни метра е таванът?`;
+    if (isSteni&&lb.includes("гипс")) return `Гипсокартон стена — разбрано!\n\nКолко квадратни метра са?`;
+    if (isTavan2&&lb.includes("гипс")) return `Гипсокартон таван — разбрано!\n\nКолко квадратни метра е таванът?`;
     if (isPl2) return `Разбрано!\n\nКолко квадратни метра са плочките?`;
   }
 
-  // САМО ЧИСЛО — от контекст
-  if (isNum&&lb) {
+  // САМО ЧИСЛО
+  if (isNum && lb) {
     if (lb.includes("шпак")&&!lb.includes("гипсокартон")&&!lb.includes("таван")&&!lb.includes("обшивка")&&!lb.includes("стена")) {
       const svc={name:`Шпакловка ${num} м² (2р)`,price:Math.round(num*P.shp2)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Шпакловка ${num} м²: ${svc.price} евро\n(1 ръка: ${Math.round(num*P.shp1)} евро)${fCart(nc)}\n\nЩе трябва ли и боядисване? Само ${Math.round(num*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
-    }    if (lb.includes("бояд")&&!lb.includes("шпак")) {
+      addCart(svc);
+      return `Шпакловка ${num} м²: ${svc.price} евро\n(1 ръка: ${Math.round(num*P.shp1)} евро)${fCart()}\n\nЩе трябва ли и боядисване? Само ${Math.round(num*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
+    }
+    if (lb.includes("бояд")&&!lb.includes("шпак")) {
       const svc={name:`Боядисване ${num} м² (латекс 2р)`,price:Math.round(num*P.boya2)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Боядисване ${num} м²: ${svc.price} евро${fCart(nc)}\n\nНуждае ли се от шпакловка преди? Да включа?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Боядисване ${num} м²: ${svc.price} евро${fCart()}\n\nНуждае ли се от шпакловка преди? Да включа?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("гипсокартон")||lb.includes("таван")||lb.includes("обшивка")||lb.includes("преградна")) {
-      const t = gkType(lb)||null;
+      const t=gkType(lb);
       if (!t) return `Разбрано, ${num} м² гипсокартон.\n\nКакъв вид е?\n  • Окачен таван\n  • Предстенна обшивка\n  • Преградна стена`;
-      const {p1,p2}=gkPrice(t);
+      const {p1,p2}=gkPr(t);
       const svc={name:`Гипсокартон ${t} ${num} м²`,price:Math.round(num*p1)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Гипсокартон ${t} ${num} м²: ${svc.price} евро\n(2 слоя: ${Math.round(num*p2)} евро)${fCart(nc)}\n\nСамо ${Math.round(num*(P.shpGK+P.boya2))} евро повече за шпакловка на гипсокартона и боядисване. Да включа?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Гипсокартон ${t} ${num} м²: ${svc.price} евро\n(2 слоя: ${Math.round(num*p2)} евро)${fCart()}\n\nСамо ${Math.round(num*(P.shpGK+P.boya2))} евро повече за шпакловка на гипсокартона и боядисване. Да включа?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("плоч")) {
-      // Проверяваме дали типът е уточнен в текущото съобщение
-      const isDiag   = l.includes("диагон");
-      const isGranit = l.includes("гранит");
-      const isGoliam = l.includes("голям")||l.includes("формат")||l.includes("мозайк");
-      const isStenni = l.includes("стенни")||l.includes("стен");
-      const isPodovi = l.includes("подов");
-      const hasT = isDiag||isGranit||isGoliam||isStenni||isPodovi;
+      const isDiag=l.includes("диагон"),isGranit=l.includes("гранит"),isGoliam=l.includes("голям")||l.includes("формат")||l.includes("мозайк"),isStenni=l.includes("стенни")||l.includes("стен"),isPodovi=l.includes("подов");
+      const hasT=isDiag||isGranit||isGoliam||isStenni||isPodovi;
       if (!hasT) return `Разбрано, ${num} м² плочки.\n\nКакъв вид са?\n  • Подови (27 евро/м²)\n  • Диагонал (31.5 евро/м²)\n  • Гранитогрес (31.5 евро/м²)\n  • Стенни (27 евро/м²)\n  • Голям формат / мозайка (36 евро/м²)`;
-      const typeName = isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
-      const price = isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
-      const svc={name:`Плочки ${typeName} ${num} м²`,price:Math.round(num*price)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Плочки ${typeName} ${num} м²: ${svc.price} евро${fCart(nc)}\n\nЩе правите ли замазка преди? Само ${Math.round(num*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
+      const tn=isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
+      const pr=isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
+      const svc={name:`Плочки ${tn} ${num} м²`,price:Math.round(num*pr)};
+      addCart(svc);
+      return `Плочки ${tn} ${num} м²: ${svc.price} евро${fCart()}\n\nЩе правите ли замазка преди? Само ${Math.round(num*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("баня")) {
       const base=Math.round(num*(P.banHidro+P.banZam+P.banPl+P.banFug));
       const svc={name:`Баня облицовка ${num} м²`,price:base};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Баня ${num} м²: ${base} евро\nСанитария: смесител 23, тоалетна 39.5, мивка 32, душ батерия 41.5 евро${fCart(nc)}\n\nЩе сменяте ли и ВиК?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Баня ${num} м²:\n\nОблицовка (хидро + замазка + плочки + фугиране): ${base} евро\n\nСанитария по избор:\n  • Смесител: 23 евро\n  • Мивка: 32 евро\n  • Тоалетна: 39.5 евро\n  • Душ батерия: 41.5 евро\n  • Душ кабина: 117 евро${fCart()}\n\nЩе сменяте ли и ВиК? Правим пълен пакет — един екип, един срок.\n\n${GUARANTEE()}`;
     }
     if (lb.includes("замазк")) {
       const svc={name:`Замазка ${num} м²`,price:Math.round(num*P.zam)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Замазка ${num} м²: ${svc.price} евро${fCart(nc)}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Замазка ${num} м²: ${svc.price} евро${fCart()}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("електро")||lb.includes("точки")) {
       const svc={name:`Електро ${num} точки`,price:Math.round(num*P.elTochka)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `${num} електро точки: ${svc.price} евро${fCart(nc)}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `${num} електро точки: ${svc.price} евро${fCart()}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
     }
   }
 
@@ -218,60 +272,56 @@ function smartReply(text, history, cart, setCart) {
   if (isYes) {
     if (lb.includes("боядисване")&&lastNum>0) {
       const svc={name:`Боядисване ${lastNum} м²`,price:Math.round(lastNum*P.boya2)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Добавено! ${svc.price} евро.${fCart(nc)}\n\nИскате ли нещо друго, или да подготвя оферта?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Добавено! ${svc.price} евро.${fCart()}\n\nИскате ли нещо друго, или да подготвя оферта?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("замазка")&&lastNum>0) {
       const svc={name:`Замазка ${lastNum} м²`,price:Math.round(lastNum*P.zam)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Добавено! ${svc.price} евро.${fCart(nc)}\n\nИскате ли нещо друго, или да подготвя оферта?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Добавено! ${svc.price} евро.${fCart()}\n\nИскате ли нещо друго, или да подготвя оферта?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("шпакловка на гипсокартона")&&lastNum>0) {
       const s1={name:`Шпакловка на гипсокартона ${lastNum} м²`,price:Math.round(lastNum*P.shpGK)};
       const s2={name:`Боядисване ${lastNum} м²`,price:Math.round(lastNum*P.boya2)};
-      const nc=[...cart,s1,s2]; setCart(nc);
-      return `Добавено! ${s1.price+s2.price} евро.${fCart(nc)}\n\nИскате ли нещо друго, или да подготвя оферта?\n\n${GUARANTEE()}`;
+      addCart(s1); addCart(s2);
+      return `Добавено! ${s1.price+s2.price} евро.${fCart()}\n\nИскате ли нещо друго, или да подготвя оферта?\n\n${GUARANTEE()}`;
     }
     if (lb.includes("шпакловка")&&lastNum>0) {
       const svc={name:`Шпакловка ${lastNum} м² (2р)`,price:Math.round(lastNum*P.shp2)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Добавено! ${svc.price} евро.${fCart(nc)}\n\nИскате ли и боядисване? Само ${Math.round(lastNum*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Добавено! ${svc.price} евро.${fCart()}\n\nИскате ли и боядисване? Само ${Math.round(lastNum*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
     }
-    if (cart.length>0) return `Чудесно!${fCart(cart)}\n\nОставете телефон за безплатен оглед.\nТел: ${TEL}`;
+    if (cart.length>0) return `Чудесно!${fCart()}\n\nОставете телефон за безплатен оглед.\nТел: ${TEL}`;
     return `Кажете ми какво да включим.`;
   }
 
   // НЕ
-  if (isNo) {
-    return cart.length>0
-      ? `Разбрано!${fCart(cart)}\n\nМога да подготвя оферта. Тел: ${TEL}`
-      : `Разбрано! Кажете ми какво ви трябва.`;
-  }
+  if (isNo) return cart.length>0 ? `Разбрано!${fCart()}\n\nМога да подготвя оферта. Тел: ${TEL}` : `Разбрано! Кажете ми какво ви трябва.`;
 
   // КОМБИНАЦИИ
   if (hasShp&&hasGK&&num>0) {
     const t=gkType(l);
     if (!t) return `Разбрано — шпакловка + гипсокартон ${num} м².\n\nКакъв вид гипсокартон?\n  • Окачен таван\n  • Предстенна обшивка\n  • Преградна стена`;
-    const {p1,p2}=gkPrice(t);
+    const {p1}=gkPr(t);
     const s1={name:`Гипсокартон ${t} ${num} м²`,price:Math.round(num*p1)};
     const s2={name:`Шпакловка ${num} м² (2р)`,price:Math.round(num*P.shp2)};
-    const nc=[...cart,s1,s2]; setCart(nc);
-    return `Гипсокартон ${t} + шпакловка на ${num} м²:${fCart(nc)}\n\nДа добавим и боядисване? Само ${Math.round(num*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
+    addCart(s1); addCart(s2);
+    return `Гипсокартон ${t} + шпакловка на ${num} м²:${fCart()}\n\nДа добавим и боядисване? Само ${Math.round(num*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
   }
   if (hasShp&&hasBoya&&num>0) {
     const s1={name:`Шпакловка ${num} м² (2р)`,price:Math.round(num*P.shp2)};
     const s2={name:`Боядисване ${num} м² (латекс 2р)`,price:Math.round(num*P.boya2)};
-    const nc=[...cart,s1,s2]; setCart(nc);
-    return `Шпакловка + боядисване на ${num} м²:${fCart(nc)}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
+    addCart(s1); addCart(s2);
+    return `Шпакловка + боядисване на ${num} м²:${fCart()}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
   }
   if (hasGK&&hasBoya&&num>0) {
     const t=gkType(l);
     if (!t) return `Разбрано — гипсокартон + боядисване ${num} м².\n\nКакъв вид гипсокартон?\n  • Окачен таван\n  • Предстенна обшивка\n  • Преградна стена`;
-    const {p1}=gkPrice(t);
+    const {p1}=gkPr(t);
     const s1={name:`Гипсокартон ${t} ${num} м²`,price:Math.round(num*p1)};
     const s2={name:`Боядисване ${num} м²`,price:Math.round(num*P.boya2)};
-    const nc=[...cart,s1,s2]; setCart(nc);
-    return `Гипсокартон ${t} + боядисване на ${num} м²:${fCart(nc)}\n\nДа добавим шпакловка на гипсокартона? Само ${Math.round(num*P.shpGK)} евро.\n\n${GUARANTEE()}`;
+    addCart(s1); addCart(s2);
+    return `Гипсокартон ${t} + боядисване на ${num} м²:${fCart()}\n\nДа добавим шпакловка на гипсокартона? Само ${Math.round(num*P.shpGK)} евро.\n\n${GUARANTEE()}`;
   }
 
   // ЕДИНИЧНИ
@@ -279,67 +329,48 @@ function smartReply(text, history, cart, setCart) {
     if (num>0) {
       const t=gkType(l);
       if (!t) return `Разбрано, ${num} м² гипсокартон.\n\nКакъв вид е?\n  • Окачен таван\n  • Предстенна обшивка\n  • Преградна стена`;
-      const {p1,p2}=gkPrice(t);
+      const {p1,p2}=gkPr(t);
       const svc={name:`Гипсокартон ${t} ${num} м²`,price:Math.round(num*p1)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Гипсокартон ${t} ${num} м²: ${svc.price} евро\n(2 слоя: ${Math.round(num*p2)} евро)${fCart(nc)}\n\nСамо ${Math.round(num*(P.shpGK+P.boya2))} евро повече за шпакловка на гипсокартона и боядисване. Да включа?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Гипсокартон ${t} ${num} м²: ${svc.price} евро\n(2 слоя: ${Math.round(num*p2)} евро)${fCart()}\n\nСамо ${Math.round(num*(P.shpGK+P.boya2))} евро повече за шпакловка на гипсокартона и боядисване. Да включа?\n\n${GUARANTEE()}`;
     }
     return `Гипсокартон:\n  Окачен таван 1 ниво = 15 евро/м²\n  Окачен таван 2 нива = 20-25 евро/м²\n  Предстенна обшивка = 15-17 евро/м²\n  Преградна стена = 15-18 евро/м²\n\nКакъв вид и колко квадратни метра?\n\n${GUARANTEE()}`;
   }
   if (hasShp) {
     if (num>0) {
       const svc={name:`Шпакловка ${num} м² (2р)`,price:Math.round(num*P.shp2)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Шпакловка ${num} м²: ${svc.price} евро\n(1 ръка: ${Math.round(num*P.shp1)} евро)${fCart(nc)}\n\nЩе трябва ли и боядисване? Само ${Math.round(num*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Шпакловка ${num} м²: ${svc.price} евро\n(1 ръка: ${Math.round(num*P.shp1)} евро)${fCart()}\n\nЩе трябва ли и боядисване? Само ${Math.round(num*P.boya2)} евро повече.\n\n${GUARANTEE()}`;
     }
     return `Шпакловка:\n  1 ръка = 9 евро/м²\n  2 ръце = 10.8 евро/м²\n  Фина = 7.2 евро/м²\n\nКолко квадратни метра са?\n\n${GUARANTEE()}`;
   }
   if (hasBoya) {
     if (num>0) {
       const svc={name:`Боядисване ${num} м² (латекс 2р)`,price:Math.round(num*P.boya2)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Боядисване ${num} м²: ${svc.price} евро${fCart(nc)}\n\nНуждае ли се от шпакловка преди? Да включа?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Боядисване ${num} м²: ${svc.price} евро${fCart()}\n\nНуждае ли се от шпакловка преди? Да включа?\n\n${GUARANTEE()}`;
     }
     return `Боядисване:\n  Латекс 2 ръце = 5.4 евро/м²\n  Латекс 1 ръка = 3.15 евро/м²\n  Таван = 4.5 евро/м²\n\nКолко квадратни метра са?\n\n${GUARANTEE()}`;
   }
   if (hasPl) {
-    const isDiag   = l.includes("диагон");
-    const isGranit = l.includes("гранит");
-    const isGoliam = l.includes("голям")||l.includes("формат")||l.includes("мозайк");
-    const isStenni = l.includes("стенни")||l.includes("стен");
-    const isPodovi = l.includes("подов");
-    const hasPlType = isDiag||isGranit||isGoliam||isStenni||isPodovi;
-
-    // Отговор на "какъв вид?" — клиентът е казал само вида без число
-    const askingPlType = lb.includes("какъв вид са")&&lb.includes("подови")&&lastNum>0;
-    if (askingPlType && hasPlType) {
-      const typeName = isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
-      const price = isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
-      const svc={name:`Плочки ${typeName} ${lastNum} м²`,price:Math.round(lastNum*price)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Плочки ${typeName} ${lastNum} м²: ${svc.price} евро${fCart(nc)}\n\nЩе правите ли замазка преди? Само ${Math.round(lastNum*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
-    }
-
+    const isDiag=l.includes("диагон"),isGranit=l.includes("гранит"),isGoliam=l.includes("голям")||l.includes("формат")||l.includes("мозайк"),isStenni=l.includes("стенни")||l.includes("стен"),isPodovi=l.includes("подов");
+    const hasPlType=isDiag||isGranit||isGoliam||isStenni||isPodovi;
     if (num>0 && hasPlType) {
-      const typeName = isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
-      const price = isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
-      const svc={name:`Плочки ${typeName} ${num} м²`,price:Math.round(num*price)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Плочки ${typeName} ${num} м²: ${svc.price} евро${fCart(nc)}\n\nЩе правите ли замазка преди? Само ${Math.round(num*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
+      const tn=isDiag?"диагонал":isGranit?"гранитогрес":isGoliam?"голям формат":isStenni?"стенни":"подови";
+      const pr=isDiag||isGranit||isStenni?P.plDiag:isGoliam?P.plGoliam:P.plPod;
+      const svc={name:`Плочки ${tn} ${num} м²`,price:Math.round(num*pr)};
+      addCart(svc);
+      return `Плочки ${tn} ${num} м²: ${svc.price} евро${fCart()}\n\nЩе правите ли замазка преди? Само ${Math.round(num*P.zam)} евро повече. Да включа?\n\n${GUARANTEE()}`;
     }
-
-    if (num>0 && !hasPlType) {
-      return `Разбрано, ${num} м² плочки.\n\nКакъв вид са?\n  • Подови (27 евро/м²)\n  • Диагонал (31.5 евро/м²)\n  • Гранитогрес (31.5 евро/м²)\n  • Стенни (27 евро/м²)\n  • Голям формат / мозайка (36 евро/м²)`;
-    }
-
+    if (num>0 && !hasPlType) return `Разбрано, ${num} м² плочки.\n\nКакъв вид са?\n  • Подови (27 евро/м²)\n  • Диагонал (31.5 евро/м²)\n  • Гранитогрес (31.5 евро/м²)\n  • Стенни (27 евро/м²)\n  • Голям формат / мозайка (36 евро/м²)`;
     return `Плочки:\n  Подови = 27 евро/м²\n  Диагонал = 31.5 евро/м²\n  Гранитогрес = 31.5 евро/м²\n  Стенни = 27 евро/м²\n  Голям формат / мозайка = 36 евро/м²\n\nКакъв вид и колко квадратни метра?\n\n${GUARANTEE()}`;
   }
   if (hasBan) {
     if (num>0) {
       const base=Math.round(num*(P.banHidro+P.banZam+P.banPl+P.banFug));
       const svc={name:`Баня облицовка ${num} м²`,price:base};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Баня ${num} м²:\n\nОблицовка (хидро + замазка + плочки + фугиране): ${base} евро\n\nСанитария по избор:\n  • Смесител: 23 евро\n  • Мивка: 32 евро\n  • Тоалетна: 39.5 евро\n  • Душ батерия: 41.5 евро\n  • Душ кабина: 117 евро${fCart(nc)}\n\nЩе сменяте ли и ВиК инсталацията? Правим пълен пакет — един екип, един срок, по-изгодно.\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Баня ${num} м²:\n\nОблицовка (хидро + замазка + плочки + фугиране): ${base} евро\n\nСанитария по избор:\n  • Смесител: 23 евро\n  • Мивка: 32 евро\n  • Тоалетна: 39.5 евро\n  • Душ батерия: 41.5 евро\n  • Душ кабина: 117 евро${fCart()}\n\nЩе сменяте ли и ВиК? Правим пълен пакет — един екип, един срок, по-изгодно.\n\n${GUARANTEE()}`;
     }
     return `Пълен ремонт баня — хидроизолация, замазка, плочки, фугиране и санитария.\n\nПравим всичко наведнъж — един екип, един срок, по-ниска цена от отделни майстори.\n\nКолко квадратни метра е банята?`;
   }
@@ -348,127 +379,89 @@ function smartReply(text, history, cart, setCart) {
   if (hasZam) {
     if (num>0) {
       const svc={name:`Замазка ${num} м²`,price:Math.round(num*P.zam)};
-      const nc=[...cart,svc]; setCart(nc);
-      return `Замазка ${num} м²: ${svc.price} евро${fCart(nc)}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
+      addCart(svc);
+      return `Замазка ${num} м²: ${svc.price} евро${fCart()}\n\nИскате ли да добавим нещо друго?\n\n${GUARANTEE()}`;
     }
     return `Замазка = 16.5 евро/м²\n\nКолко квадратни метра са?`;
   }
 
-  // Броим колко пъти не сме разбрали — ако 2+ пъти предлагаме директен контакт
-  const confusedCount = (history||[]).filter(m=>m.role==="bot"&&m.text&&m.text.includes("Кажете ми какъв ремонт")).length;
-
-  if (confusedCount >= 1) {
-    return `Не успявам да разбера точно какво имате предвид.\n\nНай-добре се обадете директно — ще отговорим на всички въпроси:\nТел: ${TEL}\n\nИли опишете ремонта с повече детайли — например: "шпакловка на стаи, 3 стаи по 20 кв".`;
-  }
+  const confusedCount = history.filter(m=>m.role==="bot"&&m.text&&m.text.includes("Кажете ми какъв ремонт")).length;
+  if (confusedCount>=1) return `Не успявам да разбера точно.\n\nОбадете се директно: ${TEL}\n\nИли опишете с повече детайли — например: "шпакловка на стаи, 3 стаи по 20 кв".`;
 
   return `Не разбрах точно. Кажете ми какъв ремонт планирате:\n  • Шпакловка\n  • Боядисване\n  • Гипсокартон\n  • Плочки\n  • Баня\n  • Електро\n  • ВиК\n\n${GUARANTEE()}`;
 }
 
-export default function Chat() {
-  const [msgs,setMsgs]=useState([{id:0,role:"bot",text:"Здравей! Аз съм асистентът на Ivanov Remonti.\n\nРаботим с гаранция за качество и фиксирани цени по договор — без изненади.\n\nКажи ми какъв ремонт планираш — ще изчисля цената веднага и ще събера всичко в обща сметка."}]);
-  const [input,setInput]=useState("");
-  const [busy,setBusy]=useState(false);
-  const [showQ,setShowQ]=useState(true);
-  const [cart,setCart]=useState([]);
-  const endRef=useRef(null);
-  const idRef=useRef(1);
+// UI
+function addMsg(text, role) {
+  const msgs = document.getElementById('msgs');
+  const div = document.createElement('div');
+  div.className = 'msg msg-' + role;
 
-  useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
-
-  function send(text) {
-    const t=(text??input).trim();
-    if (!t||busy) return;
-    setInput(""); setShowQ(false); setBusy(true);
-    const uid=idRef.current++,bid=idRef.current++;
-    setMsgs(m=>{
-      const nm=[...m,{id:uid,role:"user",text:t},{id:bid,role:"bot",text:"",loading:true}];
-      setTimeout(()=>{
-        setCart(cc=>{
-          const reply=smartReply(t,nm,cc,setCart);
-          setMsgs(p=>p.map(msg=>msg.id===bid?{...msg,text:reply,loading:false}:msg));
-          setBusy(false);
-          return cc;
-        });
-      },500);
-      return nm;
-    });
+  if (role === 'bot') {
+    const GUARANTEE_PATTERNS = /^(Работим с гаранция|10\+ години|Фиксирана цена по договор|Работим само с|Ясна оферта|Гаранция за качество)/;
+    const parts = text.split(/\n\n(?=(?:Работим с гаранция|10\+ години|Фиксирана цена по договор|Работим само с|Ясна оферта|Гаранция за качество))/);
+    if (parts.length > 1) {
+      const main = document.createTextNode(parts[0]);
+      div.appendChild(main);
+      const gDiv = document.createElement('div');
+      gDiv.className = 'msg-guarantee';
+      gDiv.textContent = parts.slice(1).join('\n\n');
+      div.appendChild(gDiv);
+    } else {
+      div.textContent = text;
+    }
+  } else {
+    div.textContent = text;
   }
 
-  const total=cart.filter(i=>i.price>0).reduce((s,i)=>s+i.price,0);
-
-  return (
-    <div style={{display:"flex",flexDirection:"column",height:"100vh",background:G.bg,color:G.text,fontFamily:"system-ui,sans-serif",fontWeight:300}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",background:G.bg2,borderBottom:`1px solid ${G.border}`,flexShrink:0}}>
-        <div style={{fontSize:13,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:G.gold,fontFamily:"monospace"}}>
-          IVANOV <span style={{color:G.text,fontWeight:400}}>REMONTI</span>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}>
-          <div style={{fontSize:11,color:G.text3,fontFamily:"monospace"}}>{TEL}</div>
-          {total>0&&<div style={{fontSize:10,color:G.gold,fontFamily:"monospace"}}>СМЕТКА: {total} €</div>}
-        </div>
-      </div>
-
-      <div style={{flex:1,overflowY:"auto",padding:14,display:"flex",flexDirection:"column",gap:10}}>
-        {msgs.map(m=>{
-          if (m.loading) return (
-            <div key={m.id} style={{maxWidth:"88%",padding:"10px 14px",alignSelf:"flex-start",background:G.bg3,border:`1px solid ${G.border}`,borderLeft:`3px solid ${G.gold}`}}>
-              <Dots/>
-            </div>
-          );
-          if (m.role==="user") return (
-            <div key={m.id} style={{maxWidth:"88%",padding:"10px 14px",fontSize:15,lineHeight:1.6,wordBreak:"break-word",whiteSpace:"pre-wrap",alignSelf:"flex-end",background:G.gold,color:"#080807"}}>
-              {m.text}
-            </div>
-          );
-          // Бот — разделяме основния текст от гаранцията
-          const parts = m.text.split(/\n\n(Работим с гаранция|10\+ години|Фиксирана цена по договор|Работим само с|Ясна оферта|Гаранция за качество)/);
-          const mainText = parts[0];
-          const guarantee = parts.length > 1 ? parts[1] + (parts[2]||"") : null;
-          return (
-            <div key={m.id} style={{maxWidth:"88%",padding:"10px 14px",fontSize:16,fontWeight:400,lineHeight:1.65,wordBreak:"break-word",whiteSpace:"pre-wrap",alignSelf:"flex-start",background:G.bg3,color:G.text,border:`1px solid ${G.border}`,borderLeft:`3px solid ${G.gold}`}}>
-              {mainText}
-              {guarantee && (
-                <div style={{marginTop:8,paddingTop:8,borderTop:`1px solid ${G.border}`,fontSize:11,color:G.gold,fontFamily:"Georgia, 'Times New Roman', serif",fontStyle:"italic",whiteSpace:"pre-wrap",opacity:0.85,letterSpacing:"0.02em"}}>
-                  {parts[1]}{parts[2]||""}
-                </div>
-              )}
-            </div>
-          );
-        })}
-        <div ref={endRef}/>
-      </div>
-
-      {showQ&&(
-        <div style={{padding:"8px 14px 6px",display:"flex",flexWrap:"wrap",gap:6,flexShrink:0,borderTop:`1px solid ${G.border}`}}>
-          {QUICK.map((q,i)=>(
-            <button key={i} onClick={()=>send(q)} style={{background:"transparent",border:`1px solid ${G.border}`,color:G.text3,padding:"7px 12px",fontSize:12,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor=G.gold;e.currentTarget.style.color=G.gold;}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor=G.border;e.currentTarget.style.color=G.text3;}}
-            >{q}</button>
-          ))}
-        </div>
-      )}
-
-      <div style={{display:"flex",borderTop:`1px solid ${G.border}`,flexShrink:0}}>
-        <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!busy&&send()} disabled={busy} placeholder="Пишете тук..."
-          style={{flex:1,padding:"13px 15px",background:G.bg2,border:"none",color:G.text,fontFamily:"inherit",fontSize:14,outline:"none"}}/>
-        <button onClick={()=>send()} disabled={busy}
-          style={{fontFamily:"monospace",fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",padding:"0 20px",background:G.gold,color:"#080807",border:"none",cursor:"pointer",minWidth:80,fontWeight:700}}
-          onMouseEnter={e=>e.currentTarget.style.background=G.gold2}
-          onMouseLeave={e=>e.currentTarget.style.background=G.gold}
-        >ПИТАЙ</button>
-      </div>
-    </div>
-  );
+  msgs.appendChild(div);
+  div.scrollIntoView({behavior:'smooth', block:'end'});
+  return div;
 }
 
-function Dots() {
-  return (
-    <span style={{display:"inline-flex",gap:5,alignItems:"center"}}>
-      {[0,160,320].map((d,i)=>(
-        <span key={i} style={{width:7,height:7,borderRadius:"50%",background:"#c4993a",display:"inline-block",animation:`dot 1s ${d}ms infinite ease-in-out`}}/>
-      ))}
-      <style>{`@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.25}40%{transform:translateY(-6px);opacity:1}}`}</style>
-    </span>
-  );
+function setBusy(v) {
+  busy = v;
+  document.getElementById('btn').disabled = v;
+  document.getElementById('inp').disabled = v;
+  document.getElementById('btn').textContent = v ? '...' : 'ПИТАЙ';
 }
+
+function q(text) {
+  document.getElementById('inp').value = text;
+  document.getElementById('quick').style.display = 'none';
+  send();
+}
+
+function send() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  inp.value = '';
+  document.getElementById('quick').style.display = 'none';
+
+  addMsg(text, 'user');
+  history.push({role:'user', text});
+  setBusy(true);
+
+  // Typing indicator
+  const msgs = document.getElementById('msgs');
+  const typing = document.createElement('div');
+  typing.className = 'msg msg-bot';
+  typing.innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  msgs.appendChild(typing);
+  typing.scrollIntoView({behavior:'smooth', block:'end'});
+
+  setTimeout(() => {
+    const reply = smartReply(text);
+    history.push({role:'bot', text:reply});
+    typing.remove();
+    addMsg(reply, 'bot');
+    setBusy(false);
+  }, 500);
+}
+
+// Welcome message
+addMsg("Здравей! Аз съм асистентът на " + CONFIG.brand + " " + CONFIG.sub + ".\n\nРаботим с гаранция за качество и фиксирани цени по договор — без изненади.\n\nКажи ми какъв ремонт планираш — ще изчисля цената веднага и ще събера всичко в обща сметка.", 'bot');
+</script>
+</body>
+</html>
