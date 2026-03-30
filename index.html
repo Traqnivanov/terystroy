@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -220,12 +221,76 @@
             document.getElementById(mainId).innerText = "ОБЩО: " + Math.round(total).toLocaleString() + " лв.";
             document.getElementById(detailId).innerText = `Труд: ${Math.round(labor).toLocaleString()} лв.\nМатериали: ~${Math.round(materials).toLocaleString()} лв.\nЦена на м²: ${Math.round(total/area)} лв.`;
         }
+setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg msg-bot';
+        let reply = 'Благодаря! За точна цена в района на Лом/Монтана е най-добре да направим оглед. Обадете ни се!';
 
+        const lower = text.toLowerCase();
+        if (lower.includes('баня')) {
+            reply = 'Ремонтът на баня е наша специализация. Цените започват от 32 €/м² за труд. Желаете ли оглед?';
+        } else if (lower.includes('шпакловка')) {
+            reply = 'За шпакловка цената е около 10.8 €/м². Можете да сметнете общата сума с калкулатора ни по-горе!';
+        } else if (lower.includes('гипсокартон')) {
+            reply = 'Работим с висококачествен гипсокартон. Цената за таван е 15 €/м².';
+        }
+
+        botMsg.textContent = reply;
+        chat.appendChild(botMsg);
+        chat.scrollTop = chat.scrollHeight;
+    }, 600);
+}
+
+// FAQ TOGGLE
+function toggleFaq(el) {
+    const ans = el.nextElementSibling;
+    ans.style.display = (ans.style.display === 'block') ? 'none' : 'block';
+}
         // RESET LOGIC
         function resetBathroom() { document.getElementById('bathResult').classList.add('hidden'); document.getElementById('bathArea').value = ''; }
         function resetGK() { document.getElementById('gkResult').classList.add('hidden'); document.getElementById('gkArea').value = ''; }
         function resetShp() { document.getElementById('shpResult').classList.add('hidden'); document.getElementById('shpArea').value = ''; }
+// ASSISTANT LOGIC
+function assistantSend() {
+    const input = document.getElementById('assistantInput');
+    const text = input.value.trim();
+    if (!text) return;
 
+    const chat = document.getElementById('assistantChat');
+    
+    // Показване на съобщението на потребителя
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg msg-user';
+    userMsg.textContent = text;
+    chat.appendChild(userMsg);
+    input.value = '';
+
+    // Отговор от бота
+    setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg msg-bot';
+        let reply = 'Благодаря! За точна цена в района на Лом/Монтана е най-добре да направим оглед. Обадете ни се!';
+
+        const lower = text.toLowerCase();
+        if (lower.includes('баня')) {
+            reply = 'Ремонтът на баня е наша специализация. Цените започват от 32 €/м² за труд. Желаете ли оглед?';
+        } else if (lower.includes('шпакловка')) {
+            reply = 'За шпакловка цената е около 10.8 €/м². Можете да сметнете общата сума с калкулатора ни по-горе!';
+        } else if (lower.includes('гипсокартон')) {
+            reply = 'Работим с висококачествен гипсокартон. Цената за таван е 15 €/м².';
+        }
+
+        botMsg.textContent = reply;
+        chat.appendChild(botMsg);
+        chat.scrollTop = chat.scrollHeight;
+    }, 600);
+}
+
+// FAQ TOGGLE
+function toggleFaq(el) {
+    const ans = el.nextElementSibling;
+    ans.style.display = (ans.style.display === 'block') ? 'none' : 'block';
+}
         // EMAIL
         function sendEmailOffer() {
             let body = "Здравейте, искам оферта за ремонт на база калкулациите в сайта:%0D%0A%0D%0A";
