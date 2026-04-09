@@ -794,6 +794,19 @@ function fullReset(){
 }
 
 // Генерира реален PDF с jsPDF
+function transliterate(str){
+  if(!str) return '';
+  const map = {
+    'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ж':'zh','з':'z','и':'i','й':'y',
+    'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u',
+    'ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sht','ъ':'a','ь':'','ю':'yu','я':'ya',
+    'А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ж':'Zh','З':'Z','И':'I','Й':'Y',
+    'К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R','С':'S','Т':'T','У':'U',
+    'Ф':'F','Х':'H','Ц':'Ts','Ч':'Ch','Ш':'Sh','Щ':'Sht','Ъ':'A','Ь':'','Ю':'Yu','Я':'Ya'
+  };
+  return str.split('').map(c => map[c] || c).join('');
+}
+
 function generatePDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -804,73 +817,58 @@ function generatePDF(){
   doc.setFillColor(26, 24, 16);
   doc.rect(0, 0, 210, 32, 'F');
 
-  // Лого — IVANOV REMONTI
   doc.setTextColor(201, 168, 76);
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
   doc.text('IVANOV REMONTI', 14, 14);
 
-  // Подзаглавие
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(150, 120, 60);
   doc.text('REMONTI I STROITELSTVO', 14, 21);
 
-  // Контакти вдясно
   doc.setTextColor(180, 150, 80);
   doc.setFontSize(8);
   doc.text('tel: 0877 810 418', 196, 14, { align: 'right' });
   doc.text('Viber: 0877 810 418', 196, 21, { align: 'right' });
 
-  // Златна линия под хедъра
   doc.setDrawColor(201, 168, 76);
   doc.setLineWidth(0.5);
   doc.line(0, 32, 210, 32);
 
-  // === МЕТА ИНФОРМАЦИЯ ===
+  // === МЕТА ===
   doc.setTextColor(100, 90, 70);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
   doc.text('Data: ' + date, 14, 42);
   doc.text('Oferta #' + String(Date.now()).slice(-4), 196, 42, { align: 'right' });
+  if(ctx.clientPhone) doc.text('Klient: ' + ctx.clientPhone, 14, 48);
 
-  if(ctx.clientPhone){
-    doc.text('Klient: ' + ctx.clientPhone, 14, 48);
-  }
-
-  // === ЗАГЛАВИЕ НА ОФЕРТАТА ===
+  // === ЗАГЛАВИЕ ===
   const titleY = ctx.clientPhone ? 56 : 50;
   doc.setFontSize(13);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(26, 24, 16);
   doc.text('OFERTA ZA REMONTNI DEJNOSTI', 14, titleY);
-
-  // Линия под заглавието
   doc.setDrawColor(201, 168, 76);
   doc.setLineWidth(1.5);
   doc.line(14, titleY + 3, 196, titleY + 3);
 
-  // === ТАБЛИЦА — по-широка ===
+  // === ТАБЛИЦА — транслитерирана ===
   const tableY = titleY + 8;
   const rows = panelItems.map((it, i) => [
-    (i+1) + '. ' + it.label,
-    it.qty + ' ' + it.unit,
+    (i+1) + '. ' + transliterate(it.label),
+    it.qty + ' ' + transliterate(it.unit),
     eur(it.price) + ' EUR / ' + it.price.toFixed(2) + ' lv',
     eur(it.total) + ' EUR\n' + it.total.toFixed(2) + ' lv'
   ]);
 
   doc.autoTable({
     startY: tableY,
-    head: [['Услуга / Usluga', 'Kol.', 'Ed. cena', 'Suma']],
+    head: [['Usluga / Service', 'Kol.', 'Ed. cena', 'Suma']],
     body: rows,
     theme: 'striped',
-    headStyles: {
-      fillColor: [26, 24, 16],
-      textColor: [201, 168, 76],
-      fontStyle: 'bold',
-      fontSize: 10,
-      cellPadding: 5
-    },
+    headStyles: { fillColor: [26, 24, 16], textColor: [201, 168, 76], fontStyle: 'bold', fontSize: 10, cellPadding: 5 },
     bodyStyles: { fontSize: 9, textColor: [40, 37, 28], cellPadding: 4 },
     alternateRowStyles: { fillColor: [250, 248, 243] },
     columnStyles: {
@@ -915,6 +913,7 @@ function generatePDF(){
 
   doc.save('Ivanov_Remonti_Oferta_' + date.replace(/\./g,'-') + '.pdf');
 }
+
 
 // ======================== СОСТОЯНИЯ ========================
 const S = {
@@ -977,7 +976,7 @@ const S = {
     {label:'📞 Обадете се', next:null, specialCall:true}
   ] },
   vik_count: { msg: () => '🔢 Въведете брой. Ако не знаете, напишете <span class="ne-znam-hint">🆘 "не знам"</span>:', input:'number', label:'бр.', displayUnit:'бр.', next:'vik_result' },
-  vik_result: { msg: (c) => calcMsg(c, c.displayUnit || 'бр.'), autoNext:'vik_more_services', save:{pre:'ВиК', unit:'бр.', last:'vik'} },
+  vik_result: { msg: (c) => calcMsg(c, c.displayUnit || 'бр.'), autoNext:'vik_after', save:{pre:'ВиК', unit:'бр.', last:'vik'} },
   vik_more_services: {
     msg: () => '✅ Добавете още ВиК услуги или вижте офертата:',
     checkboxesFn: () => [
