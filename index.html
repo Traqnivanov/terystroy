@@ -370,6 +370,21 @@ function hideTyping(){ const e = document.getElementById('tb-typ'); if(e) e.remo
 let choEl = null;
 function clearCho(){ if(choEl && choEl.remove) choEl.remove(); choEl = null; }
 function setInp(on, ph){
+ // ФИКС ЗА БУТОНА ЗА ИЗПРАЩАНЕ
+const originalSetInp = setInp;
+window.setInp = function(on, ph) {
+  originalSetInp(on, ph);
+  const btn = document.getElementById('tb-send');
+  if (btn) btn.disabled = !on;
+};
+setInp = window.setInp;
+
+document.getElementById('tb-send').addEventListener('click', function(e) {
+  const inp = document.getElementById('tb-input');
+  if (!inp.disabled && inp.value.trim() !== '') {
+    handleInp();
+  }
+});
   const elInp = document.getElementById('tb-input');
   const elSend = document.getElementById('tb-send');
   elInp.disabled = !on; elSend.disabled = !on;
