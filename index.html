@@ -374,7 +374,21 @@ function setInp(on, ph){
   elInp.disabled = !on; elSend.disabled = !on;
   if(ph !== undefined) elInp.placeholder = ph;
   if(on) setTimeout(() => elInp.focus(), 80);
-}
+}// ФИКС ЗА БУТОНА ЗА ИЗПРАЩАНЕ
+const originalSetInp = setInp;
+window.setInp = function(on, ph) {
+  originalSetInp(on, ph);
+  const btn = document.getElementById('tb-send');
+  if (btn) btn.disabled = !on;
+};
+setInp = window.setInp;
+
+document.getElementById('tb-send').addEventListener('click', function(e) {
+  const inp = document.getElementById('tb-input');
+  if (!inp.disabled && inp.value.trim() !== '') {
+    handleInp();
+  }
+});
 
 function calcMsg(c, unit){
   if(!c.price || isNaN(c.price)) return '<span style="color:var(--red)">⚠️ Грешка в цената. Моля, започнете отначало.</span>';
