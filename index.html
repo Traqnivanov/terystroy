@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -374,21 +375,7 @@ function setInp(on, ph){
   elInp.disabled = !on; elSend.disabled = !on;
   if(ph !== undefined) elInp.placeholder = ph;
   if(on) setTimeout(() => elInp.focus(), 80);
-}// ФИКС ЗА БУТОНА ЗА ИЗПРАЩАНЕ
-const originalSetInp = setInp;
-window.setInp = function(on, ph) {
-  originalSetInp(on, ph);
-  const btn = document.getElementById('tb-send');
-  if (btn) btn.disabled = !on;
-};
-setInp = window.setInp;
-
-document.getElementById('tb-send').addEventListener('click', function(e) {
-  const inp = document.getElementById('tb-input');
-  if (!inp.disabled && inp.value.trim() !== '') {
-    handleInp();
-  }
-});
+}
 
 function calcMsg(c, unit){
   if(!c.price || isNaN(c.price)) return '<span style="color:var(--red)">⚠️ Грешка в цената. Моля, започнете отначало.</span>';
@@ -471,7 +458,8 @@ function handlePriceQuestion(question, areaFromInput = null) {
     return `ВиК услуги (само труд): смесител 27 лв, тоалетна 27 лв, сифон 18 лв. Материалите се заплащат отделно.`;
   }
   return null;
-}// ======================== ЧАТ ЛОГИКА ========================
+}
+ // ======================== ЧАТ ЛОГИКА ========================
 let cur = 'start', ctx = {}, hist = [], cbQueue = [];
 ctx._queueAwaitingArea = false; ctx.queueArea = null; ctx.usesPrevArea = false;
 
@@ -713,6 +701,45 @@ async function handleInp(){
     return;
   }
   
+  // Ако не е цена, но пита за конкретна услуга – отваряме менюто
+  const lower = val.toLowerCase();
+  if (lower.includes('шпакловка') || lower.includes('6paklovka')) {
+    addBubble(val, 'user', false);
+    document.getElementById('tb-input').value = ''; setInp(false, '');
+    go('putty_menu');
+    return;
+  }
+  if (lower.includes('боядисване') || lower.includes('boqdisvane')) {
+    addBubble(val, 'user', false);
+    document.getElementById('tb-input').value = ''; setInp(false, '');
+    go('painting_menu');
+    return;
+  }
+  if (lower.includes('гипсокартон') || lower.includes('gipsokarton')) {
+    addBubble(val, 'user', false);
+    document.getElementById('tb-input').value = ''; setInp(false, '');
+    go('gk_menu');
+    return;
+  }
+  if (lower.includes('таван') || lower.includes('окачен таван')) {
+    addBubble(val, 'user', false);
+    document.getElementById('tb-input').value = ''; setInp(false, '');
+    go('ceilings_menu');
+    return;
+  }
+  if (lower.includes('прозорци') || lower.includes('дограма') || lower.includes('обръщане')) {
+    addBubble(val, 'user', false);
+    document.getElementById('tb-input').value = ''; setInp(false, '');
+    go('windows_menu');
+    return;
+  }
+  if (lower.includes('вик') || lower.includes('смесител') || lower.includes('тоалетна') || lower.includes('сифон')) {
+    addBubble(val, 'user', false);
+    document.getElementById('tb-input').value = ''; setInp(false, '');
+    go('vik_menu');
+    return;
+  }
+  
   const def = S[cur];
   
   if(ctx._gridQueuePending){
@@ -761,7 +788,7 @@ async function handleInp(){
     if(cbQueue.length) setTimeout(processQueue, 380);
     else setTimeout(() => go(def.next), 380);
   } else {
-    // Въпрос, който не е за цена и не е число – показваме стандартен отговор и меню
+    // Въпрос, който не е за цена и не е за услуга – показваме стандартен отговор и меню
     addBubble(val, 'user', false);
     document.getElementById('tb-input').value = ''; setInp(false, '');
     addBubble("📞 За този въпрос се обадете на 0877 810 418 или изберете услуга от менюто.", "bot");
@@ -832,7 +859,7 @@ function generatePDF(){
   const date = rawDate.getDate() + '.' + String(rawDate.getMonth()+1).padStart(2,'0') + '.' + rawDate.getFullYear();
   const ofertaNum = String(Date.now()).slice(-4);
   const rows = panelItems.map((it,i) => `<tr style="background:${i%2===0?'#fff':'#f8f6f0'}"><td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:10px;">${i+1}. ${it.label}</td><td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;font-size:10px;">${it.qty} ${it.unit}</td><td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right;font-size:10px;">${eur(it.price)} € / ${it.price.toFixed(2)} лв</td><td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right;font-size:10px;font-weight:700;color:#9A7530;">${eur(it.total)} €<br>${it.total.toFixed(2)} лв</td></tr>`).join('');
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Open Sans',sans-serif;background:#fff;color:#1a1810;}.hdr{background:#1a1810;padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-end;}.logo{font-family:'Playfair Display',serif;font-size:22px;color:#C9A84C;letter-spacing:1px;}.logo-sub{font-size:9px;color:rgba(201,168,76,0.6);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}.contact{font-size:9px;color:rgba(255,255,255,0.5);text-align:right;line-height:1.7;}.gold-line{height:2px;background:#C9A84C;}.meta{display:flex;justify-content:space-between;padding:12px 20px;font-size:9px;color:#888;}.title{font-size:13px;font-weight:700;color:#1a1810;letter-spacing:1px;padding:0 20px 6px;border-bottom:2px solid #C9A84C;margin:0 20px 12px;}table{width:calc(100% - 40px);margin:0 20px;border-collapse:collapse;}th{background:#1a1810;color:#C9A84C;padding:8px 10px;text-align:left;font-size:9px;letter-spacing:0.5px;font-weight:700;}th:nth-child(2){text-align:center;}th:nth-child(3),th:nth-child(4){text-align:right;}.total-row{margin:12px 20px 0;padding:10px 14px;background:#1a1810;display:flex;justify-content:space-between;align-items:center;}.total-lbl{font-size:10px;color:#C9A84C;font-weight:700;letter-spacing:1px;}.total-val{font-size:14px;font-weight:700;color:#C9A84C;}.note{font-size:8px;color:#aaa;padding:8px 20px;font-style:italic;}.footer{margin-top:20px;padding:8px 20px;border-top:1px solid #C9A84C;display:flex;justify-content:center;font-size:8px;color:#888;letter-spacing:1px;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><div class="hdr"><div><div class="logo">IVANOV REMONTI</div><div class="logo-sub">Ремонти и строителство</div></div><div class="contact">тел: 0877 810 418<br>Viber: 0877 810 418</div></div><div class="gold-line"></div><div class="meta"><span>Дата: ${date}</span><span>Оферта #${ofertaNum}</span>${ctx.clientPhone ? `<span>Клиент: ${ctx.clientPhone}</span>` : ''}</div><div class="title">ОФЕРТА ЗА РЕМОНТНИ ДЕЙНОСТИ</div><tr><thead><tr><th style="width:55%">Услуга</th><th style="width:12%">Кол.</th><th style="width:17%">Ед. цена</th><th style="width:16%">Сума</th></tr></thead><tbody>${rows}</tbody></table><div class="total-row"><span class="total-lbl">ОБЩО:</span><span class="total-val">${eur(totalLv)} € / ${totalLv.toFixed(2)} лв</span></div><div class="note">* Ориентировъчна оферта. За точна цена е необходим оглед на обекта.</div><div class="footer">IVANOV REMONTI · тел: 0877 810 418 · Viber: 0877 810 418</div></body></html>`;
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Open Sans',sans-serif;background:#fff;color:#1a1810;}.hdr{background:#1a1810;padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-end;}.logo{font-family:'Playfair Display',serif;font-size:22px;color:#C9A84C;letter-spacing:1px;}.logo-sub{font-size:9px;color:rgba(201,168,76,0.6);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}.contact{font-size:9px;color:rgba(255,255,255,0.5);text-align:right;line-height:1.7;}.gold-line{height:2px;background:#C9A84C;}.meta{display:flex;justify-content:space-between;padding:12px 20px;font-size:9px;color:#888;}.title{font-size:13px;font-weight:700;color:#1a1810;letter-spacing:1px;padding:0 20px 6px;border-bottom:2px solid #C9A84C;margin:0 20px 12px;}table{width:calc(100% - 40px);margin:0 20px;border-collapse:collapse;}th{background:#1a1810;color:#C9A84C;padding:8px 10px;text-align:left;font-size:9px;letter-spacing:0.5px;font-weight:700;}th:nth-child(2){text-align:center;}th:nth-child(3),th:nth-child(4){text-align:right;}.total-row{margin:12px 20px 0;padding:10px 14px;background:#1a1810;display:flex;justify-content:space-between;align-items:center;}.total-lbl{font-size:10px;color:#C9A84C;font-weight:700;letter-spacing:1px;}.total-val{font-size:14px;font-weight:700;color:#C9A84C;}.note{font-size:8px;color:#aaa;padding:8px 20px;font-style:italic;}.footer{margin-top:20px;padding:8px 20px;border-top:1px solid #C9A84C;display:flex;justify-content:center;font-size:8px;color:#888;letter-spacing:1px;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><div class="hdr"><div><div class="logo">IVANOV REMONTI</div><div class="logo-sub">Ремонти и строителство</div></div><div class="contact">тел: 0877 810 418<br>Viber: 0877 810 418</div></div><div class="gold-line"></div><div class="meta"><span>Дата: ${date}</span><span>Оферта #${ofertaNum}</span>${ctx.clientPhone ? `<span>Клиент: ${ctx.clientPhone}</span>` : ''}</div><div class="title">ОФЕРТА ЗА РЕМОНТНИ ДЕЙНОСТИ</div><table><thead><tr><th style="width:55%">Услуга</th><th style="width:12%">Кол.</th><th style="width:17%">Ед. цена</th><th style="width:16%">Сума</th></tr></thead><tbody>${rows}</tbody></table><div class="total-row"><span class="total-lbl">ОБЩО:</span><span class="total-val">${eur(totalLv)} € / ${totalLv.toFixed(2)} лв</span></div><div class="note">* Ориентировъчна оферта. За точна цена е необходим оглед на обекта.</div><div class="footer">IVANOV REMONTI · тел: 0877 810 418 · Viber: 0877 810 418</div></body></html>`;
   const win = window.open('', '_blank');
   win.document.write(html);
   win.document.close();
