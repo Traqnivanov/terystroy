@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -165,9 +164,17 @@
   .total-lv{font-size:11px;color:var(--muted);text-align:right;}
   .offer-note{font-size:10px;color:var(--muted);font-style:italic;margin-bottom:6px;}
 
-  /* ── FULLSCREEN OFFER OVERLAY ── */
-  #offer-overlay{position:fixed;inset:0;z-index:999999;background:#0E0D0B;display:flex;flex-direction:column;transform:translateY(100%);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s;}
-  #offer-overlay.open{transform:translateY(0);opacity:1;pointer-events:all;}
+  /* ── OFFER OVERLAY — fullscreen на мобилен, modal на десктоп ── */
+  #offer-overlay{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);}
+  #offer-overlay.open{display:flex;}
+  #ov-inner{background:#0E0D0B;border:1px solid rgba(201,168,76,0.25);box-shadow:0 32px 80px rgba(0,0,0,0.8);display:flex;flex-direction:column;overflow:hidden;}
+  @media(min-width:601px){
+    #ov-inner{border-radius:18px;width:540px;max-width:90vw;max-height:85vh;}
+  }
+  @media(max-width:600px){
+    #offer-overlay{background:#0E0D0B;}
+    #ov-inner{width:100%;height:100%;border-radius:0;max-height:100vh;}
+  }
   .ov-header{background:linear-gradient(110deg,#0F0E0C 0%,#1C1A12 55%,#221F0E 100%);border-bottom:2px solid rgba(201,168,76,0.3);padding:14px 16px 12px;flex-shrink:0;}
   .ov-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
   .ov-logo{font-family:Georgia,serif;font-size:17px;color:#C9A84C;letter-spacing:1px;}
@@ -288,19 +295,21 @@
   </div>
 </div>
 
-<!-- FULLSCREEN OFFER OVERLAY -->
+<!-- OFFER OVERLAY -->
 <div id="offer-overlay">
-  <div class="ov-header">
-    <div class="ov-header-top">
-      <div>
-        <div class="ov-logo">IVANOV REMONTI</div>
-        <div class="ov-logo-sub">Ремонти и строителство</div>
+  <div id="ov-inner">
+    <div class="ov-header">
+      <div class="ov-header-top">
+        <div>
+          <div class="ov-logo">IVANOV REMONTI</div>
+          <div class="ov-logo-sub">Ремонти и строителство</div>
+        </div>
+        <button class="ov-back" id="ov-back-btn">⬅ Към бота</button>
       </div>
-      <button class="ov-back" id="ov-back-btn">⬅ Към бота</button>
+      <div class="ov-meta" id="ov-meta"></div>
     </div>
-    <div class="ov-meta" id="ov-meta"></div>
+    <div class="ov-body" id="ov-body"></div>
   </div>
-  <div class="ov-body" id="ov-body"></div>
 </div>
 
 <script>
@@ -756,7 +765,8 @@ function goBack(){
   updateBackBtn();
   if(def && def.checkboxesFn) setTimeout(() => { renderCheckboxes(def.checkboxesFn(ctx), ctx.lastService); _backBusy = false; }, 120);
   else if(def && def.choicesFn) setTimeout(() => { renderCho(def.choicesFn(ctx)); _backBusy = false; }, 120);
-  else if(def && def.choices) setTimeout(() => { renderCho(def.choices); _backBusy = false; }, 120);
+  else if(def && def.choices && def.choices.length) setTimeout(() => { renderCho(def.choices); _backBusy = false; }, 120);
+  else if(def && def.onEnter) setTimeout(() => { def.onEnter(); _backBusy = false; }, 120);
   else { if(def && def.input){ setInp(true, def.label || 'Въведете…'); } _backBusy = false; }
   smartScrollToBottom();
 }
@@ -776,7 +786,8 @@ function bubbleBack(el){
   const def = S[cur];
   if(def && def.checkboxesFn) setTimeout(() => { renderCheckboxes(def.checkboxesFn(ctx)); _backBusy = false; }, 120);
   else if(def && def.choicesFn) setTimeout(() => { renderCho(def.choicesFn(ctx)); _backBusy = false; }, 120);
-  else if(def && def.choices) setTimeout(() => { renderCho(def.choices); _backBusy = false; }, 120);
+  else if(def && def.choices && def.choices.length) setTimeout(() => { renderCho(def.choices); _backBusy = false; }, 120);
+  else if(def && def.onEnter) setTimeout(() => { def.onEnter(); _backBusy = false; }, 120);
   else { if(def && def.input) setInp(true, def.label || 'Въведете…'); _backBusy = false; }
   smartScrollToBottom();
 }
@@ -809,8 +820,12 @@ function renderCho(choices){
   backBtn.addEventListener('click', () => { clearCho(); goBack(); });
   div.appendChild(backBtn);
   elMsgs.appendChild(div);
-  skipScrollFor(500);
-  setTimeout(() => div.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+  setTimeout(() => {
+    const bubbles = elMsgs.querySelectorAll('.bubble.bot');
+    if(bubbles.length > 0){
+      bubbles[bubbles.length - 1].scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  }, 120);
   choEl = div;
 }
 
@@ -889,8 +904,12 @@ function renderCheckboxes(items, serviceLabel){
   wrap.appendChild(otherBtn);
 
   elMsgs.appendChild(wrap);
-  skipScrollFor(500);
-  setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+  setTimeout(() => {
+    const bubbles = elMsgs.querySelectorAll('.bubble.bot');
+    if(bubbles.length > 0){
+      bubbles[bubbles.length - 1].scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  }, 120);
   choEl = wrap;
 }
 
@@ -969,17 +988,15 @@ function go(name){
   }
   pushHist(); cur = name;
   updateBackBtn();
-  // Ако state-ът ще показва choices/checkboxes/grid → блокираме scroll веднага
-  if(def.choices || def.choicesFn || def.checkboxesFn || def.onEnter){
-    skipScrollFor(800);
-  }
   showTyping();
   setTimeout(async () => {
     hideTyping();
     let msgHtml = typeof def.msg === 'function' ? def.msg(ctx) : def.msg;
-    const newBubble = addBubble(msgHtml, 'bot', true);
-    if(!def.choices && !def.choicesFn && !def.checkboxesFn && !def.onEnter){
-      setTimeout(() => newBubble.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+    let newBubble = null;
+    if(msgHtml){
+      newBubble = addBubble(msgHtml, 'bot', false);
+      // Винаги скролваме към bubble-а с цената — преди choices/grid да се покажат
+      setTimeout(() => newBubble.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
     }
     if(def.onEnter) def.onEnter();
     if(def.checkboxesFn) setTimeout(() => { renderCheckboxes(def.checkboxesFn(ctx), ctx.lastService); }, 350);
@@ -1256,6 +1273,10 @@ function removeFromOverlay(id){
 }
 
 function showOfferOverlay(){
+  // Запазваме състоянието преди overlay
+  window._overlayPrevCur = cur;
+  window._overlayPrevChoEl = choEl;
+  window._overlayScrollTop = elMsgs.scrollTop;
   // Fix 14: проверка за празен панел
   if(!panelItems.length){
     addBubble('Все още нямате добавени услуги.', 'bot');
@@ -1374,8 +1395,27 @@ function showOfferOverlay(){
 
 function hideOfferOverlay(){
   document.getElementById('offer-overlay').classList.remove('open');
-  // Fix 37: връщаме фокус след затваряне
-  setTimeout(() => { if(!elInp.disabled) elInp.focus(); }, 150);
+  setTimeout(() => {
+    const prevCur = window._overlayPrevCur;
+    const prevChoEl = window._overlayPrevChoEl;
+    // Ако grid/choices са изчезнали — рендерираме отново от запазения state
+    if(!choEl && prevCur && S[prevCur]){
+      const def = S[prevCur];
+      if(def.onEnter) def.onEnter();
+      else if(def.checkboxesFn) renderCheckboxes(def.checkboxesFn(ctx), ctx.lastService);
+      else if(def.choicesFn) renderCho(def.choicesFn(ctx));
+      else if(def.choices && def.choices.length) renderCho(def.choices);
+    } else if(prevChoEl && prevChoEl.parentNode === elMsgs){
+      // Grid е все още в DOM — само скролваме към него
+      setTimeout(() => prevChoEl.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+    }
+    // Скролваме към последния елемент
+    setTimeout(() => {
+      const last = choEl || elMsgs.lastElementChild;
+      if(last) last.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 400);
+    if(!elInp.disabled) elInp.focus();
+  }, 150);
 }
 
 function fullReset(){
@@ -1488,23 +1528,47 @@ function renderGridCheckboxes(items, knownArea, flowKey){
     if(!it.locked){
       cell.addEventListener('click', () => {
         if(checked[it.id]){
+          // Де-селектира — маха от панела
           delete checked[it.id];
           cell.style.background = 'var(--bg-btn)';
           cell.style.borderColor = 'rgba(201,168,76,0.22)';
           chkBox.textContent = '';
           chkBox.style.background = 'transparent';
           chkBox.style.borderColor = 'rgba(201,168,76,0.45)';
+          lbl.style.textDecoration = '';
+          // Маха от панела ако е добавено
+          panelItems = panelItems.filter(p => {
+            const itemLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
+            return p.label !== itemLabel;
+          });
+          renderPanel();
         } else {
+          // Селектира — добавя веднага в панела
+          const { area } = wrap._getArea();
+          const useArea = area || knownArea;
+          if(!useArea || useArea <= 0){
+            areaSection.querySelector('input') && (areaSection.querySelector('input').style.borderColor = 'var(--red)');
+            areaSection.querySelector('input') && areaSection.querySelector('input').focus();
+            return;
+          }
           checked[it.id] = true;
           cell.style.background = 'rgba(76,175,130,0.08)';
           cell.style.borderColor = 'rgba(76,175,130,0.6)';
           chkBox.textContent = '✓';
           chkBox.style.background = 'var(--green)';
           chkBox.style.borderColor = 'var(--green)';
+          if(it.isPaintMenu){
+            // Боядисването се обработва отделно при финализиране
+          } else {
+            const itemLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
+            addToPanel(itemLabel, useArea, 'м²', it.price);
+            ctx.prevValue = useArea; ctx.prevUnit = 'м²';
+            ctx.queueArea = useArea;
+          }
         }
-        const hasChecked = Object.keys(checked).length > 0;
-        cfBtn.disabled = !hasChecked;
-        cfHint.style.display = hasChecked ? 'none' : 'block';
+        // Обновяваме финализиращия бутон
+        const hasSel = Object.keys(checked).length > 0;
+        doneBtn.style.display = hasSel ? 'block' : 'none';
       });
     }
   });
@@ -1514,7 +1578,6 @@ function renderGridCheckboxes(items, knownArea, flowKey){
   const areaSection = document.createElement('div');
   if(knownArea){
     areaSection.style.cssText = 'margin-bottom:12px;';
-    // Показваме текущата квадратура и само опция за промяна
     const areaInfo = document.createElement('div');
     areaInfo.style.cssText = 'background:rgba(76,175,130,0.08);border:1px solid rgba(76,175,130,0.3);border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
     areaInfo.innerHTML = `<span style="font-size:13px;color:#4CAF82;font-weight:600;">📏 Квадратура</span><span style="font-size:16px;font-weight:700;color:#4CAF82;">${knownArea} м²</span>`;
@@ -1559,55 +1622,31 @@ function renderGridCheckboxes(items, knownArea, flowKey){
   }
   wrap.appendChild(areaSection);
 
-  const cfBtn = document.createElement('button');
-  cfBtn.className = 'cb-confirm';
-  cfBtn.textContent = '✅ Добави избраните';
-  cfBtn.style.cssText = 'margin-top:4px;font-size:15px;padding:14px;width:100%;';
-  cfBtn.disabled = true;
-  const cfHint = document.createElement('div');
-  cfHint.style.cssText = 'font-size:11px;color:var(--muted);text-align:center;margin-top:5px;';
-  cfHint.textContent = '👆 Изберете поне една услуга';
-  // Update hint visibility when items are checked
-  const origClick = (it, cell, chkBox, checked) => {
-    // handled in cell click listeners above
-  };
-  cfBtn.addEventListener('click', () => {
+  // Бутон "Готово" — появява се само след като е избрано нещо
+  const doneBtn = document.createElement('button');
+  doneBtn.className = 'cb-confirm';
+  doneBtn.textContent = '✅ Готово → виж офертата';
+  doneBtn.style.cssText = 'margin-top:4px;font-size:15px;padding:14px;width:100%;display:none;';
+  doneBtn.addEventListener('click', () => {
     const sel = items.filter(it => checked[it.id]);
-    if(!sel.length){
-      clearCho();
-      addBubble('Не сте избрали нищо. Можете да продължите към офертата.', 'bot');
-      elInputRow.style.display = 'flex';
-      setTimeout(() => renderCho([{label:'➕ Друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}]), 300);
-      return;
-    }
-    const { area, confirmed } = wrap._getArea();
-    if(!confirmed || !area || area <= 0){
-      areaSection.querySelector('input') && (areaSection.querySelector('input').style.borderColor = 'var(--red)');
-      addBubble('❌ Моля, въведете или потвърдете квадратурата.', 'bot');
-      return;
-    }
-    // Fix 44: запазваме избора за евентуален Назад
+    const { area } = wrap._getArea();
+    const useArea = area || knownArea;
     ctx._lastGridChecked = Object.keys(checked);
-    ctx._lastGridArea = area;
+    ctx._lastGridArea = useArea;
     clearCho();
     elInputRow.style.display = 'flex';
-    addBubble(sel.map(it => it.label).join(' · ') + `  •  ${area} м²`, 'user', false);
     const paintItem = sel.find(it => it.isPaintMenu);
-    const nonPaintItems = sel.filter(it => !it.isPaintMenu);
     ctx._paintAfterQueue = !!paintItem;
-    ctx.queueArea = area; ctx.prevValue = area; ctx.prevUnit = 'м²';
-    if(nonPaintItems.length === 0 && paintItem){
+    ctx.queueArea = useArea; ctx.prevValue = useArea; ctx.prevUnit = 'м²';
+    if(paintItem && sel.filter(it=>!it.isPaintMenu).length === 0){
       setTimeout(() => go('painting_menu'), 380);
       return;
     }
-    cbQueue = nonPaintItems.map(it => ({
-      ...it,
-      saveKey: it.serviceName === 'Шпакловки' ? 'putty' : it.serviceName === 'Шлайфане' ? 'sanding' : 'primer',
-    }));
-    processGridQueue();
+    if(paintItem) setTimeout(() => go('painting_menu'), 380);
+    else setTimeout(() => showOfferOverlay(), 380);
   });
-  wrap.appendChild(cfBtn);
-  wrap.appendChild(cfHint);
+
+  wrap.appendChild(doneBtn);
 
   const skipBtn = document.createElement('button');
   skipBtn.className = 'cb-skip';
@@ -1620,7 +1659,13 @@ function renderGridCheckboxes(items, knownArea, flowKey){
   });
   wrap.appendChild(skipBtn);
   elMsgs.appendChild(wrap);
-  setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+  // Скролваме към bubble-а с цената (над grid-а), НЕ към самия grid
+  setTimeout(() => {
+    const bubbles = elMsgs.querySelectorAll('.bubble.bot');
+    if(bubbles.length > 0){
+      bubbles[bubbles.length - 1].scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  }, 120);
   choEl = wrap;
 }
 
@@ -1701,7 +1746,7 @@ const S = {
   ] },
   gk_length: { msg: () => '📏 Въведете линейни метри (л.м.). Ако не знаете, напишете <span class="ne-znam-hint">🆘 "не знам"</span>:', input:'number', label:'л.м.', displayUnit:'л.м.', next:'gk_result' },
   gk_area: { msg: () => '📏 Въведете квадратура (м²).<br><small style="color:var(--muted);">Дължина × Ширина. Например: 5м × 4м = 20 м²</small><br><small style="color:var(--muted);">Ако не знаете — напишете <span class="ne-znam-hint">🆘 "не знам"</span></small>', input:'number', label:'м²', displayUnit:'м²', next:'gk_result' },
-  gk_result: { msg: (c) => calcMsg(c, c.displayUnit || 'м²'), autoNext:'ceiling_gk_step1_fuge', save:{pre:'Гипсокартон', unit:'м²', last:'gk'} },
+  gk_result: { msg: (c) => '', autoNext:'ceiling_gk_step1_fuge', save:{pre:'Гипсокартон', unit:'м²', last:'gk'} },
   putty_menu: { msg: () => 'Изберете вид шпакловка:<br><small style="color:rgba(201,168,76,0.6);font-style:italic;">Всички цени са само за труд — без материали</small>', choicesFn: () => [
     {label:'Основна укрепваща', priceLabel:pTag(P.putty_basic,'м²'), desc:'Стари основи, панелни жилища, влага/мухъл', next:'putty_area', price:P.putty_basic, serviceType:'Основна укрепваща', serviceName:'Шпакловки', displayUnit:'м²'},
     {label:'Гипсова шпакловка', priceLabel:pTag(P.putty_gypsum,'м²'), desc:'За леки неравности, ронещи стени и малки дупки. При пукнатини се поставя армираща мрежа.', next:'putty_area', price:P.putty_gypsum, serviceType:'Гипсова', serviceName:'Шпакловки', displayUnit:'м²'},
@@ -1709,7 +1754,7 @@ const S = {
     {label:'📞 Обадете се', next:null, specialCall:true}
   ] },
   putty_area: { msg: () => '📏 Въведете квадратура (м²).<br><small style="color:var(--muted);">Дължина × Ширина. Например: 5м × 4м = 20 м²</small><br><small style="color:var(--muted);">Ако не знаете — напишете <span class="ne-znam-hint">🆘 "не знам"</span></small>', input:'number', label:'м²', displayUnit:'м²', next:'putty_result' },
-  putty_result: { msg: (c) => calcMsg(c,'м²'), autoNext:'putty_step2_gypsum', save:{pre:'Шпакловка', unit:'м²', last:'putty'} },
+  putty_result: { msg: (c) => '', autoNext:'putty_step2_gypsum', save:{pre:'Шпакловка', unit:'м²', last:'putty'} },
   painting_menu: { msg: () => 'Изберете тип боядисване:<br><small style="color:rgba(201,168,76,0.6);font-style:italic;">Всички цени са само за труд — без материали</small>', choicesFn: () => [
     {label:'Един цвят – Бяло', priceLabel:pTag(P.paint_white,'м²'), desc:'Бюджетно решение – свеж резултат без излишни разходи', next:'painting_area', price:P.paint_white, serviceType:'Един цвят – Бяло', serviceName:'Боядисване', displayUnit:'м²'},
     {label:'Стени и тавани – 2 ръце', priceLabel:pTag(P.paint_walls_ceilings,'м²'), desc:'Латекс, двуслойно нанасяне за трайно покритие', next:'painting_area', price:P.paint_walls_ceilings, serviceType:'Стени и тавани – 2 ръце', serviceName:'Боядисване', displayUnit:'м²'},
@@ -1754,18 +1799,30 @@ const S = {
   windows_count: { msg: () => '🔢 Въведете линейни метри (л.м.). Ако не знаете, напишете <span class="ne-znam-hint">"не знам"</span>:', input:'number', label:'л.м.', displayUnit:'л.м.', next:'windows_result' },
   windows_result: { msg: (c) => calcMsg(c,'л.м.'), autoNext:'after_windows', save:{pre:'Прозорци', unit:'л.м.', last:'window'} },
   after_windows: { msg: () => '✅ Добавено! Искате ли да добавите боядисване?', choices: [{label:'🎨 Да, избери боядисване', next:'painting_menu'},{label:'➕ Друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
-  ceiling_gk_step1_fuge: { msg: () => `✅ <strong>Добавено!</strong><br><br>Изберете следващите стъпки за довършване:`, onEnter: () => { setTimeout(() => { const area = ctx.prevValue || null; const allItems = [
+  ceiling_gk_step1_fuge: { msg: (c) => {
+    const priceHtml = (c.value && c.price) ? `<div style="margin-bottom:14px;padding:12px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:12px;">
+      <div style="font-size:22px;font-weight:700;color:var(--gold);">${eur(c.value * c.price)} € / ${(c.value * c.price).toFixed(2)} лв</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">${c.serviceName||'Гипсокартон'} · ${c.serviceType||''} · ${c.value} ${c.displayUnit||'м²'} × ${eur(c.price)} €/${c.displayUnit||'м²'}</div>
+      <div style="font-size:11px;color:rgba(201,168,76,0.7);margin-top:3px;font-style:italic;">⚠️ Само за труд — без материали</div>
+    </div>` : '';
+    return `${priceHtml}✅ <strong>Добавено!</strong><br><br>Изберете следващите стъпки за довършване:`;
+  }, onEnter: () => { setTimeout(() => { const area = ctx.prevValue || null; const allItems = [
     {id:'cg_fuge', label:'Шпакловка на фуги', emoji:'🔧', desc:'Задължително след таван/GK', price:P.putty_fuge, serviceName:'Шпакловки', serviceType:'Шпакловка на фуги', displayUnit:'м²', locked:true},
     {id:'cg_fina', label:'Фина шпакловка', emoji:'✨', desc:'За гладка повърхност', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
     {id:'cg_sand', label:'Шлайфане', emoji:'🔲', desc:'След фина шпакловка', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
     {id:'cg_prim', label:'Грунд', emoji:'🪣', desc:'Преди боядисване', price:P.primer, serviceName:'Грунд', serviceType:'Грунд', displayUnit:'м²'},
     {id:'cg_paint', label:'Боядисване', emoji:'🎨', desc:'Два вида по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
   ]; const items = allItems.filter(it => !panelItems.some(p => p.label.includes(it.serviceType) || p.label === it.label)); if(items.length <= 1){ setTimeout(() => go('add_more_services'), 200); return; } renderGridCheckboxes(items, area, 'ceiling_gk'); }, 350); } },
-  putty_step2_gypsum: { msg: () => {
-    const st = ctx.serviceType || '';
-    if(st.includes('Основна укрепваща')) return `✅ <strong>Основната шпакловка е първата стъпка.</strong><br><br><span style="font-size:13px;color:var(--text2);">За трайно и гладко покритие, готово за боядисване, препоръчвам да се довърши целия процес:</span>`;
-    if(st.includes('Гипсова')) return `✅ <strong>Гипсовата шпакловка е готова.</strong><br><br><span style="font-size:13px;color:var(--text2);">Тя не е финалната стъпка. За огледална гладкост преди боядисване, препоръчвам да продължим с:</span>`;
-    return `✅ <strong>Добавено!</strong><br><br>Изберете следващите стъпки:`;
+  putty_step2_gypsum: { msg: (c) => {
+    const st = c.serviceType || '';
+    const priceHtml = (c.value && c.price) ? `<div style="margin-bottom:14px;padding:12px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:12px;">
+      <div style="font-size:22px;font-weight:700;color:var(--gold);">${eur(c.value * c.price)} € / ${(c.value * c.price).toFixed(2)} лв</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">${c.serviceName||'Шпакловка'} · ${st} · ${c.value} м² × ${eur(c.price)} €/м²</div>
+      <div style="font-size:11px;color:rgba(201,168,76,0.7);margin-top:3px;font-style:italic;">⚠️ Само за труд — без материали</div>
+    </div>` : '';
+    if(st.includes('Основна укрепваща')) return `${priceHtml}✅ <strong>Основната шпакловка е първата стъпка.</strong><br><br><span style="font-size:13px;color:var(--text2);">За трайно и гладко покритие, готово за боядисване, препоръчвам да се довърши целия процес:</span>`;
+    if(st.includes('Гипсова')) return `${priceHtml}✅ <strong>Гипсовата шпакловка е готова.</strong><br><br><span style="font-size:13px;color:var(--text2);">Тя не е финалната стъпка. За огледална гладкост преди боядисване, препоръчвам да продължим с:</span>`;
+    return `${priceHtml}✅ <strong>Добавено!</strong><br><br>Изберете следващите стъпки:`;
   }, onEnter: () => { setTimeout(() => { const area = ctx.prevValue || null; const serviceType = ctx.serviceType || ''; let allItems = []; if (serviceType.includes('Основна укрепваща')) { allItems = [
       {id:'ps_gyp', label:'Гипсова шпакловка', emoji:'🧱', desc:'Изравнява неравности', price:P.putty_gypsum, serviceName:'Шпакловки', serviceType:'Гипсова', displayUnit:'м²'},
       {id:'ps_fina', label:'Фина шпакловка', emoji:'✨', desc:'Финален слой преди боядисване', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
@@ -1911,6 +1968,10 @@ if(window.visualViewport){
 
 elOfferBtn.addEventListener('click', () => showOfferOverlay());
 document.getElementById('ov-back-btn').addEventListener('click', hideOfferOverlay);
+// Клик върху тъмния backdrop (само на десктоп) затваря overlay-а
+document.getElementById('offer-overlay').addEventListener('click', (e) => {
+  if(window.innerWidth > 600 && e.target === document.getElementById('offer-overlay')) hideOfferOverlay();
+});
 
 document.getElementById('btn-pdf').addEventListener('click', () => {
   if(!panelItems.length){ addBubble('Няма услуги за оферта.', 'bot'); return; }
