@@ -3,9 +3,7 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://raw.githubusercontent.com https://firebasestorage.googleapis.com; connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com;">
-<meta name="generator" content="TeryBot v5.0 \u00A9 Ivanov Remonti 2025 \u2014 Licensed for ivanov-remonti.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Екипът - Ремонти</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -15,7 +13,7 @@
 
   .c-btn, .cb-item, .act-btn, .cb-confirm, .cb-skip { font-size: 15px !important; padding: 13px 14px !important; }
   .c-num { width: 30px; height: 30px; font-size: 14px !important; }
-  .tb-header button, .hdr-btn { min-width: 36px; min-height: 36px; }
+  .tb-header button, .hdr-btn { min-width: 44px; min-height: 44px; }
   #tb-input { font-size: 16px; padding: 13px; }
   #tb-send { width: 52px; height: 52px; }
   .bubble { font-size: 16px; }
@@ -28,18 +26,26 @@
   #tb-badge{position:absolute;top:-4px;right:-4px;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:12px;font-weight:bold;display:none;align-items:center;justify-content:center;}
   #tb-badge.show{display:flex;}
 
-  #tb-widget{position:fixed;bottom:106px;right:28px;width:450px;max-width:calc(100vw - 32px);height:700px;max-height:calc(100vh - 120px);background:var(--bg-widget);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border-widget);display:flex;flex-direction:column;overflow:hidden;z-index:9998;transform-origin:bottom right;transform:scale(0.85) translateY(20px);opacity:0;pointer-events:none;transition:transform .32s,opacity .26s;}
+  #tb-widget{position:fixed;bottom:106px;right:28px;width:450px;max-width:calc(100vw - 32px);height:700px;max-height:calc(100vh - 120px);background:var(--bg-widget);border-radius:var(--radius);box-shadow:var(--shadow),0 0 30px rgba(201,168,76,0.08);border:1px solid var(--border-widget);display:flex;flex-direction:column;overflow:hidden;z-index:9998;transform-origin:bottom right;transform:scale(0.85) translateY(20px);opacity:0;pointer-events:none;transition:transform .32s,opacity .26s;}
   #tb-widget.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
   #tb-panel { display: none !important; }
 
   @media (min-width: 601px) {
+    .bubble { font-size: 17px !important; line-height: 1.6 !important; }
+    .c-btn, .cb-item, .cb-confirm, .cb-skip { font-size: 17px !important; padding: 14px 16px !important; }
+    .c-label { font-size: 17px !important; }
+    .c-desc { font-size: 14px !important; }
+    #tb-input { font-size: 17px !important; padding: 14px !important; }
+    .pkg-card-name { font-size:17px !important; }
+    .pkg-card-item { font-size:15px !important; }
+    .pkg-card-btn { font-size:15px !important; padding:11px !important; }
+    .pkg-card { padding:16px !important; }
+  }
+  @media (min-width: 601px) {
     #tb-widget.open { width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; border-radius: 0 !important; transform: none !important; }
     .widget-body { display: flex !important; flex-direction: row !important; }
-    #tb-sidebar { display: flex !important; flex-direction: column !important; width: 260px !important; }
-    #tb-bottom-bar { display: none !important; }
-  }
-  @media (min-width: 601px) and (max-width: 700px) {
-    #tb-sidebar { width: 200px !important; }
+    #tb-sidebar { display: none !important; }
+    #tb-bottom-bar { display: block !important; }
   }
   @media (max-width: 600px) {
     #tb-widget { position: fixed !important; right:0;bottom:0;left:0;top:0; width:100% !important; height:100% !important; border-radius:0; transform-origin:center center; }
@@ -56,8 +62,8 @@
   #tb-sidebar{display:none;width:260px;flex-shrink:0;background:var(--bg-panel);border-right:1px solid var(--border-panel);flex-direction:column;padding:14px;gap:8px;overflow-y:auto;}
   .sb-title{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;}
   .sb-item{background:var(--bg-btn);border:1px solid var(--border-bubble);border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;position:relative;}
-  .sb-item-name{font-size:11px;color:var(--text);line-height:1.3;word-break:break-word;}
-  .sb-item-price{font-size:12px;font-weight:700;color:var(--gold);}
+  .sb-item-name{font-size:13px;color:var(--text);line-height:1.3;word-break:break-word;}
+  .sb-item-price{font-size:13px;font-weight:700;color:var(--gold);}
   .sb-remove{position:absolute;top:4px;right:6px;background:none;border:none;color:rgba(224,85,85,0.5);cursor:pointer;font-size:14px;line-height:1;}
   .sb-total{border-top:1px solid var(--border-panel);padding-top:8px;margin-top:4px;}
   .sb-total-lbl{font-size:10px;color:var(--muted);}
@@ -66,46 +72,74 @@
   .sb-other-btn{background:transparent;color:var(--muted);border:1px solid var(--border-bubble);border-radius:8px;padding:7px;font-size:11px;cursor:pointer;width:100%;margin-top:4px;}
   .sb-empty{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-top:8px;}
 
-  #tb-bottom-bar{display:none;background:var(--bg-panel);border-top:1px solid rgba(201,168,76,0.25);padding:6px 12px;flex-shrink:0;}
-  .bb-row{display:flex;align-items:center;gap:8px;}
-  .bb-chips-wrapper{flex:1;min-width:0;position:relative;}
-  .bb-chips{overflow-x:auto;white-space:nowrap;display:flex;gap:6px;padding-bottom:4px;padding-right:28px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;}
-  .bb-chips::-webkit-scrollbar{height:3px;background:rgba(255,255,255,0.1);border-radius:3px;}
-  .bb-chips::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
-  .bb-chips-wrapper::after{content:'→';position:absolute;top:0;right:0;bottom:4px;width:28px;background:linear-gradient(90deg, transparent, var(--bg-panel));pointer-events:none;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:flex-end;font-size:14px;font-weight:bold;color:var(--gold);padding-right:6px;}
-  .bb-chip{display:inline-block;background:var(--bg-btn);border:1px solid rgba(201,168,76,0.5);border-radius:20px;padding:5px 10px;font-size:11px;color:var(--text);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;}
-  .bb-total{font-size:14px;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0;}
-  .bb-offer-btn{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0E0E0F;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-  @media (max-width: 360px){.bb-offer-btn span{display:none;}.bb-offer-btn::before{content:'📋';}.bb-offer-btn{padding:6px 10px;font-size:16px;}}
-  .bb-swipe-hint{font-size:9px;color:var(--gold);text-align:center;padding:2px 0 0;animation:fadeOut 5s forwards;opacity:1;}
-  @keyframes fadeOut{0%{opacity:1;}70%{opacity:1;}100%{opacity:0;display:none;}}
+  #tb-bottom-bar{display:none;background:var(--bg-panel);border-top:1px solid rgba(201,168,76,0.25);padding:6px 12px;padding-bottom: max(6px, env(safe-area-inset-bottom));flex-shrink:0;}
+
+  /* ── START GRID ── */
+  .sg-wrap{width:100%;}
+  .sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  @media(max-width:600px){.sg-grid{grid-template-columns:1fr;}}
+  .sg-card{background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.12);border-radius:14px;padding:14px 15px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);opacity:0;transform:translateY(10px);display:flex;align-items:center;gap:12px;}
+  .sg-card.sg-in{opacity:1;transform:translateY(0);}
+  .sg-card:hover{border-color:rgba(201,168,76,0.35);background:rgba(201,168,76,0.04);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3);}
+  .sg-card:active{transform:scale(0.97);transition:transform .1s;}
+  .c-btn:active{transform:scale(0.97);transition:transform .1s;}
+  .cb-confirm:active,.cb-skip:active{transform:scale(0.97);transition:transform .1s;}
+  .sg-card:hover .sg-icon{transform:scale(1.06);border-color:rgba(201,168,76,0.35);}
+  .sg-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;}
+  .sg-icon svg{width:20px;height:20px;stroke:var(--gold);stroke-width:1.6;fill:none;}
+  .sg-body{flex:1;min-width:0;}
+  .sg-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:5px;letter-spacing:0.3px;}
+  .sg-badge-red{background:rgba(224,85,85,0.12);color:#E07070;border:1px solid rgba(224,85,85,0.18);}
+  .sg-badge-gold{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+  .sg-badge-green{background:rgba(76,175,130,0.1);color:#4CAF82;border:1px solid rgba(76,175,130,0.2);}
+  .sg-badge-purple{background:rgba(155,142,245,0.1);color:#9B8EF5;border:1px solid rgba(155,142,245,0.2);}
+  .sg-badge-blue{background:rgba(96,165,250,0.1);color:#60A5FA;border:1px solid rgba(96,165,250,0.2);}
+  .sg-name{font-size:15px;font-weight:700;color:var(--text);line-height:1.2;}
+  .sg-line{height:1.5px;background:#C9A84C;border-radius:2px;flex-shrink:0;animation:sgLine 2.5s ease-in-out infinite;}
+  @keyframes cartPulse{0%{transform:scale(1);}30%{transform:scale(1.02);}60%{transform:scale(0.99);}100%{transform:scale(1);}}
+  .cart-pulse{animation:cartPulse 0.5s ease-out;}
+  @keyframes sgLine{0%,100%{width:0px;opacity:0;}35%,65%{width:12px;opacity:1;}}
+  @keyframes bonusPulse{0%,100%{border-color:rgba(76,175,130,0.25);}50%{border-color:rgba(76,175,130,0.7);}}
+  .sg-meta{font-size:13px;color:var(--muted);margin-top:3px;}
+  .sg-right{text-align:right;flex-shrink:0;}
+  .sg-price{font-size:15px;font-weight:700;color:var(--gold);}
+  .sg-arr{font-size:13px;color:rgba(201,168,76,0.3);margin-top:3px;}
+  .sg-full{grid-column:1/-1;}
+  /* Micro-animations */
+  @keyframes sg-drip{0%,100%{transform:scaleY(1) translateY(0);}50%{transform:scaleY(1.35) translateY(2px);}}
+  .sg-card:hover .sg-drop{animation:sg-drip 1.2s ease-in-out infinite;transform-origin:center top;}
+  .sg-gk-line{opacity:0.25;transition:opacity .3s;}
+  .sg-card:hover .sg-gk-line{opacity:1;}
+  .sg-roller{transition:transform .3s;}
+  .sg-card:hover .sg-roller{transform:translateY(3px);}
+  .sg-spatula{transition:transform .3s;transform-origin:bottom center;}
+  .sg-card:hover .sg-spatula{transform:rotate(10deg);}
+  .sg-win-inner{opacity:0.15;transition:opacity .3s;}
+  .sg-card:hover .sg-win-inner{opacity:1;}
+  @keyframes sg-bubble{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+  .sg-card:hover .sg-chat{animation:sg-bubble 1s ease-in-out infinite;}
 
   .flash-confirm{background:rgba(76,175,130,0.12);border:1px solid rgba(76,175,130,0.35);border-radius:10px;padding:8px 12px;font-size:13px;color:#4CAF82;display:flex;align-items:center;gap:8px;width:100%;animation:flashIn .3s ease;}
   @keyframes flashIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
-  .flash-duplicate{background:rgba(224,85,85,0.15);border:2px solid rgba(224,85,85,0.7);border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;color:#FF6B6B;display:flex;align-items:center;gap:10px;width:100%;animation:dupFlash 0.4s ease, dupPulse 0.6s ease 0.4s 3;}
-  @keyframes dupFlash{0%{opacity:0;transform:scale(0.95) translateY(-6px);}60%{transform:scale(1.03) translateY(0);}100%{opacity:1;transform:scale(1);}}
-  @keyframes dupPulse{0%,100%{background:rgba(224,85,85,0.15);border-color:rgba(224,85,85,0.7);}50%{background:rgba(224,85,85,0.32);border-color:rgba(224,85,85,1);}}
   .tb-header{background:linear-gradient(110deg,var(--bg-header-from) 0%,var(--bg-header-mid) 55%,var(--bg-header-to) 100%);flex-shrink:0;border-bottom:1px solid rgba(201,168,76,0.25);}
-  .tb-header-top{display:flex;align-items:center;justify-content:space-between;padding:6px 11px 4px;gap:8px;}
-  .tb-header-bot{display:flex;align-items:center;padding:4px 11px 8px;gap:8px;}
-  #tb-close{display:flex;align-items:center;gap:4px;background:rgba(224,85,85,0.12);border:1px solid rgba(224,85,85,0.35);border-radius:7px;padding:0 12px;height:30px;cursor:pointer;color:#E05555;font-size:12px;font-weight:600;flex-shrink:0;}
-  #tb-back{display:flex;align-items:center;gap:3px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);border-radius:7px;padding:0 10px;height:32px;cursor:pointer;color:var(--gold-light);font-size:13px;font-weight:600;flex-shrink:0;opacity:0;pointer-events:none;}
+  .tb-header-single{display:flex;align-items:center;padding:6px 11px;gap:8px;min-height:52px;}
+  .tb-header-bot{display:none;}
+  #tb-close{display:flex;align-items:center;gap:4px;background:rgba(224,85,85,0.12);border:1px solid rgba(224,85,85,0.35);border-radius:7px;padding:0 10px;height:34px;cursor:pointer;color:#E05555;font-size:12px;font-weight:600;flex-shrink:0;}
+  #tb-back{display:flex;align-items:center;gap:3px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);border-radius:7px;padding:0 10px;height:34px;cursor:pointer;color:var(--gold-light);font-size:13px;font-weight:600;flex-shrink:0;opacity:0;pointer-events:none;}
   #tb-back.on{opacity:1;pointer-events:all;}
   .tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-  .tb-title{flex:1;min-width:0;}
+  .tb-title{flex:1;min-width:0;text-align:left;}
   .tb-title h3{font-size:13px;font-weight:700;color:var(--gold-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .tb-title p{font-size:10px;color:rgba(201,168,76,0.55);}
+  .tb-title p{font-size:10px;color:rgba(201,168,76,0.55);text-align:left;}
   .tb-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);flex-shrink:0;}
-  .hdr-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .hdr-btn{width:44px;height:44px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;}
   .hdr-icons{display:flex;gap:6px;align-items:center;}
-  #tb-offer-btn{display:none;align-items:center;gap:4px;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.5);border-radius:7px;padding:0 8px;height:30px;cursor:pointer;color:var(--gold-light);font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;}
-  #tb-offer-btn.show{display:flex;}
-  @keyframes scrollPulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
-  #scroll-ind-up, #scroll-ind-down { animation:scrollPulse 1.6s infinite; }
-  .tb-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg-msgs);scroll-behavior:smooth;}
-  .bubble{max-width:92%;padding:12px 15px;border-radius:16px;font-size:15px;line-height:1.5;}
+  .tb-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg-msgs);scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .bubble{max-width:92%;padding:12px 15px;border-radius:16px;font-size:16px;line-height:1.5;animation:fadeInUp 0.25s ease-out forwards;}
   .bubble.bot{background:var(--bg-bubble-bot);color:var(--text);border:1px solid var(--border-bubble);border-bottom-left-radius:5px;align-self:flex-start;}
   .bubble.user{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0E0E0F;font-weight:600;border-bottom-right-radius:5px;align-self:flex-end;}
+  @media(min-width:601px){.bubble.bot{max-width:75%;}.bubble.user{max-width:65%;}}
   .ai-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
   .ai-btn { background: var(--bg-btn); border: 1px solid var(--gold); color: var(--gold); border-radius: 30px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
   .ai-btn:hover { background: var(--gold); color: #0E0E0F; transform: scale(1.02); }
@@ -115,9 +149,10 @@
   .c-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);transform:translateX(4px);}
   .c-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0E0E0F;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
   .c-body{flex:1;}
-  .c-label{font-size:15px;font-weight:500;}
-  .c-price{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;}
-  .c-desc{font-size:12px;color:var(--muted);margin-top:3px;}
+  .c-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+  .c-label{font-size:16px;font-weight:500;}
+  .c-price{font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap;}
+  .c-desc{font-size:13px;color:var(--muted);margin-top:3px;}
   .cb-wrap{display:flex;flex-direction:column;gap:6px;}
   .cb-section{background:var(--bg-bubble-bot);border:1px solid var(--border-bubble);border-radius:14px;padding:10px 12px;width:100%;}
   .cb-section-title{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(201,168,76,0.15);}
@@ -129,10 +164,10 @@
   .cb-row{display:flex;justify-content:space-between;align-items:center;gap:6px;}
   .cb-add-btn{font-size:10px;font-weight:700;color:var(--gold);background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);border-radius:14px;padding:2px 8px;flex-shrink:0;white-space:nowrap;pointer-events:none;}
   .cb-item.checked .cb-add-btn{background:var(--green);border-color:var(--green);color:#fff;}
-  .cb-label{font-size:13px;font-weight:500;color:var(--text);}
-  .cb-price{font-size:11px;font-weight:700;color:var(--gold);}
-  .cb-sdesc{font-size:11px;color:var(--muted);}
-  .cb-confirm,.cb-skip{margin-top:6px;padding:10px;border-radius:10px;font-size:13px;font-weight:bold;border:none;cursor:pointer;width:100%;}
+  .cb-label{font-size:14px;font-weight:500;color:var(--text);}
+  .cb-price{font-size:12px;font-weight:700;color:var(--gold);}
+  .cb-sdesc{font-size:12px;color:var(--muted);}
+  .cb-confirm,.cb-skip{margin-top:6px;padding:12px;border-radius:10px;font-size:14px;font-weight:bold;border:none;cursor:pointer;width:100%;}
   .cb-confirm{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0E0E0F;}
   .cb-skip{background:transparent;color:var(--muted);border:1px solid var(--border-bubble);}
   .cb-hint{font-size:11px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:6px 10px;margin-bottom:2px;display:flex;align-items:center;gap:5px;}
@@ -145,7 +180,7 @@
   #tb-input:focus{border-color:var(--gold);}
   #tb-send{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;}
   .action-btns{display:flex;gap:5px;padding:5px 8px 6px;background:var(--bg-input-row);}
-  .act-btn{flex:1;padding:6px 3px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;}
+  .act-btn{flex:1;padding:8px 3px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;}
   .act-pdf{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0E0E0F;}
   .act-viber{background:linear-gradient(135deg,#7360F2,#5A4BD1);color:#fff;}
   .act-new{background:var(--bg-btn);color:var(--muted);border:1px solid var(--border-bubble);}
@@ -230,20 +265,31 @@
   }
 
   /* MOBILE FIX */
-  #tb-widget { height: 100dvh !important; }
+  @media (max-width: 600px) {
+    #tb-widget { height: 100vh !important; height: 100dvh !important; }
+  }
   .tb-input-row { position: sticky; bottom:0; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
-  body { overflow-x: hidden; }
+  /* num-pad — frosted variant A */
+  .num-pad { display:none; padding:6px 12px; flex-direction:column; gap:7px; }
+  .num-pad-row { display:flex; align-items:center; gap:3px; }
+  .num-pad .d { background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.2); border-radius:8px; color:#C9A84C; font-size:15px; font-weight:700; width:34px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .12s; flex-shrink:0; }
+  .num-pad .d:hover { background:rgba(201,168,76,0.18); border-color:rgba(201,168,76,0.5); color:#E4C97E; }
+  .num-pad .d:active { background:rgba(201,168,76,0.28); }
+  .num-pad .np-del { background:rgba(224,85,85,0.07); border:1px solid rgba(224,85,85,0.2); border-radius:8px; color:#E05555; font-size:13px; width:34px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+  .num-pad .np-ok { background:#C9A84C; border:none; border-radius:8px; color:#0e0e0f; font-size:13px; font-weight:700; padding:0 14px; height:34px; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:4px; }
+  .num-pad .np-ok:hover { background:#E4C97E; }
+  @media (max-width:600px) { .num-pad { display:none !important; } }
 
   /* ── BOTTOM SHEET ── */
-  #pkg-sheet { position:fixed; bottom:0; left:0; right:0; z-index:999999; transform:translateY(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); }
+  #pkg-sheet { position:fixed; bottom:0; left:0; right:0; z-index:999999; transform:translateY(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); -webkit-transform:translateY(100%); will-change:transform; }
   #pkg-sheet.open { transform:translateY(0); }
   #pkg-sheet-backdrop { position:fixed; inset:0; z-index:999998; background:rgba(0,0,0,0.6); opacity:0; pointer-events:none; transition:opacity .3s; }
   #pkg-sheet-backdrop.open { opacity:1; pointer-events:all; }
   .pkg-sheet-inner { background:#1A1A1C; border-radius:20px 20px 0 0; border-top:2px solid rgba(201,168,76,0.4); max-height:85vh; display:flex; flex-direction:column; overflow:hidden; }
   .pkg-sheet-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px 10px; border-bottom:1px solid rgba(255,255,255,0.06); flex-shrink:0; }
-  .pkg-sheet-back { font-size:12px; color:#C9A84C; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:8px; padding:5px 12px; cursor:pointer; font-weight:700; }
-  .pkg-sheet-title { font-size:11px; color:rgba(201,168,76,0.5); letter-spacing:0.5px; text-align:center; flex:1; }
-  .pkg-sheet-hint { font-size:12px; color:#888880; text-align:center; padding:8px 16px; background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.04); font-style:italic; flex-shrink:0; }
+  .pkg-sheet-back { font-size:13px; color:#C9A84C; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:8px; padding:5px 12px; cursor:pointer; font-weight:700; }
+  .pkg-sheet-title { font-size:12px; color:rgba(201,168,76,0.5); letter-spacing:0.5px; text-align:center; flex:1; }
+  .pkg-sheet-hint { font-size:13px; color:#888880; text-align:center; padding:8px 16px; background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.04); font-style:italic; flex-shrink:0; }
   .pkg-sheet-body { overflow-y:auto; padding:0 12px 12px; -webkit-overflow-scrolling:touch; }
   .pkg-card { margin-top:8px; border-radius:14px; padding:12px; border:1.5px solid rgba(255,255,255,0.07); background:#252527; transition:transform .1s,box-shadow .1s; }
   .pkg-card.rec { border-color:rgba(201,168,76,0.5); background:rgba(201,168,76,0.08); }
@@ -263,7 +309,6 @@
 </style>
 </head>
 <body>
-<span id="__tb_wm" style="position:absolute;opacity:0;font-size:0;pointer-events:none;user-select:none;" aria-hidden="true">TeryBot © Ivanov Remonti 2025 | ivanov-remonti.com</span>
 
 <button id="tb-toggle" aria-label="Чат">
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0E0E0F" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -272,20 +317,16 @@
 
 <div id="tb-widget">
   <div class="tb-header">
-    <div class="tb-header-top">
-      <button id="tb-close">✕ Затвори</button>
-      <div class="hdr-icons">
-        <button id="tb-about-btn" class="hdr-btn" title="За нас" style="font-size:12px;font-weight:700;color:rgba(201,168,76,0.8);width:auto;padding:0 8px;">За нас</button>
-        <button id="tb-offer-btn" title="Виж оферта">📋 Оферта</button>
-        <button id="tb-phone-btn" class="hdr-btn" title="Обадете се">📞</button>
-        <button id="tb-theme-btn" class="hdr-btn">☀️</button>
-      </div>
-    </div>
-    <div class="tb-header-bot">
-      <button id="tb-back">⬅ Назад</button>
-      <div class="tb-avatar">🏠</div>
-      <div class="tb-title"><h3>Нашият екип</h3><p>Ремонти и строителство</p></div>
+    <div class="tb-header-single">
+      <button id="tb-close" aria-label="Затвори чата">✕</button>
+      <button id="tb-back" aria-label="Назад">⬅</button>
       <div class="tb-dot"></div>
+      <div class="tb-title"><h3><a href="https://ivanov-remonti.com" target="_blank" style="color:var(--gold-light);text-decoration:none;">Ivanov Remonti</a></h3><p>ivanov-remonti.com</p></div>
+      <div class="hdr-icons">
+        <button id="tb-about-btn" class="hdr-btn" title="За нас" aria-label="За нас" style="font-size:12px;font-weight:700;color:#C9A84C;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);border-radius:8px;padding:0 10px;height:36px;">✦ За нас</button>
+        <button id="tb-phone-btn" class="hdr-btn" title="Обадете се" aria-label="Обадете се">📞</button>
+        <button id="tb-theme-btn" class="hdr-btn" aria-label="Смени тема">☀️</button>
+      </div>
     </div>
   </div>
   <div id="tb-panel" style="display:none;">
@@ -296,45 +337,53 @@
     </div>
   </div>
   <div class="widget-body">
-    <div id="tb-sidebar">
-      <div class="sb-title">🛒 Избрани услуги</div>
-      <div id="sb-items"></div>
-      <div id="sb-empty" class="sb-empty">Все още няма избрани услуги.<br>Изберете от менюто.</div>
-      <div id="sb-footer" style="display:none;">
-        <div class="sb-total">
-          <div class="sb-total-lbl">Общо:</div>
-          <div class="sb-total-val" id="sb-total">—</div>
-        </div>
-        <button class="sb-offer-btn" id="sb-offer-btn">📋 Виж офертата</button>
-        <button class="sb-other-btn" id="sb-other-btn">➕ Друга услуга</button>
-        <button class="sb-other-btn" id="sb-clear-btn" style="color:var(--red);border-color:rgba(224,85,85,0.3);">🗑 Изчисти всичко</button>
-      </div>
-    </div>
+
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;" id="chat-container">
-      <div id="scroll-ind-up" style="display:none;position:absolute;top:0;left:0;right:0;z-index:10;background:linear-gradient(to bottom,rgba(201,168,76,0.3),rgba(201,168,76,0.05));border-bottom:2px solid rgba(201,168,76,0.5);padding:8px 16px;cursor:pointer;text-align:center;color:#C9A84C;font-size:13px;font-weight:700;letter-spacing:0.5px;">▲ &nbsp; Съобщения горе &nbsp; ▲</div>
       <div class="tb-msgs" id="tb-msgs"></div>
-      <div id="scroll-ind-down" style="display:none;position:absolute;bottom:0;left:0;right:0;z-index:10;background:linear-gradient(to top,rgba(201,168,76,0.3),rgba(201,168,76,0.05));border-top:2px solid rgba(201,168,76,0.5);padding:8px 16px;cursor:pointer;text-align:center;color:#C9A84C;font-size:13px;font-weight:700;letter-spacing:0.5px;">▼ &nbsp; Виж още &nbsp; ▼</div>
       <div class="action-btns" id="action-btns" style="display:none;">
         <button class="act-btn act-pdf" id="btn-pdf">📄 PDF</button>
         <button class="act-btn act-viber" id="btn-viber">💜 Viber</button>
         <button class="act-btn act-new" id="btn-new">🔄 Нов</button>
       </div>
+      <div class="num-pad" id="num-pad" style="display:none;">
+        <div class="num-pad-row">
+          <div class="d" onclick="npAdd('1')">1</div>
+          <div class="d" onclick="npAdd('2')">2</div>
+          <div class="d" onclick="npAdd('3')">3</div>
+          <div class="d" onclick="npAdd('4')">4</div>
+          <div class="d" onclick="npAdd('5')">5</div>
+          <div class="d" onclick="npAdd('6')">6</div>
+          <div class="d" onclick="npAdd('7')">7</div>
+          <div class="d" onclick="npAdd('8')">8</div>
+          <div class="d" onclick="npAdd('9')">9</div>
+          <div class="d" onclick="npAdd('0')">0</div>
+          <div class="np-del" onclick="npDel()">⌫</div>
+          <button id="np-confirm" class="np-ok" onclick="npConfirm()" style="display:none;">✓ OK</button>
+        </div>
+      </div>
       <div class="tb-input-row">
-        <input id="tb-input" type="text" placeholder="Напишете въпрос или квадратура..." autocomplete="off" disabled/>
-        <button id="tb-send" disabled>➤</button>
+        <input id="tb-input" type="text" inputmode="decimal" placeholder="Питайте за цени, срокове, гаранция или въведете м²..." autocomplete="off" disabled aria-label="Въведете съобщение"/>
+        <button id="tb-send" disabled aria-label="Изпрати">➤</button>
       </div>
     </div>
   </div>
   <div id="tb-bottom-bar">
-    <div class="bb-row">
-      <div class="bb-chips-wrapper">
-        <div class="bb-chips" id="bb-chips"></div>
-      </div>
-      <div class="bb-total" id="bb-total"></div>
-      <button class="bb-offer-btn" id="bb-offer-btn" style="display:none;"><span>📋 Оферта</span></button>
-      <button id="bb-clear-btn" style="display:none;background:rgba(224,85,85,0.22);border:1px solid rgba(224,85,85,0.55);border-radius:8px;padding:6px 10px;color:#F07070;font-size:12px;cursor:pointer;flex-shrink:0;">🗑 Изчисти</button>
+    <div id="cart-bar-empty" style="background:#1A1A1C;padding:10px 14px;border-top:1px solid rgba(255,255,255,0.06);text-align:center;font-size:12px;color:#555;">
+      🛒 Изберете услуга за да видите цена
     </div>
-    <div id="bb-swipe-hint" class="bb-swipe-hint" style="display:none;">👉 Плъзни наляво/надясно</div>
+    <div id="cart-bar-active" style="display:none;background:#1A1A1C;padding:8px 12px;border-top:2px solid rgba(201,168,76,0.4);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;min-width:0;">
+          <div id="cart-bar-count" style="font-size:11px;color:rgba(201,168,76,0.6);white-space:nowrap;"></div>
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <div id="cart-bar-price" style="font-size:20px;font-weight:700;color:#C9A84C;line-height:1.1;white-space:nowrap;"></div>
+            <div id="cart-bar-lv" style="font-size:10px;color:#666;white-space:nowrap;"></div>
+          </div>
+        </div>
+        <button id="cart-bar-offer" style="background:linear-gradient(135deg,#C9A84C,#9A7530);border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#0E0E0F;cursor:pointer;white-space:nowrap;flex-shrink:0;">📋 Виж офертата</button>
+        <button id="cart-bar-clear" style="background:rgba(224,85,85,0.12);border:1px solid rgba(224,85,85,0.3);border-radius:8px;padding:7px 10px;color:#E05555;font-size:14px;cursor:pointer;flex-shrink:0;">🗑</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -365,16 +414,25 @@
       <div class="ov-meta" id="ov-meta"></div>
     </div>
     <div class="ov-body" id="ov-body"></div>
+    <div id="ov-sticky-bar" style="flex-shrink:0;background:#0E0D0B;border-top:1px solid rgba(201,168,76,0.25);padding:10px 14px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;">
+      <button id="ov-sticky-pdf" style="flex:1;background:linear-gradient(135deg,#C9A84C,#9A7530);border:none;border-radius:10px;padding:12px 6px;font-size:13px;font-weight:700;color:#0E0E0F;cursor:pointer;">📄 PDF</button>
+      <button id="ov-sticky-viber" style="flex:1;background:linear-gradient(135deg,#7360F2,#5A4BD1);border:none;border-radius:10px;padding:12px 6px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">💜 Viber</button>
+      <button id="ov-sticky-finish" style="flex:1;background:linear-gradient(135deg,#4CAF82,#2d8a5e);border:none;border-radius:10px;padding:12px 6px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">✅ Завърши</button>
+    </div>
   </div>
 </div>
 
 
 <script>
 const EUR = 1.95583;
+const PHONE       = '0877810418';
+const PHONE_DISPLAY = '0877 810 418';
+const PHONE_VIBER   = '359877810418';
+function callPhone(){ window.location.href = 'tel:' + PHONE; }
 function eur(lv){ return (lv/EUR).toFixed(2); }
 function fmt(lv){ return eur(lv)+' € / '+Number(lv).toFixed(2)+' лв'; }
 function fmtU(lv,u){ return eur(lv)+' €/'+u+' · '+Number(lv).toFixed(2)+' лв/'+u; }
-function pTag(lv,u){ return eur(lv)+' €/'+u+'<br>'+Number(lv)+' лв/'+u; }
+function pTag(lv,u){ return eur(lv)+' €/'+u+' · '+Number(lv)+' лв/'+u; }
 
 const PRICES = {
   ceiling_flat:29.34, ceiling_led:50.85,
@@ -384,7 +442,7 @@ const PRICES = {
   paint_white:8.21, paint_walls_ceilings:9.39, paint_premium:13.30,
   window_lm:15,
   vik_mixer:35.20, vik_toilet:97.79, vik_siphon:29.34, vik_pipes:29.34,
-  sanding:4, primer:2
+  sanding:4, primer:2, paint_corrections:15.30
 };
 const P = PRICES;
 
@@ -401,13 +459,41 @@ const elInp = document.getElementById('tb-input');
 const elSend = document.getElementById('tb-send');
 const elBack = document.getElementById('tb-back');
 const elInputRow = document.querySelector('.tb-input-row');
-const elOfferBtn = document.getElementById('tb-offer-btn');
+const elOfferBtn = null;
 
 let panelItems = [], idSeq = 0;
 let isUserScrolledUp = false;
-let swipeHintShown = false;
+
+function updateCartBar(){
+  const cartEmpty = document.getElementById('cart-bar-empty');
+  const cartActive = document.getElementById('cart-bar-active');
+  const cartCount = document.getElementById('cart-bar-count');
+  const cartPrice = document.getElementById('cart-bar-price');
+  const cartLv = document.getElementById('cart-bar-lv');
+  if(!cartEmpty || !cartActive) return;
+  if(!panelItems.length){
+    cartEmpty.style.display = 'block';
+    cartActive.style.display = 'none';
+    return;
+  }
+  const total = panelItems.reduce((s,it) => s+it.total, 0);
+  const totalEur = eur(total);
+  cartEmpty.style.display = 'none';
+  cartActive.style.display = 'block';
+  cartCount.textContent = '🛒 ' + panelItems.length + ' ' + (panelItems.length === 1 ? 'услуга' : 'услуги') + ' добавени';
+  cartPrice.textContent = totalEur + ' €';
+  cartLv.textContent = total.toFixed(2) + ' лв · само труд';
+}
 
 function renderPanel(){
+  updateCartBar();
+  // T10: Pulse без flicker — използваме клас
+  const cartActive = document.getElementById('cart-bar-active');
+  if(cartActive && panelItems.length > 0){
+    cartActive.classList.remove('cart-pulse');
+    void cartActive.offsetWidth; // reflow
+    cartActive.classList.add('cart-pulse');
+  }
   elPanelItems.innerHTML = '';
   let total = 0;
   panelItems.forEach(it => { total += it.total; });
@@ -415,7 +501,7 @@ function renderPanel(){
   elPanelCount.textContent = panelItems.length;
   elBadge.textContent = panelItems.length;
   elBadge.classList.toggle('show', panelItems.length > 0);
-  elOfferBtn.classList.toggle('show', panelItems.length > 0);
+  if(elOfferBtn) elOfferBtn.classList.toggle('show', panelItems.length > 0);
 
   const sbItems = document.getElementById('sb-items');
   const sbEmpty = document.getElementById('sb-empty');
@@ -452,71 +538,31 @@ function renderPanel(){
         btn.addEventListener('click', () => {
           const item = panelItems.find(x => x.id === parseInt(btn.dataset.id));
           if(!item) return;
-          const sbItem = btn.closest('.sb-item');
-          if(!sbItem) return;
-          // Ако вече има inline input — не добавяме втори
-          if(sbItem.querySelector('.sb-inline-input')) return;
-          const row = document.createElement('div');
-          row.className = 'sb-inline-input';
-          row.style.cssText = 'display:flex;gap:4px;margin-top:6px;align-items:center;';
-          const inp = document.createElement('input');
-          inp.type = 'number'; inp.min = '0.1'; inp.step = '0.1';
-          inp.value = item.qty;
-          inp.style.cssText = 'flex:1;background:var(--bg-msgs);border:1px solid var(--gold);border-radius:6px;padding:5px 8px;color:var(--text);font-size:13px;outline:none;';
-          const okBtn = document.createElement('button');
-          okBtn.textContent = '✓';
-          okBtn.style.cssText = 'background:var(--green);border:none;border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;cursor:pointer;font-weight:700;';
-          const cancelBtn = document.createElement('button');
-          cancelBtn.textContent = '✕';
-          cancelBtn.style.cssText = 'background:rgba(224,85,85,0.2);border:1px solid rgba(224,85,85,0.4);border-radius:6px;padding:5px 8px;color:#E05555;font-size:13px;cursor:pointer;';
-          okBtn.addEventListener('click', () => {
+          const d = btn.closest('.sb-item');
+          if(!d) return;
+          // Показваме inline input вместо prompt
+          const existing = d.querySelector('.sb-inline-edit');
+          if(existing){ existing.remove(); return; }
+          const editRow = document.createElement('div');
+          editRow.className = 'sb-inline-edit';
+          editRow.style.cssText = 'display:flex;gap:4px;margin-top:6px;';
+          editRow.innerHTML = `<input type="number" min="0.1" step="0.1" value="${item.qty}" style="flex:1;background:var(--bg-msgs);border:1px solid var(--gold);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;outline:none;">
+            <button style="background:var(--green);border:none;border-radius:6px;padding:4px 10px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">✓</button>`;
+          d.appendChild(editRow);
+          const inp = editRow.querySelector('input');
+          inp.focus(); inp.select();
+          editRow.querySelector('button').addEventListener('click', () => {
             const n = parseNum(inp.value);
-            if(!n){ inp.style.borderColor='var(--red)'; inp.focus(); return; }
+            if(!n){ inp.style.borderColor='var(--red)'; return; }
             item.qty = n; item.total = Math.round(n * item.price * 100) / 100;
-            renderPanel();
+            editRow.remove(); renderPanel();
           });
-          cancelBtn.addEventListener('click', () => { row.remove(); });
-          inp.addEventListener('keydown', (e) => { if(e.key==='Enter') okBtn.click(); if(e.key==='Escape') cancelBtn.click(); });
-          row.appendChild(inp); row.appendChild(okBtn); row.appendChild(cancelBtn);
-          sbItem.appendChild(row);
-          setTimeout(() => inp.focus(), 50);
+          inp.addEventListener('keydown', e => { if(e.key === 'Enter') editRow.querySelector('button').click(); });
         });
       });
     }
   }
 
-  const bbChips = document.getElementById('bb-chips');
-  const bbTotal = document.getElementById('bb-total');
-  const bbOfferBtn = document.getElementById('bb-offer-btn');
-  const bbSwipeHint = document.getElementById('bb-swipe-hint');
-  if(bbChips){
-    if(panelItems.length === 0){
-      bbChips.innerHTML = '<span class="bb-chip" style="background:transparent;border:none;color:var(--muted);">Няма избрани услуги</span>';
-      if(bbTotal) bbTotal.textContent = '';
-      if(bbOfferBtn) bbOfferBtn.style.display = 'none';
-      const bbClearBtn = document.getElementById('bb-clear-btn');
-      if(bbClearBtn) bbClearBtn.style.display = 'none';
-      if(bbSwipeHint) bbSwipeHint.style.display = 'none';
-    } else {
-      bbChips.innerHTML = panelItems.map(it => `<span class="bb-chip" title="${it.label}">${it.label} ${it.qty}${it.unit}</span>`).join('');
-      if(bbTotal) bbTotal.textContent = `${eur(total)} €`;
-      if(bbOfferBtn) bbOfferBtn.style.display = 'block';
-      const bbClearBtn2 = document.getElementById('bb-clear-btn');
-      if(bbClearBtn2) bbClearBtn2.style.display = 'block';
-      if(!swipeHintShown && panelItems.length >= 2){
-        // Показваме hint само ако чиповете реално излизат извън контейнера
-        requestAnimationFrame(() => {
-          const wrapper = document.querySelector('.bb-chips-wrapper');
-          const chipsEl = document.getElementById('bb-chips');
-          if(chipsEl && wrapper && chipsEl.scrollWidth > wrapper.clientWidth){
-            swipeHintShown = true;
-            if(bbSwipeHint) bbSwipeHint.style.display = 'block';
-            setTimeout(() => { if(bbSwipeHint) bbSwipeHint.style.display = 'none'; }, 5000);
-          }
-        });
-      }
-    }
-  }
 }
 
 function isDuplicate(serviceName, serviceType, unit){
@@ -529,13 +575,50 @@ function isDuplicate(serviceName, serviceType, unit){
 }
 
 function addToPanel(label, qty, unit, price){
-  if(panelItems.some(p => p.label === label && p.unit === unit)){
-    showDuplicateWarning(label);
+  const baseLabel = label.replace(/ \(\d+\)$/, '');
+  const duplicates = panelItems.filter(p => p.label === baseLabel || p.label.startsWith(baseLabel + ' ('));
+  if(duplicates.length === 0){
+    panelItems.push({ id: ++idSeq, label: baseLabel, qty, unit, price, total: Math.round(qty * price * 100) / 100 });
+    renderPanel();
+    showFlashConfirm(`${baseLabel} — ${eur(qty*price)} €`);
     return;
   }
-  panelItems.push({ id: ++idSeq, label, qty, unit, price, total: qty * price });
+  // Дублирана услуга — добавяме автоматично с номер + подсказка
+  const autoLabel = `${baseLabel} ${duplicates.length + 1}`;
+  panelItems.push({ id: ++idSeq, label: autoLabel, qty, unit, price, total: Math.round(qty * price * 100) / 100 });
   renderPanel();
-  showFlashConfirm(`${label} — ${eur(qty*price)} €`);
+  const newId = idSeq;
+  // Flash + подсказка с бутон за промяна на името
+  const hintDiv = document.createElement('div');
+  hintDiv.className = 'flash-confirm bubble bot';
+  hintDiv.style.cssText = 'background:rgba(76,175,130,0.08);border:1px solid rgba(76,175,130,0.3);color:#4CAF82;display:flex;flex-direction:column;gap:8px;padding:10px 14px;';
+  hintDiv.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">✅</span><span>Добавено като <strong>${autoLabel}</strong></span></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:11px;color:var(--muted);">✏️ Искате друго ime?</span>
+      <button class="dup-rename-btn" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:var(--gold);border-radius:14px;padding:3px 12px;font-size:11px;font-weight:700;cursor:pointer;">Промени</button>
+    </div>
+    <div class="dup-rename-wrap" style="display:none;">
+      <input type="text" placeholder="напр. хол, спалня, 2-ри етаж..." style="width:100%;padding:7px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--bg-btn);color:var(--text);font-size:13px;outline:none;margin-bottom:6px;box-sizing:border-box;"/>
+      <button class="dup-rename-save" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:#0E0E0F;cursor:pointer;">✅ Запази</button>
+    </div>`;
+  elMsgs.appendChild(hintDiv);
+  smartScrollToBottom();
+  hintDiv.querySelector('.dup-rename-btn').addEventListener('click', () => {
+    const wrap = hintDiv.querySelector('.dup-rename-wrap');
+    wrap.style.display = 'block';
+    setTimeout(() => wrap.querySelector('input').focus(), 80);
+  });
+  const doRename = () => {
+    const val = hintDiv.querySelector('input').value.trim();
+    if(!val) return;
+    const item = panelItems.find(p => p.id === newId);
+    if(item){ item.label = `${baseLabel} (${val})`; renderPanel(); }
+    hintDiv.remove();
+    showFlashConfirm(`Преименувано: ${baseLabel} (${val})`);
+  };
+  hintDiv.querySelector('.dup-rename-save').addEventListener('click', doRename);
+  hintDiv.querySelector('input').addEventListener('keydown', (e) => { if(e.key === 'Enter') doRename(); });
+  setTimeout(() => { if(hintDiv.parentNode){ hintDiv.querySelector('.dup-rename-wrap').style.display === 'none' && (hintDiv.style.opacity = '0'); setTimeout(() => { if(hintDiv.parentNode) hintDiv.remove(); }, 400); } }, 6000);
 }
 
 function showFlashConfirm(text){
@@ -547,41 +630,6 @@ function showFlashConfirm(text){
   flash.innerHTML = `<span style="font-size:16px;">✅</span><span>Добавено: ${text}</span>`;
   elMsgs.appendChild(flash);
   setTimeout(() => { if(flash.parentNode) flash.style.opacity='0'; setTimeout(() => { if(flash.parentNode) flash.remove(); }, 400); }, 3000);
-}
-
-function showDuplicateWarning(label){
-  // Махаме предишни предупреждения
-  elMsgs.querySelectorAll('.flash-duplicate').forEach(el => el.remove());
-  const warn = document.createElement('div');
-  warn.className = 'flash-duplicate bubble bot';
-  warn.innerHTML = `
-    <span style="font-size:22px;flex-shrink:0;">⛔</span>
-    <div style="flex:1;">
-      <div style="font-size:14px;font-weight:700;margin-bottom:3px;">Услугата вече е добавена!</div>
-      <div style="font-size:12px;font-weight:400;color:rgba(255,150,150,0.85);margin-bottom:6px;">${label}</div>
-      <button class="dup-dismiss" style="font-size:11px;font-weight:700;background:rgba(224,85,85,0.25);border:1px solid rgba(224,85,85,0.6);border-radius:6px;padding:4px 10px;color:#FF8888;cursor:pointer;">✕ Разбрах</button>
-    </div>`;
-  elMsgs.appendChild(warn);
-  smartScrollToBottom();
-
-  // Мига 5 пъти после спира — но остава видимо
-  let count = 0;
-  const blink = setInterval(() => {
-    warn.style.background = count % 2 === 0 ? 'rgba(224,85,85,0.30)' : 'rgba(224,85,85,0.10)';
-    warn.style.borderColor = count % 2 === 0 ? 'rgba(224,85,85,1)' : 'rgba(224,85,85,0.45)';
-    count++;
-    if(count >= 10) clearInterval(blink);
-  }, 250);
-
-  function dismissWarn(){
-    if(!warn.parentNode) return;
-    warn.style.transition = 'opacity .35s';
-    warn.style.opacity = '0';
-    setTimeout(() => { if(warn.parentNode) warn.remove(); }, 350);
-  }
-
-  // Бутон "Разбрах" — единственият начин да се затвори
-  warn.querySelector('.dup-dismiss').addEventListener('click', dismissWarn);
 }
 
 function clearPanel(){ panelItems = []; renderPanel(); }
@@ -600,8 +648,9 @@ function smartScrollToBottom(force = false){
   if(force) isUserScrolledUp = false;
   if(!isUserScrolledUp){
     requestAnimationFrame(() => {
-      elMsgs.scrollTo({ top: elMsgs.scrollHeight, behavior: 'smooth' });
-      setTimeout(updateScrollIndicators, 300);
+      const last = elMsgs.lastElementChild;
+      if(last) last.scrollIntoView({ behavior:'smooth', block:'start' });
+      else elMsgs.scrollTo({ top: elMsgs.scrollHeight, behavior:'smooth' });
     });
   }
 }
@@ -643,7 +692,7 @@ function addFallbackResponse(text){
   const bubbleDiv = document.createElement('div'); bubbleDiv.className = 'bubble bot';
   bubbleDiv.innerHTML = `<div style="font-size:14px;line-height:1.55;">${text}</div>
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-bubble);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <button class="call-btn" onclick="window.location.href='tel:0877810418'" style="font-size:13px;">📞 0877 810 418</button>
+      <button class="call-btn" onclick="callPhone()" style="font-size:13px;">📞 ${PHONE_DISPLAY}</button>
     </div>
     <div class="ai-actions fb-actions">
       <button class="ai-btn fb-new-question">💬 Друг въпрос</button>
@@ -669,19 +718,38 @@ function showTyping(){
 function hideTyping(){ const e = document.getElementById('tb-typ'); if(e) e.remove(); }
 let choEl = null;
 function clearCho(){ if(choEl && choEl.remove) choEl.remove(); choEl = null; }
+function npAdd(v){ const i=document.getElementById('tb-input'); i.value+=v; i.dispatchEvent(new Event('input')); const c=document.getElementById('np-confirm'); if(c) c.style.display=i.value?'block':'none'; }
+function npDel(){ const i=document.getElementById('tb-input'); i.value=i.value.slice(0,-1); i.dispatchEvent(new Event('input')); const c=document.getElementById('np-confirm'); if(c) c.style.display=i.value?'block':'none'; }
+function npConfirm(){ const i=document.getElementById('tb-input'); if(i.value){ i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true})); } }
+
 function setInp(on, ph){
+  const numPad = document.getElementById('num-pad');
+  const npConfirmBtn = document.getElementById('np-confirm');
+  const isNumber = on && ph && (ph.includes('м²') || ph.includes('л.м.') || ph.includes('брой') || ph.includes('Въведете'));
+  const isDesktop = window.innerWidth > 600;
+  if(numPad){
+    // Б6: при on=false винаги скриваме numpad
+    numPad.style.display = (!on) ? 'none' : (isNumber && isDesktop) ? 'flex' : 'none';
+  }
+  if(npConfirmBtn) npConfirmBtn.style.display = 'none';
   elInp.disabled = !on; elSend.disabled = !on;
   if(ph !== undefined) elInp.placeholder = ph;
+  // Бъг 4: при on=false — blur за да се затвори клавиатурата на телефон
+  if(!on && window.innerWidth <= 600) elInp.blur();
   if(on) setTimeout(() => elInp.focus(), 80);
 }
 
 function calcMsg(c, unit){
   if(!c.price || isNaN(c.price)) return '<span style="color:var(--red)">⚠️ Грешка в цената. Моля, започнете отначало.</span>';
   const lv = c.value * c.price, e = eur(lv);
-  return `<span style="font-size:20px;font-weight:700;color:var(--gold);">${e} € / ${lv.toFixed(2)} лв</span>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px;">${c.serviceName||''} · ${c.serviceType||''} · ${c.value} ${unit} × ${eur(c.price)} €/${unit}</div>
-          <div style="font-size:11px;color:rgba(201,168,76,0.7);margin-top:3px;font-style:italic;">⚠️ Само за труд — без материали</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px;">📐 Ориентировъчна цена.</div>`;
+  return `<span style="font-size:26px;font-weight:700;color:var(--gold);">${e} € / ${lv.toFixed(2)} лв</span>
+          <div style="font-size:14px;color:var(--text2);margin-top:5px;">${c.serviceName||''} · ${c.serviceType||''} · ${c.value} ${unit} × ${eur(c.price)} €/${unit}</div>
+          <div style="font-size:13px;color:rgba(201,168,76,0.8);margin-top:4px;font-weight:600;">⚠️ Само за труд — без материали</div>
+          <div style="height:1px;background:rgba(201,168,76,0.15);margin:10px 0;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <span style="font-size:14px;color:var(--text2);font-weight:600;">📋 Готови? Вземете офертата</span>
+            <button onclick="showOfferOverlay()" style="background:linear-gradient(135deg,#C9A84C,#9A7530);border:none;border-radius:9px;padding:10px 18px;font-size:15px;font-weight:700;color:#0E0E0F;cursor:pointer;white-space:nowrap;flex-shrink:0;">Виж офертата →</button>
+          </div>`;
 }
 
 function parseNum(val){
@@ -708,18 +776,18 @@ function smartFallback(question) {
     return { text: 'Плащането се договаря индивидуално — обикновено аванс и финално плащане след завършване. Никакви скрити такси.' };
   // Локация
   if (/работит|покриват|район|квартал|град|sofia|софия|варна|пловдив|къде|идват|елате|дойдете|до нас|при нас|обслужват|покривате/i.test(q))
-    return { text: 'Работим основно в София и околността. Обадете се на 0877 810 418 и ще уточним дали покриваме вашия район.' };
+    return { text: `Работим основно в София и околността. Обадете се на ${PHONE_DISPLAY} и ще уточним дали покриваме вашия район.` };
   // Оглед
   if (/оглед|замер|дойд|елате|безплатен/i.test(q))
     return { text: 'Огледът е напълно безплатен и без ангажимент. Обадете се и уговаряме удобен час.' };
   // Опит / доверие
   if (/опит|години|референц|препорък|доверие|снимк|работа ви|виж|покаж/i.test(q))
-    return { text: 'Зад нас стоят години опит и доволни клиенти. Пишете ни в Viber на 0877 810 418 и ще ви изпратим снимки от изпълнени обекти.' };
+    return { text: `Зад нас стоят години опит и доволни клиенти. Пишете ни в Viber на ${PHONE_DISPLAY} и ще ви изпратим снимки от изпълнени обекти.` };
   // Квадратура
   if (/квадратура|кв|м²|колко метра|площ/i.test(q))
     return { text: 'Изберете услуга от менюто и въведете квадратурата — ботът ще изчисли ориентировъчната цена веднага. Ако не знаете квадратурата, можем да дойдем да замерим безплатно.' };
   // Default
-  return { text: 'За този въпрос най-бързо ще получите отговор на 📞 <strong>0877 810 418</strong> или пишете в Viber — отговаряме бързо.' };
+  return { text: `За този въпрос най-бързо ще получите отговор на 📞 <strong>${PHONE_DISPLAY}</strong> или пишете в Viber — отговаряме бързо.` };
 }
 
 let msgTimestamps = [];
@@ -785,7 +853,7 @@ function handleUnknownArea(){
   choEl = div;
 }
 
-function sendToFormspree(phone, services, total, onDone){
+function sendToFormspree(phone, services, total){
   const body = {
     телефон: phone,
     услуги: services || 'не е посочено',
@@ -796,17 +864,16 @@ function sendToFormspree(phone, services, total, onDone){
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify(body)
-  })
-  .then(r => { if(onDone) onDone(r.ok); })
-  .catch(() => { if(onDone) onDone(false); });
+  }).catch(() => {}); // тихо при грешка
 }
 
 function renderContactForm(onSuccess){
   clearCho(); setInp(false, '');
   const wrap = document.createElement('div'); wrap.className = 'contact-form';
   wrap.innerHTML = `
-    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:4px;">📋 Оставете телефон за обратна връзка</div>
-    <input type="tel" id="cf-phone" placeholder="📞 Вашият телефон" />
+    <div style="font-size:15px;font-weight:700;color:var(--gold);margin-bottom:4px;">📞 Оставете телефон за обратна връзка</div>
+    <input type="tel" id="cf-phone" placeholder="📞 Вашият телефон" autocomplete="tel"/>
+    <div id="cf-phone-err" style="display:none;font-size:12px;color:var(--red);margin-top:4px;">⚠️ Моля въведете валиден телефон (напр. ${PHONE_DISPLAY})</div>
     <button class="cf-submit" id="cf-submit-btn">✅ Изпрати</button>
     <button class="cf-skip" id="cf-skip-btn">Пропусни</button>
   `;
@@ -814,25 +881,26 @@ function renderContactForm(onSuccess){
   smartScrollToBottom();
   choEl = wrap;
   wrap.querySelector('#cf-submit-btn').addEventListener('click', () => {
-    const phone = wrap.querySelector('#cf-phone').value.trim();
-    if(!phone){ wrap.querySelector('#cf-phone').style.borderColor='var(--red)'; return; }
+    const phoneInput = wrap.querySelector('#cf-phone');
+    const errDiv = wrap.querySelector('#cf-phone-err');
     const submitBtn = wrap.querySelector('#cf-submit-btn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ Изпращане...';
-    submitBtn.style.opacity = '0.7';
+    const raw = phoneInput.value.trim();
+    // 1: Regex: BG — точно 10 цифри (0 + 9 цифри) или +359/00359 + 9 цифри
+    const digits = raw.replace(/[\s\-\(\)]/g, '');
+    const valid = /^(\+359|00359)[1-9]\d{8}$|^0[1-9]\d{8}$/.test(digits);
+    if(!raw){ phoneInput.style.borderColor='var(--red)'; errDiv.style.display='block'; return; }
+    if(!valid){ phoneInput.style.borderColor='var(--red)'; errDiv.style.display='block'; return; }
+    phoneInput.style.borderColor=''; errDiv.style.display='none';
+    // 4: disabled при изпращане — предотвратява двойно изпращане
+    submitBtn.disabled = true; submitBtn.textContent = '⏳ Изпращане...';
+    const phone = raw;
     clearCho();
     addBubble(`📞 ${phone}`, 'user');
     ctx.clientPhone = phone;
     const services = panelItems.map(it => it.label).join(', ');
     const total = panelItems.length ? eur(panelItems.reduce((s,it)=>s+it.total,0)) : null;
-    sendToFormspree(phone, services, total, (ok) => {
-      if(ok){
-        addBubble('✅ Телефонът е записан! Ще се свържем с вас скоро.', 'bot');
-      } else {
-        addBubble('⚠️ Не успяхме да запишем телефона. Можете да ни пишете директно на 0877 810 418.', 'bot');
-      }
-      if(onSuccess) onSuccess(phone);
-    });
+    sendToFormspree(phone, services, total);
+    if(onSuccess) onSuccess(phone);
   });
   wrap.querySelector('#cf-skip-btn').addEventListener('click', () => {
     clearCho();
@@ -871,9 +939,44 @@ function updateBackBtn(){
 
 function goBack(){
   if(!hist.length || _backBusy) return;
-  // Ако overlay е отворен — само го затваряме
+  // Ако pkg-sheet е отворен — затваряме го и възстановяваме бутоните
+  const pkgSheet = document.getElementById('pkg-sheet');
+  if(pkgSheet && pkgSheet.style.transform === 'translateY(0)'){
+    closePackageSheet();
+    elInputRow.style.display = 'flex';
+    // Б2: прескачаме offer_summary/gk_packages в hist — намираме безопасно състояние
+    const badStates = ['offer_summary','gk_packages','painting_packages'];
+    while(hist.length && badStates.includes(hist[hist.length-1].cur)) hist.pop();
+    if(hist.length){
+      const snap = hist[hist.length-1];
+      restoreSnap(snap);
+      clearCho();
+      while(elMsgs.children.length > snap.dom) elMsgs.removeChild(elMsgs.lastChild);
+      const def = S[cur]; updateBackBtn();
+      setTimeout(() => {
+        if(def && def.checkboxesFn) renderCheckboxes(def.checkboxesFn(ctx), ctx.lastService);
+        else if(def && def.choicesFn) renderCho(def.choicesFn(ctx));
+        else if(def && def.choices && def.choices.length) renderCho(def.choices);
+        else if(def && def.onEnter) def.onEnter();
+        else if(def && def.input) setInp(true, def.label || 'Въведете…');
+      }, 120);
+    }
+    return;
+  }
+  // Ако overlay е отворен — затваряме го и възстановяваме choices
   if(document.getElementById('offer-overlay').classList.contains('open')){
-    hideOfferOverlay(); return;
+    hideOfferOverlay();
+    // Б1: след затваряне на overlay — възстановяваме choices от текущото състояние
+    setTimeout(() => {
+      const def = S[cur];
+      if(!choEl && def){
+        if(def.checkboxesFn) renderCheckboxes(def.checkboxesFn(ctx), ctx.lastService);
+        else if(def.choicesFn) renderCho(def.choicesFn(ctx));
+        else if(def.choices && def.choices.length) renderCho(def.choices);
+        else if(def.onEnter) def.onEnter();
+      }
+    }, 200);
+    return;
   }
   _backBusy = true;
   setTimeout(() => { _backBusy = false; }, 600);
@@ -882,6 +985,8 @@ function goBack(){
   cbQueue = snap.cbQueue ? snap.cbQueue.slice() : [];
   ctx._queueAwaitingArea = false;
   ctx._gridQueuePending = false;
+  // Е5: нулираме _savedQueueForNew при Назад — за да не се възстанови стара опашка
+  ctx._savedQueueForNew = null;
   // Ако панелът има повече услуги отколкото в snapshot → махаме добавените
   if(panelItems.length > snap.panel.length){
     panelItems = JSON.parse(JSON.stringify(snap.panel));
@@ -1079,9 +1184,19 @@ function goDirectResult(item){
 async function onCho(c){
   clearCho();
   if(c.reset){ fullReset(); return; }
-  if(c.specialCall){ window.location.href = 'tel:0877810418'; return; }
+  if(c.specialCall){ callPhone(); return; }
   if(c.specialBack){ clearCho(); goBack(); return; }
-  if(c.next === '_queue_new'){ addBubble(c.label, 'user', false); setInp(true, 'Въведете квадратура (м²)…'); ctx._queueAwaitingArea = true; return; }
+
+  if(c.next === '_queue_new'){
+    addBubble(c.label, 'user', false);
+    // Б4: запазваме cbQueue контекста — не го нулираме
+    const savedQueue = cbQueue.slice();
+    const savedDisplayUnit = ctx.displayUnit || 'м²';
+    ctx._savedQueueForNew = savedQueue;
+    ctx._queueAwaitingArea = true;
+    setInp(true, `Въведете ${savedDisplayUnit}…`);
+    return;
+  }
   addBubble(c.label, 'user', false);
   if(c.price !== undefined) ctx.price = c.price;
   if(c.serviceName !== undefined) ctx.serviceName = c.serviceName;
@@ -1134,12 +1249,177 @@ function go(name){
     if(def.checkboxesFn) setTimeout(() => { renderCheckboxes(def.checkboxesFn(ctx), ctx.lastService); }, 350);
     else if(def.choicesFn) setTimeout(() => { renderCho(def.choicesFn(ctx)); }, 350);
     else if(def.choices && def.choices.length) setTimeout(() => { renderCho(def.choices); }, 350);
-    else if(def.input){ setInp(true, def.label || 'Въведете…'); elInputRow.style.display = 'flex'; }
+    else if(def.input){
+      // Вариант А: ако услугата вече е в панела → показваме формата с две полета
+      if(def.input === 'number' && isDuplicateService()){
+        showDuplicateForm((sqVal, roomName) => {
+          const unit = ctx.displayUnit || def.displayUnit || 'м²';
+          ctx.value = sqVal; ctx.prevValue = sqVal; ctx.prevUnit = unit; ctx._lastArea = sqVal;
+          const baseName = (ctx.serviceName || '') + (ctx.serviceType ? ` (${ctx.serviceType})` : '');
+          const duplicates = panelItems.filter(p => p.label === baseName || p.label.startsWith(baseName.replace(/ \(.*\)$/,'') + ' (') || p.label === (ctx.serviceName||'') || p.label.startsWith((ctx.serviceName||'') + ' ('));
+          const autoLabel = roomName
+            ? `${ctx.serviceName||''}${ctx.serviceType ? ` (${ctx.serviceType})` : ''} (${roomName})`
+            : `${ctx.serviceName||''}${ctx.serviceType ? ` (${ctx.serviceType})` : ''} ${duplicates.length + 1}`;
+          panelItems.push({ id: ++idSeq, label: autoLabel, qty: sqVal, unit, price: ctx.price, total: Math.round(sqVal * ctx.price * 100) / 100 });
+          renderPanel();
+          showFlashConfirm(`${autoLabel} — ${eur(sqVal * ctx.price)} €`);
+          ctx.lastService = def.next ? def.next.replace('_result','') : ctx.lastService;
+          if(cbQueue.length) setTimeout(processQueue, 380);
+          else setTimeout(() => go(def.next), 380);
+        });
+      } else {
+        elInputRow.style.display = 'flex';
+        setInp(true, def.label || 'Въведете…');
+      }
+    }
     else if(def.autoNext){ if(cbQueue.length) processQueue(); else setTimeout(() => go(def.autoNext), 400); }
   }, 300);
 }
 
-// ======================== ХИБРИДЕН AI ЗА ЦЕНИ (СКРИПТ) ========================
+// ======================== ВАРИАНТ А: ФОРМА ЗА ДУБЛИРАНА УСЛУГА ========================
+function isDuplicateService(){
+  if(!ctx.serviceName && !ctx.serviceType) return false;
+  const baseName = ctx.serviceName || '';
+  const baseType = ctx.serviceType || '';
+  return panelItems.some(p => {
+    if(baseType) return p.label.includes(baseType) || p.label === (baseName + (baseType ? ` (${baseType})` : ''));
+    return p.label === baseName || p.label.startsWith(baseName + ' ') || p.label.startsWith(baseName + ' (');
+  });
+}
+
+function showDuplicateForm(onConfirm){
+  clearCho();
+  setInp(false, '');
+  const isDesktop = window.innerWidth > 600;
+  const unit = ctx.displayUnit || 'м²';
+  const serviceName = ctx.serviceName || '';
+  const serviceType = ctx.serviceType || '';
+  const displayName = serviceName + (serviceType ? ` — ${serviceType}` : '');
+
+  // Червено предупреждение
+  const existingCount = panelItems.filter(p =>
+    p.label === (serviceName + (serviceType ? ` (${serviceType})` : '')) ||
+    p.label.startsWith(serviceName + ' (') ||
+    p.label.startsWith(serviceName + ' ')
+  ).length;
+  const ordinal = existingCount === 1 ? 'втори' : existingCount === 2 ? 'трети' : `${existingCount+1}-ти`;
+  const hintBubble = document.createElement('div');
+  hintBubble.className = 'bubble bot';
+  hintBubble.style.cssText = 'background:rgba(224,85,85,0.08);border:1px solid rgba(224,85,85,0.3);color:#E05555;';
+  hintBubble.innerHTML = `⚠️ Добавяш <strong>${displayName}</strong> за <strong>${ordinal} път</strong> — уточни за коя зона е:`;
+  elMsgs.appendChild(hintBubble);
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'background:var(--bg-bubble-bot);border:1px solid var(--border-bubble);border-radius:14px;border-top-left-radius:4px;padding:13px 14px;display:flex;flex-direction:column;gap:10px;width:100%;box-sizing:border-box;';
+
+  // Двете полета на един ред
+  const fields = document.createElement('div');
+  fields.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
+
+  // М² поле
+  const sqWrap = document.createElement('div');
+  sqWrap.style.cssText = 'display:flex;flex-direction:column;gap:4px;flex:0 0 90px;';
+  const sqLabel = document.createElement('div');
+  sqLabel.style.cssText = 'font-size:10px;color:var(--muted);font-weight:500;letter-spacing:0.3px;text-transform:uppercase;';
+  sqLabel.textContent = unit;
+  const sqInput = document.createElement('input');
+  sqInput.type = 'text';
+  sqInput.inputMode = 'decimal';
+  sqInput.placeholder = unit;
+  sqInput.style.cssText = 'width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border-input);background:var(--bg-btn);color:var(--text);font-size:15px;font-weight:700;outline:none;box-sizing:border-box;';
+  sqInput.addEventListener('focus', () => { sqInput.style.borderColor = 'var(--gold)'; });
+  sqInput.addEventListener('blur', () => { sqInput.style.borderColor = 'var(--border-input)'; });
+  sqWrap.appendChild(sqLabel); sqWrap.appendChild(sqInput);
+
+  // Ime поле
+  const nameWrap = document.createElement('div');
+  nameWrap.style.cssText = 'display:flex;flex-direction:column;gap:4px;flex:1;';
+  const nameLabel = document.createElement('div');
+  nameLabel.style.cssText = 'font-size:10px;color:var(--muted);font-weight:500;letter-spacing:0.3px;text-transform:uppercase;';
+  nameLabel.innerHTML = 'ИМЕ / УТОЧНЕНИЕ <span style="font-weight:400;opacity:0.6;">(по желание)</span> 👇';
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'напр. стая 1, баня, вход...';
+  nameInput.style.cssText = 'width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border-input);background:var(--bg-btn);color:var(--text);font-size:14px;outline:none;box-sizing:border-box;';
+  nameInput.addEventListener('focus', () => { nameInput.style.borderColor = 'var(--gold)'; });
+  nameInput.addEventListener('blur', () => { nameInput.style.borderColor = 'var(--border-input)'; });
+  nameWrap.appendChild(nameLabel); nameWrap.appendChild(nameInput);
+
+  fields.appendChild(sqWrap); fields.appendChild(nameWrap);
+  wrap.appendChild(fields);
+
+  // Numpad — само на desktop
+  if(isDesktop){
+    const np = document.createElement('div');
+    np.style.cssText = 'display:grid;grid-template-columns:repeat(5,1fr);gap:5px;';
+    const npBtns = ['1','2','3','4','5','6','7','8','9','0','⌫','.'];
+    npBtns.forEach(v => {
+      const b = document.createElement('button');
+      b.textContent = v;
+      b.style.cssText = `padding:8px 4px;border-radius:7px;border:1px solid var(--border-bubble);background:var(--bg-btn);color:${v==='⌫'?'var(--red)':'var(--gold)'};font-size:13px;font-weight:700;cursor:pointer;`;
+      b.addEventListener('click', () => {
+        if(v === '⌫') sqInput.value = sqInput.value.slice(0,-1);
+        else sqInput.value += v;
+      });
+      np.appendChild(b);
+    });
+    // OK бутон — span 2
+    const okBtn = document.createElement('button');
+    okBtn.textContent = 'OK ✓';
+    okBtn.style.cssText = 'grid-column:span 2;padding:8px;border-radius:7px;border:none;background:var(--gold);color:#0E0E0F;font-size:13px;font-weight:700;cursor:pointer;';
+    okBtn.addEventListener('click', () => sqInput.dispatchEvent(new Event('ok')));
+    np.appendChild(okBtn);
+    wrap.appendChild(np);
+  }
+
+  // Divider
+  const div = document.createElement('div');
+  div.style.cssText = 'height:0.5px;background:var(--border-bubble);';
+  wrap.appendChild(div);
+
+  // Бутони Потвърди / Пропусни
+  const btns = document.createElement('div');
+  btns.style.cssText = 'display:flex;gap:8px;';
+  const confirmBtn = document.createElement('button');
+  confirmBtn.textContent = '✅ Потвърди';
+  confirmBtn.style.cssText = 'flex:1;padding:10px;border-radius:9px;border:none;background:var(--gold);color:#0E0E0F;font-size:13px;font-weight:700;cursor:pointer;';
+  const skipBtn = document.createElement('button');
+  skipBtn.textContent = '⏭ Пропусни името';
+  skipBtn.style.cssText = 'flex:1;padding:10px;border-radius:9px;border:0.5px solid var(--border-bubble);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;';
+  btns.appendChild(confirmBtn); btns.appendChild(skipBtn);
+  wrap.appendChild(btns);
+
+  // Hint
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:11px;color:var(--muted);text-align:center;';
+  hint.textContent = 'Ако пропуснеш → ще се добави с автоматичен номер';
+  wrap.appendChild(hint);
+
+  elMsgs.appendChild(wrap);
+  choEl = wrap;
+  smartScrollToBottom(true);
+
+  // Фокус върху м² полето
+  setTimeout(() => sqInput.focus(), 80);
+
+  const doConfirm = (skipName) => {
+    const sqVal = parseNum(sqInput.value);
+    if(!sqVal){
+      sqInput.style.borderColor = 'var(--red)';
+      sqInput.focus();
+      return;
+    }
+    const roomName = skipName ? '' : nameInput.value.trim();
+    wrap.remove(); choEl = null;
+    onConfirm(sqVal, roomName);
+  };
+
+  confirmBtn.addEventListener('click', () => doConfirm(false));
+  skipBtn.addEventListener('click', () => doConfirm(true));
+  sqInput.addEventListener('ok', () => doConfirm(false));
+  nameInput.addEventListener('keydown', e => { if(e.key === 'Enter') doConfirm(false); });
+  sqInput.addEventListener('keydown', e => { if(e.key === 'Enter') nameInput.focus(); });
+}
 function extractArea(text) {
   const match = text.match(/\b(\d+(?:\.\d+)?)\s*(?:кв\.?м|kv|m2|кв|м²)/i);
   if (match) return parseFloat(match[1]);
@@ -1156,7 +1436,7 @@ function isAskingForMaterials(question) {
 function handlePriceQuestion(question, areaFromInput = null) {
   const q = question.toLowerCase();
   if (isAskingForMaterials(question)) {
-    return "Цената на материала зависи от марката и магазина. За безплатен оглед и точно остойностяване се обадете на 0877 810 418.";
+    return `Цената на материала зависи от марката и магазина. За безплатен оглед и точно остойностяване се обадете на ${PHONE_DISPLAY}.`;
   }
   const isAskingPrice = /колко|цена|струва|скъпо|цената на|колко е|струват|цените|сума|изчислението/i.test(q);
   if (!isAskingPrice && areaFromInput === null) return null;
@@ -1294,6 +1574,8 @@ function handleInp(){
     if(parsed && parsed.type === 'direct'){
       addBubble(val, 'user', false); elInp.value = ''; setInp(false, '');
       ctx.queueArea = parsed.value; ctx.prevValue = parsed.value; ctx.prevUnit = 'м²'; ctx._queueAwaitingArea = false;
+      // Б4: възстановяваме cbQueue ако е запазен от _queue_new
+      if(ctx._savedQueueForNew){ cbQueue = ctx._savedQueueForNew.slice(); ctx._savedQueueForNew = null; }
       processQueue(); return;
     }
     const n = parseNum(val);
@@ -1303,6 +1585,8 @@ function handleInp(){
     }
     addBubble(val, 'user', false); elInp.value = ''; setInp(false, '');
     ctx.queueArea = n; ctx.prevValue = n; ctx.prevUnit = 'м²'; ctx._queueAwaitingArea = false;
+    // Б4: възстановяваме cbQueue ако е запазен от _queue_new
+    if(ctx._savedQueueForNew){ cbQueue = ctx._savedQueueForNew.slice(); ctx._savedQueueForNew = null; }
     processQueue();
     return;
   }
@@ -1404,7 +1688,7 @@ function removeFromOverlay(id){
     document.getElementById('offer-overlay').classList.remove('open');
     setTimeout(() => {
       addBubble('🗑 Офертата е изчистена. Изберете нова услуга.', 'bot');
-      setTimeout(() => renderCho(S['start'].choices), 300);
+      setTimeout(() => go('start'), 300);
     }, 200);
     return;
   }
@@ -1428,7 +1712,7 @@ function showOfferOverlay(){
 
   // Meta
   document.getElementById('ov-meta').innerHTML =
-    `<span>📅 ${date}</span><span>📋 Оферта #${ofertaNum}</span><span>📞 0877 810 418</span>`;
+    `<span>📅 ${date}</span><span>📋 Оферта #${ofertaNum}</span><span>📞 ${PHONE_DISPLAY}</span>`;
 
   // Body
   const body = document.getElementById('ov-body');
@@ -1448,7 +1732,7 @@ function showOfferOverlay(){
 
   body.innerHTML = `
     <div style="padding:0 16px;">
-      <div style="font-size:11px;color:rgba(201,168,76,0.5);letter-spacing:1px;padding:12px 0 8px;border-bottom:1px solid rgba(201,168,76,0.15);">⚠️ Всички цени са само за труд — без материали</div>
+      <div style="background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.2);padding:10px 16px;font-size:12px;color:#C9A84C;font-weight:600;">⚠️ Ориентировъчни цени — само за труд, без материали. За точна оферта: <strong>${PHONE_DISPLAY}</strong></div>
       <table style="width:100%;border-collapse:collapse;">
         <thead>
           <tr style="border-bottom:1px solid rgba(201,168,76,0.2);">
@@ -1475,10 +1759,8 @@ function showOfferOverlay(){
         </div>
       </div>
     </div>
-    <div style="font-size:10px;color:#888880;font-style:italic;text-align:center;padding:0 16px 8px;">* Ориентировъчна цена. За точна — необходим е оглед.</div>
+    <div style="font-size:10px;color:#888880;font-style:italic;text-align:center;padding:0 16px 8px;">* Ориентировъчна цена. За точна оферта — обадете се на ${PHONE_DISPLAY}</div>
     <div class="ov-actions">
-      <button class="ov-btn ov-btn-pdf" id="ov-pdf-btn">📄 PDF</button>
-      <button class="ov-btn ov-btn-viber" id="ov-viber-btn">💜 Viber</button>
       <button class="ov-btn ov-btn-finish" id="ov-finish-btn">✅ Завърши и остави телефон</button>
       <button class="ov-btn ov-btn-more" id="ov-more-btn">➕ Добави още услуга</button>
       <button class="ov-btn" id="ov-clear-btn" style="grid-column:1/-1;background:rgba(224,85,85,0.12);border:1px solid rgba(224,85,85,0.3);color:#E05555;font-size:13px;padding:10px;">🗑 Изчисти всичко</button>
@@ -1488,22 +1770,31 @@ function showOfferOverlay(){
   document.getElementById('offer-overlay').classList.add('open');
   body.scrollTop = 0;
 
-  // Listeners
-  document.getElementById('ov-pdf-btn').onclick = () => {
-    const btn = document.getElementById('ov-pdf-btn');
-    if(btn.disabled) return;
-    btn.disabled = true;
-    btn.textContent = '⏳ Генерирам...';
+  // Sticky bar
+  const stickyBar = document.getElementById('ov-sticky-bar');
+  if(stickyBar) stickyBar.style.display = 'flex';
+  const stPdf = document.getElementById('ov-sticky-pdf');
+  const stViber = document.getElementById('ov-sticky-viber');
+  const stFinish = document.getElementById('ov-sticky-finish');
+  const pdfAction = () => {
+    const stPdfBtn = document.getElementById('ov-sticky-pdf');
+    if(stPdfBtn){ stPdfBtn.disabled = true; stPdfBtn.textContent = '⏳ Подготвям...'; }
     try { generatePDF(); }
-    catch(e){ addBubble('⚠️ Грешка при PDF. Натиснете Ctrl+P (или Share → Print на мобилен) за принтиране.', 'bot'); }
-    setTimeout(() => { btn.disabled = false; btn.textContent = '📄 PDF'; }, 2000);
+    catch(e){ addBubble('⚠️ Грешка при PDF.', 'bot'); }
+    setTimeout(() => { if(stPdfBtn){ stPdfBtn.disabled = false; stPdfBtn.textContent = '📄 PDF'; } }, 2000);
   };
-  document.getElementById('ov-viber-btn').onclick = () => {
-    const isDesktop = !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isDesktop) alert('Viber: 0877 810 418');
-    else window.open('viber://chat?number=359877810418');
+  if(stPdf) stPdf.onclick = pdfAction;
+  if(stViber) stViber.onclick = () => {
+    if(!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+      hideOfferOverlay();
+      addBubble(`💜 <strong>Viber:</strong> <span style="color:var(--gold);font-size:16px;">${PHONE_DISPLAY}</span><br><small style="color:var(--muted)">Отворете Viber и изпратете съобщение</small>`, 'bot');
+    } else { window.open('viber://chat?number='+PHONE_VIBER); }
   };
+  if(stFinish) stFinish.onclick = () => { document.getElementById('ov-finish-btn') && document.getElementById('ov-finish-btn').click(); };
+
+  // Listeners
   document.getElementById('ov-clear-btn').onclick = () => {
+    if(!confirm('Сигурни ли сте? Всички добавени услуги ще бъдат изтрити.')) return;
     clearPanel(); hideOfferOverlay();
     addBubble('🗑 Всички услуги са изчистени.', 'bot');
     setTimeout(() => go('start'), 300);
@@ -1514,24 +1805,60 @@ function showOfferOverlay(){
     setTimeout(() => go('start'), 200);
   };
   document.getElementById('ov-finish-btn').onclick = () => {
-    hideOfferOverlay();
+    // Б7: първо затваряме overlay и изчистваме choEl,
+    // после рендираме формата — така hideOfferOverlay не презаписва новото съдържание
+    document.getElementById('offer-overlay').classList.remove('open');
+    choEl = null;
     clearCho();
-    addBubble('📋 <strong>Оставете телефон</strong> и ще се обадим за уточняване на оглед:', 'bot');
+    addBubble('📞 <strong>Оставете телефон</strong> — ще се обадим за безплатен оглед и точна оферта:', 'bot');
     setTimeout(() => {
       renderContactForm((phone) => {
-        if(phone) addBubble(`✅ Ще се свържем с вас на 📞 ${phone}`, 'bot');
+        if(phone) addBubble(`✅ <strong>Получихме вашия контакт!</strong><br>Ще се свържем с вас скоро на 📞 ${phone}<br><br><button class="call-btn" onclick="callPhone()">📞 Обадете се сега на ${PHONE_DISPLAY}</button>`, 'bot');
         elInputRow.style.display = 'flex';
         setTimeout(() => renderCho([
           { label:'➕ Добави още услуга', next:'start' },
           { label:'🔄 Нова оферта', next:'start', reset:true }
         ]), 300);
       });
+      // Scroll до формата веднага след показването
+      setTimeout(() => smartScrollToBottom(true), 150);
     }, 400);
   };
 }
 
 function hideOfferOverlay(){
   document.getElementById('offer-overlay').classList.remove('open');
+  // Синхронизираме grid checkboxes — де-чекваме услуги махнати от overlay
+  if(choEl){
+    choEl.querySelectorAll('[data-id]').forEach(cell => {
+      const id = cell.dataset.id;
+      const item = Array.from(cell.querySelectorAll('.sg-name, [style*="font-weight:700;color:var(--text)"]'))[0];
+      if(!item) return;
+      // Намираме дали услугата е в панела по serviceType/serviceName
+      const chkBox = cell.querySelector('[style*="border-radius:5px"]');
+      if(!chkBox) return;
+      const isInPanel = panelItems.some(p => p.label.includes(id) || p.label === id);
+      if(!isInPanel && chkBox.textContent === '✓'){
+        // Де-чекваме
+        chkBox.textContent = '';
+        chkBox.style.background = 'transparent';
+        chkBox.style.borderColor = 'rgba(201,168,76,0.45)';
+        cell.style.background = 'var(--bg-btn)';
+        cell.style.borderColor = 'rgba(201,168,76,0.22)';
+      }
+    });
+    // По-надежден подход — проверяваме по label
+    choEl.querySelectorAll('[data-service-label]').forEach(cell => {
+      const lbl = cell.dataset.serviceLabel;
+      const chkBox = cell.querySelector('.sg-chk');
+      if(!chkBox) return;
+      const inPanel = panelItems.some(p => p.label === lbl || p.label.startsWith(lbl));
+      if(!inPanel){
+        chkBox.textContent = ''; chkBox.style.background = 'transparent'; chkBox.style.borderColor = 'rgba(201,168,76,0.45)';
+        cell.style.background = 'var(--bg-btn)'; cell.style.borderColor = 'rgba(201,168,76,0.22)';
+      }
+    });
+  }
   setTimeout(() => {
     const prevCur = window._overlayPrevCur;
     const prevChoEl = window._overlayPrevChoEl;
@@ -1541,7 +1868,7 @@ function hideOfferOverlay(){
       return;
     }
     // Не възстановяваме offer_summary — тя отваря overlay отново
-    const pkgStates = ['putty_packages','gk_packages','painting_packages','offer_summary'];
+    const pkgStates = ['gk_packages','painting_packages','offer_summary'];
     if(!choEl && prevCur && S[prevCur] && !pkgStates.includes(prevCur)){
       const def = S[prevCur];
       if(def.onEnter) def.onEnter();
@@ -1562,11 +1889,11 @@ function hideOfferOverlay(){
 function fullReset(){
   ctx = {}; offer = []; hist = []; cur = 'start'; cbQueue = [];
   ctx._queueAwaitingArea = false; ctx.queueArea = null; ctx.usesPrevArea = false; ctx._gridQueuePending = false; ctx._paintAfterQueue = false;
+  idSeq = 0;
   clearPanel(); clearCho(); setInp(false, ''); elMsgs.innerHTML = '';
   elActionBtns.style.display = 'none'; elInputRow.style.display = 'flex';
   elBack.classList.remove('on');
   elMsgs.scrollTop = 0;
-  // Fix 18: изчистваме seen флага за чисто начало
   sessionStorage.removeItem('terybot_seen');
   setTimeout(() => go('before_we_start'), 100);
 }
@@ -1576,115 +1903,59 @@ function generatePDF(){
   const rawDate = new Date();
   const date = rawDate.getDate() + '.' + String(rawDate.getMonth()+1).padStart(2,'0') + '.' + rawDate.getFullYear();
   const ofertaNum = String(Date.now()).slice(-4);
+  const rows = panelItems.map((it,i) => `
+    <tr style="background:${i%2===0?'#fff':'#f8f6f0'}">
+      <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px;">${i+1}. ${it.label}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:center;font-size:14px;">${it.qty} ${it.unit}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;font-size:14px;">${eur(it.price)} € / ${it.price.toFixed(2)} лв</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;font-size:14px;font-weight:700;color:#9A7530;">${eur(it.total)} €<br>${it.total.toFixed(2)} лв</td>
+    </tr>`).join('');
   const clientRow = ctx.clientPhone ? '<span>Клиент: ' + ctx.clientPhone + '</span>' : '';
-
-  // Използваме jsPDF autotable за директно сваляне на файл (без print диалог)
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-
-  // Хедър — тъмен фон
-  doc.setFillColor(26,24,16);
-  doc.rect(0, 0, 210, 30, 'F');
-  doc.setTextColor(201,168,76);
-  doc.setFontSize(18);
-  doc.setFont('helvetica','bold');
-  doc.text('IVANOV REMONTI', 14, 13);
-  doc.setFontSize(8);
-  doc.setFont('helvetica','normal');
-  doc.setTextColor(150,130,80);
-  doc.text('РЕМОНТИ И СТРОИТЕЛСТВО', 14, 19);
-  doc.setTextColor(180,160,120);
-  doc.text('тел: 0877 810 418  |  Viber: 0877 810 418', 14, 25);
-
-  // Золтена линия
-  doc.setDrawColor(201,168,76);
-  doc.setLineWidth(0.8);
-  doc.line(0, 30, 210, 30);
-
-  // Мета ред
-  doc.setFontSize(9);
-  doc.setTextColor(100,100,100);
-  doc.setFont('helvetica','normal');
-  doc.text(`Дата: ${date}`, 14, 38);
-  doc.text(`Оферта #${ofertaNum}`, 105, 38);
-  if(ctx.clientPhone) doc.text(`Клиент: ${ctx.clientPhone}`, 14, 44);
-
-  // Заглавие
-  doc.setFontSize(13);
-  doc.setFont('helvetica','bold');
-  doc.setTextColor(26,24,16);
-  const titleY = ctx.clientPhone ? 52 : 46;
-  doc.text('ОФЕРТА ЗА РЕМОНТНИ ДЕЙНОСТИ', 14, titleY);
-  doc.setDrawColor(201,168,76);
-  doc.setLineWidth(0.5);
-  doc.line(14, titleY+2, 196, titleY+2);
-
-  // Таблица
-  const tableRows = panelItems.map((it,i) => [
-    `${i+1}. ${it.label}`,
-    `${it.qty} ${it.unit}`,
-    `${eur(it.price)} € / ${it.price.toFixed(2)} лв`,
-    `${eur(it.total)} €\n${it.total.toFixed(2)} лв`
-  ]);
-
-  doc.autoTable({
-    startY: titleY + 6,
-    head: [['Услуга','Кол.','Ед. цена','Сума']],
-    body: tableRows,
-    theme: 'grid',
-    headStyles: { fillColor:[26,24,16], textColor:[201,168,76], fontSize:9, fontStyle:'bold' },
-    bodyStyles: { fontSize:9, textColor:[40,38,30] },
-    alternateRowStyles: { fillColor:[248,246,240] },
-    columnStyles: { 0:{cellWidth:85}, 1:{cellWidth:20,halign:'center'}, 2:{cellWidth:45,halign:'right'}, 3:{cellWidth:36,halign:'right',fontStyle:'bold',textColor:[154,117,48]} },
-    margin: { left:14, right:14 }
-  });
-
-  const finalY = doc.lastAutoTable.finalY + 6;
-
-  // Общо ред
-  doc.setFillColor(26,24,16);
-  doc.roundedRect(14, finalY, 182, 14, 3, 3, 'F');
-  doc.setFontSize(10);
-  doc.setFont('helvetica','bold');
-  doc.setTextColor(201,168,76);
-  doc.text('ОБЩО:', 20, finalY+9);
-  doc.text(`${eur(totalLv)} € / ${totalLv.toFixed(2)} лв`, 196, finalY+9, {align:'right'});
-
-  // Бележка
-  doc.setFontSize(8);
-  doc.setFont('helvetica','italic');
-  doc.setTextColor(130,130,130);
-  doc.text('* Ориентировъчна оферта. За точна цена е необходим оглед на обекта.', 14, finalY+22);
-
-  // Footer
-  doc.setDrawColor(201,168,76);
-  doc.setLineWidth(0.4);
-  doc.line(14, 282, 196, 282);
-  doc.setFontSize(8);
-  doc.setFont('helvetica','normal');
-  doc.setTextColor(130,130,130);
-  doc.text('IVANOV REMONTI  ·  тел: 0877 810 418  ·  Viber: 0877 810 418', 105, 287, {align:'center'});
-
-  // Директно сваляне — без print диалог
-  doc.save(`Оферта_IVANOV_REMONTI_${ofertaNum}.pdf`);
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Open Sans',sans-serif;background:#fff;color:#1a1810;}.hdr{background:#1a1810;padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-end;}.logo{font-family:'Playfair Display',serif;font-size:28px;color:#C9A84C;letter-spacing:1px;}.logo-sub{font-size:13px;color:rgba(201,168,76,0.5);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}.contact{font-size:14px;color:rgba(255,255,255,0.5);text-align:right;line-height:1.8;}.gold-line{height:2px;background:#C9A84C;}.meta{display:flex;justify-content:space-between;padding:14px 24px;font-size:14px;color:#888;}.title{font-size:17px;font-weight:700;color:#1a1810;letter-spacing:1px;padding:0 24px 10px;border-bottom:2px solid #C9A84C;margin:0 24px 16px;}table{width:calc(100% - 48px);margin:0 24px;border-collapse:collapse;}th{background:#1a1810;color:#C9A84C;padding:12px 14px;text-align:left;font-size:13px;letter-spacing:0.5px;font-weight:700;}th:nth-child(2){text-align:center;}th:nth-child(3),th:nth-child(4){text-align:right;}td{font-size:14px;padding:11px 14px;border-bottom:0.5px solid #eee;color:#1a1810;}td:nth-child(2){text-align:center;color:#666;}td:nth-child(3){text-align:right;color:#666;}td:nth-child(4){text-align:right;font-weight:700;color:#C9A84C;}.total-row{margin:16px 24px 0;padding:14px 18px;background:#1a1810;display:flex;justify-content:space-between;align-items:center;border-radius:6px;}.total-lbl{font-size:14px;color:#C9A84C;font-weight:700;letter-spacing:1px;}.total-val{font-size:22px;font-weight:700;color:#C9A84C;}.note{font-size:13px;color:#aaa;padding:12px 24px;font-style:italic;}.footer{margin-top:20px;padding:12px 24px;border-top:1px solid #C9A84C;display:flex;justify-content:center;font-size:13px;color:#888;letter-spacing:1px;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}@media screen and (max-width:600px){body{font-size:16px;}.hdr{padding:20px;}.logo{font-size:28px;}.logo-sub{font-size:13px;}.contact{font-size:14px;}.meta{font-size:14px;padding:16px 20px;flex-direction:column;gap:6px;}.title{font-size:18px;margin:0 16px 16px;padding:0 0 10px;}table{width:calc(100% - 32px);margin:0 16px;}th{font-size:14px;padding:10px 8px;}td{font-size:15px;padding:11px 8px;}.total-row{margin:16px 16px 0;padding:14px 16px;}.total-lbl{font-size:14px;}.total-val{font-size:22px;}.note{font-size:13px;padding:12px 16px;}.footer{font-size:13px;padding:12px 16px;}}</style></head><body><div class="hdr"><div><div class="logo">IVANOV REMONTI</div><div class="logo-sub">Ремонти и строителство</div></div><div class="contact">тел: ${PHONE_DISPLAY}<br>Viber: ${PHONE_DISPLAY}</div></div><div class="gold-line"></div><div class="meta"><span>Дата: ${date}</span><span>Оферта #${ofertaNum}</span>${clientRow}</div><div class="title">ОФЕРТА ЗА РЕМОНТНИ ДЕЙНОСТИ</div><table><thead><tr><th style="width:55%">Услуга</th><th style="width:12%">Кол.</th><th style="width:17%">Ед. цена</th><th style="width:16%">Сума</th></tr></thead><tbody>${rows}</tbody></table><div class="total-row"><span class="total-lbl">ОБЩО:</span><span class="total-val">${eur(totalLv)} € / ${totalLv.toFixed(2)} лв</span></div><div class="note">* Ориентировъчна оферта. За точна цена е необходим оглед на обекта.</div><div class="footer">IVANOV REMONTI · тел: ${PHONE_DISPLAY} · Viber: ${PHONE_DISPLAY}</div></body></html>`;
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => { win.focus(); win.print(); }, 800);
 }
 
 // ======================== GRID CHECKBOXES ========================
 function renderGridCheckboxes(items, knownArea, flowKey){
   clearCho();
-  // Скриваме input полето — не е нужно на тази стъпка
   elInp.disabled = true; elSend.disabled = true;
   elInputRow.style.display = 'none';
 
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'background:var(--bg-bubble-bot);border:1px solid var(--border-bubble);border-radius:16px;border-top-left-radius:4px;padding:14px 14px 12px;';
+  wrap.style.cssText = 'background:var(--bg-bubble-bot);border:2px solid rgba(201,168,76,0.55);border-radius:16px;border-top-left-radius:4px;padding:14px 14px 12px;animation:gridPulse 1s ease-in-out 3;';
+
+  // Д: bounce стрелка отгоре
+  const arrow = document.createElement('div');
+  arrow.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:10px;';
+  arrow.innerHTML = `<span style="font-size:18px;display:inline-block;animation:bounceDown 0.8s ease-in-out 6;color:var(--gold);">👇</span>
+    <span style="font-size:13px;font-weight:700;color:var(--gold);">Препоръчваме тези стъпки — избери за да добавиш:</span>`;
+  wrap.appendChild(arrow);
+
+  // Д: CSS анимации — добавяме в head ако не са там
+  if(!document.getElementById('grid-anim-style')){
+    const style = document.createElement('style');
+    style.id = 'grid-anim-style';
+    style.textContent = `
+      @keyframes gridPulse {
+        0%,100%{border-color:rgba(201,168,76,0.55);}
+        50%{border-color:rgba(201,168,76,1);box-shadow:0 0 12px rgba(201,168,76,0.35);}
+      }
+      @keyframes bounceDown {
+        0%,100%{transform:translateY(0);}
+        50%{transform:translateY(5px);}
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   const title = document.createElement('div');
   title.style.cssText = 'font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;letter-spacing:0.3px;';
   title.textContent = '✅ Изберете следващите стъпки:';
   wrap.appendChild(title);
 
-  // Scroll hint ако има много items
   if(items.length > 3){
     const hint = document.createElement('div');
     hint.style.cssText = 'font-size:10px;color:var(--muted);margin-bottom:8px;text-align:center;';
@@ -1692,202 +1963,209 @@ function renderGridCheckboxes(items, knownArea, flowKey){
     wrap.appendChild(hint);
   }
 
-  // Grid — 1 колона на мобилен, 2 на десктоп
   const grid = document.createElement('div');
   const isMobile = window.innerWidth <= 600;
   grid.style.cssText = `display:grid;grid-template-columns:${isMobile ? '1fr' : '1fr 1fr'};gap:8px;margin-bottom:14px;`;
 
   const checked = {};
-  // Fix 44: възстановяваме предишен избор ако има
   const prevChecked = ctx._lastGridChecked || [];
+  // Per-cell area tracking — всяка клетка има своя квадратура
+  const cellAreas = {};
+
   items.forEach(it => {
+    cellAreas[it.id] = (ctx._lastCellAreas && ctx._lastCellAreas[it.id]) || knownArea || null;
     if(it.locked) checked[it.id] = true;
     if(prevChecked.includes(it.id)) checked[it.id] = true;
-    // Fix: ако услугата вече е в панела (от пакет или предишен flow) — маркираме като locked
-    const itemLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
-    const inPanel = panelItems.some(p => (p.label === it.label || p.label === itemLabel || p.label === it.serviceName || p.label.startsWith(it.label)) && p.unit === 'м²');
-    if(inPanel){ it = Object.assign({}, it, { locked: true }); checked[it.id] = true; }
     const isChecked = it.checked || it.locked;
+    const initArea = knownArea || null;
+
     const cell = document.createElement('div');
     cell.dataset.id = it.id;
+    cell.dataset.serviceLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
     cell.style.cssText = `
       background:${isChecked ? 'rgba(76,175,130,0.08)' : 'var(--bg-btn)'};
       border:2px solid ${isChecked ? 'rgba(76,175,130,0.6)' : 'rgba(201,168,76,0.22)'};
       border-radius:12px;padding:12px 12px 10px;
       cursor:${it.locked ? 'default' : 'pointer'};
-      display:flex;align-items:center;gap:12px;
+      display:flex;flex-direction:column;gap:0;
       transition:background .15s,border-color .15s;
     `;
-    // Emoji
-    const emojiSpan = document.createElement('span');
-    emojiSpan.style.cssText = 'font-size:22px;line-height:1;flex-shrink:0;';
-    emojiSpan.textContent = it.emoji;
-    // Text block
-    const textBlock = document.createElement('div');
-    textBlock.style.cssText = 'flex:1;min-width:0;';
-    const lbl = document.createElement('div');
-    lbl.style.cssText = 'font-size:14px;font-weight:700;color:var(--text);line-height:1.3;';
-    lbl.textContent = it.label;
-    const priceDiv = document.createElement('div');
-    priceDiv.style.cssText = 'font-size:12px;font-weight:700;color:var(--gold);margin-top:3px;white-space:nowrap;';
-    priceDiv.textContent = it.price ? `${eur(it.price)} € / ${it.price} лв/м²` : '🎨 избор на цвят';
-    const desc = document.createElement('div');
-    desc.style.cssText = 'font-size:11px;color:var(--muted);margin-top:2px;line-height:1.3;';
-    desc.textContent = it.desc;
-    textBlock.appendChild(lbl); textBlock.appendChild(priceDiv); textBlock.appendChild(desc);
-    // Checkbox
+
+    // Горен ред: checkbox + текст + дясна колона
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;align-items:flex-start;gap:10px;';
+
     const chkBox = document.createElement('div');
+    chkBox.className = 'sg-chk';
     chkBox.style.cssText = `
-      width:26px;height:26px;border-radius:6px;flex-shrink:0;
+      width:22px;height:22px;border-radius:5px;flex-shrink:0;margin-top:2px;
       border:2px solid ${isChecked ? 'var(--green)' : 'rgba(201,168,76,0.45)'};
       background:${isChecked ? 'var(--green)' : 'transparent'};
       display:flex;align-items:center;justify-content:center;
-      font-size:14px;font-weight:700;color:#fff;
-      transition:all .15s;
+      font-size:13px;font-weight:700;color:#fff;transition:all .15s;
     `;
     chkBox.textContent = it.locked ? '🔒' : (isChecked ? '✓' : '');
-    cell.appendChild(emojiSpan); cell.appendChild(textBlock); cell.appendChild(chkBox);
+
+    const textBlock = document.createElement('div');
+    textBlock.style.cssText = 'flex:1;min-width:0;';
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:16px;font-weight:700;color:var(--text);line-height:1.3;';
+    lbl.textContent = it.label;
+    const priceDiv = document.createElement('div');
+    priceDiv.style.cssText = 'font-size:13px;color:rgba(201,168,76,0.8);margin-top:3px;font-weight:600;';
+    priceDiv.textContent = it.price ? `${eur(it.price)} € / ${it.price} лв/м²` : '🎨 избор на цвят';
+    const totalDiv = document.createElement('div');
+    totalDiv.style.cssText = 'font-size:13px;font-weight:700;color:var(--gold);margin-top:4px;';
+    totalDiv.textContent = (it.price && initArea) ? `${(it.price * initArea).toFixed(2)} лв` : '';
+    if(it.desc){
+      const descDiv = document.createElement('div');
+      descDiv.style.cssText = 'font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4;';
+      descDiv.textContent = it.desc;
+      textBlock.appendChild(lbl); textBlock.appendChild(descDiv); textBlock.appendChild(priceDiv); textBlock.appendChild(totalDiv);
+    } else {
+      textBlock.appendChild(lbl); textBlock.appendChild(priceDiv); textBlock.appendChild(totalDiv);
+    }
+
+    const rightCol = document.createElement('div');
+    rightCol.style.cssText = 'text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px;';
+    const qtyVal = document.createElement('div');
+    qtyVal.style.cssText = 'font-size:15px;font-weight:700;color:var(--gold);';
+    qtyVal.textContent = initArea ? `${initArea} м²` : '';
+    const editHint = document.createElement('div');
+    editHint.style.cssText = 'font-size:10px;color:rgba(201,168,76,0.5);cursor:pointer;user-select:none;';
+    editHint.textContent = '✏️ промени м²';
+    rightCol.appendChild(qtyVal); rightCol.appendChild(editHint);
+
+    topRow.appendChild(chkBox); topRow.appendChild(textBlock); topRow.appendChild(rightCol);
+    cell.appendChild(topRow);
+
+    // Per-cell inline input — скрит по подразбиране, само за тази клетка
+    const cellInput = document.createElement('input');
+    cellInput.type = 'number'; cellInput.min = '1'; cellInput.placeholder = 'Нова квадратура (м²)';
+    if(initArea) cellInput.value = initArea;
+    cellInput.style.cssText = 'display:none;width:100%;background:var(--bg-btn);border:1px solid var(--gold);border-radius:8px;padding:8px 10px;color:var(--text);font-size:14px;outline:none;margin-top:8px;box-sizing:border-box;';
+    cell.appendChild(cellInput);
+
+    // ✏️ клик — показва само тази клетка, затваря останалите
+    editHint.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = cellInput.style.display !== 'none';
+      grid.querySelectorAll('input[type=number]').forEach(inp => { inp.style.display = 'none'; });
+      if(!isOpen){ cellInput.style.display = 'block'; setTimeout(() => cellInput.focus(), 50); }
+    });
+    cellInput.addEventListener('click', (e) => e.stopPropagation());
+
+    // 3: Enter потвърждава квадратурата и затваря полето
+    cellInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.stopPropagation();
+        cellInput.style.display = 'none';
+        cellInput.blur();
+      }
+    });
+
+    // Промяна на квадратура — само тази клетка + обновява панела ако е чекната
+    cellInput.addEventListener('input', () => {
+      const v = parseFloat(cellInput.value);
+      if(v > 0){
+        cellAreas[it.id] = v;
+        ctx._lastCellAreas = Object.assign({}, cellAreas);
+        qtyVal.textContent = `${v} м²`;
+        if(it.price) totalDiv.textContent = `${(it.price * v).toFixed(2)} лв`;
+        if(checked[it.id] && !it.isPaintMenu){
+          const itemLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
+          const panelItem = panelItems.find(p => p.label === itemLabel);
+          if(panelItem){ panelItem.qty = v; panelItem.total = Math.round(v * it.price * 100) / 100; renderPanel(); }
+        }
+      }
+    });
+
     grid.appendChild(cell);
+
     if(!it.locked){
       cell.addEventListener('click', () => {
         if(checked[it.id]){
-          // Де-селектира — маха от панела
           delete checked[it.id];
           cell.style.background = 'var(--bg-btn)';
           cell.style.borderColor = 'rgba(201,168,76,0.22)';
-          chkBox.textContent = '';
-          chkBox.style.background = 'transparent';
-          chkBox.style.borderColor = 'rgba(201,168,76,0.45)';
+          chkBox.textContent = ''; chkBox.style.background = 'transparent'; chkBox.style.borderColor = 'rgba(201,168,76,0.45)';
           lbl.style.textDecoration = '';
-          // Маха от панела ако е добавено
           panelItems = panelItems.filter(p => {
             const itemLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
             return p.label !== itemLabel;
           });
           renderPanel();
         } else {
-          // Селектира — добавя веднага в панела
-          const { area } = wrap._getArea();
-          const useArea = area || knownArea;
+          const useArea = cellAreas[it.id] || knownArea;
           if(!useArea || useArea <= 0){
-            areaSection.querySelector('input') && (areaSection.querySelector('input').style.borderColor = 'var(--red)');
-            areaSection.querySelector('input') && areaSection.querySelector('input').focus();
+            // Няма квадратура — отваря input на тази клетка
+            cellInput.style.display = 'block'; setTimeout(() => cellInput.focus(), 50);
             return;
           }
           checked[it.id] = true;
-          cell.style.background = 'rgba(76,175,130,0.08)';
-          cell.style.borderColor = 'rgba(76,175,130,0.6)';
-          chkBox.textContent = '✓';
-          chkBox.style.background = 'var(--green)';
-          chkBox.style.borderColor = 'var(--green)';
-          if(it.isPaintMenu){
-            // Боядисването се обработва отделно при финализиране
-          } else {
+          cell.style.background = 'rgba(76,175,130,0.08)'; cell.style.borderColor = 'rgba(76,175,130,0.6)';
+          chkBox.textContent = '✓'; chkBox.style.background = 'var(--green)'; chkBox.style.borderColor = 'var(--green)';
+          if(!it.isPaintMenu){
             const itemLabel = it.serviceName + (it.serviceType ? ` (${it.serviceType})` : '');
             addToPanel(itemLabel, useArea, 'м²', it.price);
-            ctx.prevValue = useArea; ctx.prevUnit = 'м²';
-            ctx.queueArea = useArea;
+            ctx.prevValue = useArea; ctx.prevUnit = 'м²'; ctx.queueArea = useArea;
           }
         }
-        // Обновяваме финализиращия бутон
         const hasSel = Object.keys(checked).length > 0;
-        doneBtn.style.display = hasSel ? 'block' : 'none';
+        if(hasSel){
+          selHint.style.display = 'none'; doneBtn.style.display = 'block';
+          setTimeout(() => { doneBtn.style.opacity = '1'; doneBtn.style.transform = 'translateY(0)'; }, 10);
+        } else {
+          selHint.style.display = 'block';
+          doneBtn.style.opacity = '0'; doneBtn.style.transform = 'translateY(6px)';
+          setTimeout(() => { doneBtn.style.display = 'none'; }, 250);
+        }
       });
     }
   });
   wrap.appendChild(grid);
 
-  // Area section
-  const areaSection = document.createElement('div');
-  if(knownArea){
-    areaSection.style.cssText = 'margin-bottom:12px;';
-    const areaInfo = document.createElement('div');
-    areaInfo.style.cssText = 'background:rgba(76,175,130,0.08);border:1px solid rgba(76,175,130,0.3);border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
-    areaInfo.innerHTML = `<span style="font-size:13px;color:#4CAF82;font-weight:600;">📏 Квадратура</span><span style="font-size:16px;font-weight:700;color:#4CAF82;">${knownArea} м²</span>`;
-    const changeAreaBtn = document.createElement('button');
-    changeAreaBtn.style.cssText = `width:100%;background:var(--bg-btn);border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;`;
-    changeAreaBtn.innerHTML = `<span style="font-size:13px;color:var(--gold);">✏️ Въведи различна квадратура</span>`;
-    let selectedArea = knownArea;
-    let areaConfirmed = true;
-    const areaInputRow = document.createElement('div');
-    areaInputRow.style.cssText = 'display:none;margin-top:8px;';
-    const areaInput = document.createElement('input');
-    areaInput.type = 'number'; areaInput.min = '1'; areaInput.placeholder = 'Въведете м²';
-    areaInput.style.cssText = `width:100%;background:var(--bg-btn);border:1px solid var(--border-input);border-radius:10px;padding:12px;color:var(--text);font-size:16px;outline:none;`;
-    areaInput.addEventListener('input', () => {
-      const v = parseFloat(areaInput.value);
-      if(v > 0){ selectedArea = v; areaConfirmed = true; }
-    });
-    areaInputRow.appendChild(areaInput);
-    changeAreaBtn.addEventListener('click', () => {
-      changeAreaBtn.style.borderColor = 'var(--gold)';
-      areaInputRow.style.display = 'block';
-      setTimeout(() => areaInput.focus(), 50);
-    });
-    areaSection.appendChild(areaInfo);
-    areaSection.appendChild(changeAreaBtn);
-    areaSection.appendChild(areaInputRow);
-    wrap._getArea = () => ({ area: selectedArea, confirmed: areaConfirmed });
-  } else {
-    areaSection.style.cssText = 'margin-bottom:12px;';
-    const areaLabel = document.createElement('div');
-    areaLabel.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px;';
-    areaLabel.textContent = '📏 Въведете квадратура (м²) — важи за всички избрани:';
-    areaSection.appendChild(areaLabel);
-    const areaInput = document.createElement('input');
-    areaInput.type = 'number'; areaInput.min = '1'; areaInput.placeholder = 'напр. 25';
-    areaInput.style.cssText = `width:100%;background:var(--bg-btn);border:1px solid var(--border-input);border-radius:10px;padding:12px;color:var(--text);font-size:16px;outline:none;`;
-    areaSection.appendChild(areaInput);
-    wrap._getArea = () => {
-      const v = parseFloat(areaInput.value);
-      return { area: v > 0 ? v : null, confirmed: v > 0 };
-    };
-  }
-  wrap.appendChild(areaSection);
+  const selHint = document.createElement('div');
+  selHint.style.cssText = 'font-size:12px;color:rgba(255,255,255,0.25);text-align:center;padding:8px 0 4px;';
+  selHint.textContent = '👆 Изберете услуга за да продължите';
+  wrap.appendChild(selHint);
 
-  // Бутон "Готово" — появява се само след като е избрано нещо
   const doneBtn = document.createElement('button');
   doneBtn.className = 'cb-confirm';
   doneBtn.textContent = '✅ Готово → виж офертата';
-  doneBtn.style.cssText = 'margin-top:4px;font-size:15px;padding:14px;width:100%;display:none;';
+  doneBtn.style.cssText = 'margin-top:4px;font-size:15px;padding:14px;width:100%;display:none;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;';
   doneBtn.addEventListener('click', () => {
     const sel = items.filter(it => checked[it.id]);
-    const { area } = wrap._getArea();
-    const useArea = area || knownArea;
     ctx._lastGridChecked = Object.keys(checked);
-    ctx._lastGridArea = useArea;
-    clearCho();
-    elInputRow.style.display = 'flex';
+    ctx._lastGridArea = knownArea;
+    clearCho(); elInputRow.style.display = 'flex';
     const paintItem = sel.find(it => it.isPaintMenu);
     ctx._paintAfterQueue = !!paintItem;
-    ctx.queueArea = useArea; ctx.prevValue = useArea; ctx.prevUnit = 'м²';
+    if(paintItem){
+      // Ползваме квадратурата на боядисването конкретно
+      const paintArea = cellAreas[paintItem.id] || knownArea;
+      ctx.queueArea = paintArea; ctx.prevValue = paintArea; ctx.prevUnit = 'м²';
+    }
     if(paintItem && sel.filter(it=>!it.isPaintMenu).length === 0){
-      setTimeout(() => go('painting_menu'), 380);
-      return;
+      setTimeout(() => go('painting_menu'), 380); return;
     }
     if(paintItem) setTimeout(() => go('painting_menu'), 380);
     else setTimeout(() => showOfferOverlay(), 380);
   });
-
   wrap.appendChild(doneBtn);
 
   const skipBtn = document.createElement('button');
   skipBtn.className = 'cb-skip';
-  skipBtn.textContent = '⏭️ Пропусни → виж офертата';
+  skipBtn.textContent = '⏭️ Пропусни — само основната услуга към офертата';
   skipBtn.style.cssText = 'margin-top:8px;font-size:13px;color:var(--muted);width:100%;';
-  skipBtn.addEventListener('click', () => {
-    clearCho();
-    elInputRow.style.display = 'flex';
-    setTimeout(() => showOfferOverlay(), 200);
-  });
+  skipBtn.addEventListener('click', () => { clearCho(); elInputRow.style.display = 'flex'; setTimeout(() => showOfferOverlay(), 200); });
   wrap.appendChild(skipBtn);
   elMsgs.appendChild(wrap);
-  // Скролваме към bubble-а с цената (над grid-а), НЕ към самия grid
   setTimeout(() => {
     const bubbles = elMsgs.querySelectorAll('.bubble.bot');
-    if(bubbles.length > 0){
-      bubbles[bubbles.length - 1].scrollIntoView({ behavior:'smooth', block:'start' });
-    }
+    if(bubbles.length > 0) bubbles[bubbles.length - 1].scrollIntoView({ behavior:'smooth', block:'start' });
+    // Бъг 3: scroll до края на wrap за да се вижда Готово бутона
+    setTimeout(() => wrap.scrollIntoView({ behavior:'smooth', block:'end' }), 300);
   }, 120);
   choEl = wrap;
 }
@@ -1903,11 +2181,9 @@ function closePackageSheet(){
 }
 
 function renderPackages(packages, area){
-  
   clearCho(); setInp(false,''); elInputRow.style.display = 'none';
 
   const sheet = document.getElementById('pkg-sheet');
-  
   const backdrop = document.getElementById('pkg-sheet-backdrop');
   const body = document.getElementById('pkg-sheet-body');
   const titleEl = document.getElementById('pkg-sheet-title');
@@ -1919,6 +2195,15 @@ function renderPackages(packages, area){
 
   const discounts = [0, 0.05, 0.10];
   const popularLabels = ['', '⭐ препоръчан · 87% избират това', '💎 най-изгоден'];
+
+  const selectedServiceName = ctx.serviceType || ctx.serviceName || '';
+  const greenBanner = document.createElement('div');
+  greenBanner.className = 'pkg-green-banner';
+  // Махаме стари банери
+  body.parentNode.querySelectorAll('.pkg-green-banner').forEach(b => b.remove());
+  greenBanner.style.cssText = 'background:rgba(76,175,130,0.08);border-bottom:1px solid rgba(76,175,130,0.2);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;';
+  greenBanner.innerHTML = `<div style="width:20px;height:20px;border-radius:50%;background:#4CAF82;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;flex-shrink:0;">✓</div><div style="font-size:13px;color:#4CAF82;font-weight:600;">Всички пакети включват: <strong>${selectedServiceName}</strong></div>`;
+  body.parentNode.insertBefore(greenBanner, body);
 
   packages.forEach((pkg, idx) => {
     const discount = discounts[idx] || 0;
@@ -1933,6 +2218,16 @@ function renderPackages(packages, area){
     const hasDiscount = discount > 0 && discountAmount > 0;
     const isRec = idx === 1;
     const isBest = idx === 2;
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:relative;padding-top:12px;';
+
+    const pkgBadge = document.createElement('div');
+    const badgeColors = ['rgba(255,255,255,0.15)', 'rgba(201,168,76,0.6)', 'rgba(76,175,130,0.6)'];
+    const badgeTextColors = ['#aaa', '#C9A84C', '#4CAF82'];
+    pkgBadge.style.cssText = `position:absolute;top:0;left:14px;background:#1A1A1C;border:1px solid ${badgeColors[idx]};border-radius:20px;padding:2px 12px;font-size:10px;font-weight:700;color:${badgeTextColors[idx]};letter-spacing:0.5px;z-index:1;white-space:nowrap;`;
+    pkgBadge.textContent = idx === 0 ? 'ПАКЕТ 1' : idx === 1 ? 'ПАКЕТ 2 · ПРЕПОРЪЧАН' : 'ПАКЕТ 3 · НАЙ-ИЗГОДЕН';
+    wrapper.appendChild(pkgBadge);
 
     const card = document.createElement('div');
     card.className = `pkg-card${isRec ? ' rec' : isBest ? ' best' : ''}`;
@@ -1956,7 +2251,11 @@ function renderPackages(packages, area){
         </div>
       </div>
       <div class="pkg-card-items">
-        ${pkg.items.map(it => `<div class="pkg-card-item"><span>✓ ${it.name}</span><span>${eur(it.price * area)} €</span></div>`).join('')}
+        ${pkg.items.map(it => {
+          const isSelected = selectedServiceName && (it.name.includes(selectedServiceName) || selectedServiceName.includes(it.name));
+          if(isSelected) return `<div class="pkg-card-item" style="background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);border-radius:8px;padding:5px 8px;"><span style="color:#4CAF82;font-weight:700;">✓ ${it.name}</span><span style="color:#4CAF82;font-weight:700;font-size:11px;">← Избрахте това</span></div>`;
+          return `<div class="pkg-card-item"><span>✓ ${it.name}</span><span>${eur(it.price * area)} €</span></div>`;
+        }).join('')}
       </div>
       ${hasDiscount ? `<div style="font-size:11px;color:${badgeColor};font-weight:700;margin-bottom:6px;">-${discount*100}% отстъпка върху допълнителните услуги</div>` : ''}
       ${idx === 0 && pkg.label === 'Само боядисване' ? '<div style="font-size:11px;color:#E05555;margin-bottom:6px;">⚠️ Без грунд — препоръчваме върху вече грундирана повърхност</div>' : ''}
@@ -1964,7 +2263,13 @@ function renderPackages(packages, area){
       <button class="pkg-card-btn" style="background:${btnBg};color:${btnColor};">Избери този пакет</button>
     `;
 
-    card.querySelector('.pkg-card-btn').addEventListener('click', () => {
+    card.querySelector('.pkg-card-btn').addEventListener('click', (e) => {
+      // Е8: деактивираме бутона веднага за да предотвратим двойно натискане
+      const btn = e.currentTarget;
+      if(btn.disabled) return;
+      btn.disabled = true;
+      setTimeout(() => { btn.disabled = false; }, 1500);
+
       // Визуален feedback
       card.style.transform = 'scale(0.97)';
       setTimeout(() => { card.style.transform = ''; }, 150);
@@ -1977,13 +2282,8 @@ function renderPackages(packages, area){
           const isExtra = idx > 0 && !packages[0].items.map(i=>i.name).includes(it.name);
           const discountedPrice = isExtra ? Math.round(it.price * (1 - discount) * 100) / 100 : it.price;
           const itemTotal = Math.round(discountedPrice * area * 100) / 100;
-          const alreadyAdded = panelItems.some(p =>
-            (p.label === it.name || p.label.startsWith(it.name)) && p.unit === 'м²'
-          );
-          if(!alreadyAdded){
+          if(!panelItems.some(p => p.label === it.name && p.unit === 'м²')){
             panelItems.push({ id: ++idSeq, label: it.name, qty: area, unit: 'м²', price: discountedPrice, total: itemTotal });
-          } else {
-            showDuplicateWarning(it.name);
           }
         });
         renderPanel();
@@ -1993,7 +2293,8 @@ function renderPackages(packages, area){
       }, 200);
     });
 
-    body.appendChild(card);
+    wrapper.appendChild(card);
+    body.appendChild(wrapper);
   });
 
   // Бяло/Премиум бутон ако има боядисване
@@ -2008,8 +2309,8 @@ function renderPackages(packages, area){
       elInputRow.style.display = 'flex';
       addBubble('🎨 Избор на вид боядисване:', 'bot');
       setTimeout(() => renderCho([
-        {label:'Един цвят – Бяло', desc:'4.20 €/м²', next:'painting_packages', price:P.paint_white, serviceType:'Един цвят – Бяло', serviceName:'Боядисване', displayUnit:'м²'},
-        {label:'Премиум покритие', desc:'6.80 €/м²', next:'painting_packages', price:P.paint_premium, serviceType:'Премиум', serviceName:'Боядисване', displayUnit:'м²'},
+        {label:'Един цвят – Бяло', desc:'4.20 €/м²', next:'painting_area', price:P.paint_white, serviceType:'Един цвят – Бяло', serviceName:'Боядисване', displayUnit:'м²'},
+        {label:'Премиум покритие', desc:'6.80 €/м²', next:'painting_area', price:P.paint_premium, serviceType:'Премиум', serviceName:'Боядисване', displayUnit:'м²'},
         {label:'⬅ Назад към пакетите', next:null, specialBack:true}
       ]), 300);
     });
@@ -2022,7 +2323,7 @@ function renderPackages(packages, area){
     backBtn.onclick = () => {
       closePackageSheet();
       elInputRow.style.display = 'flex';
-      setTimeout(() => go('start'), 200);
+      setTimeout(() => goBack(), 200);
     };
   }
 
@@ -2031,6 +2332,7 @@ function renderPackages(packages, area){
     backdrop.onclick = () => {
       closePackageSheet();
       elInputRow.style.display = 'flex';
+      setTimeout(() => go('start'), 200);
     };
   }
 
@@ -2072,36 +2374,224 @@ function processGridQueue(){
 }
 
 // ======================== СОСТОЯНИЯ ========================
+// ======================== START GRID ========================
+function renderStartGrid(){
+  clearCho();
+  const isMobile = window.innerWidth <= 600;
+  if(isMobile){
+    setInp(false, '');
+  } else {
+    setInp(true, 'Питайте директно или изберете услуга...');
+  }
+
+  // Акцентиран текст над grid-а
+  const intro = document.createElement('div');
+  intro.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:10px 12px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:12px;';
+  intro.innerHTML = `<span style="font-size:20px;animation:bounceDown 0.8s ease-in-out 6;display:inline-block;">👇</span>
+    <span style="font-size:14px;font-weight:700;color:var(--gold);">Изберете услуга → получете цена за секунди</span>`;
+  elMsgs.appendChild(intro);
+  const services = [
+    { next:'putty_menu',    badge:'⭐ Топ избор',    badgeCls:'sg-badge-gold',
+      name:'Шпакловки',     price:()=>`от ${eur(P.putty_fuge)} €/м²`,   meta:'старт до 3 дни',
+      icon:`<svg viewBox="0 0 24 24"><path d="M5 19 L10 9 L15 14 L19 5" class="sg-spatula"/><line x1="5" y1="19" x2="9" y2="15" class="sg-spatula"/></svg>` },
+    { next:'painting_menu', badge:'🧠 Препоръчано', badgeCls:'sg-badge-purple',
+      name:'Боядисване',    price:()=>`от ${eur(P.paint_white)} €/м²`,  meta:'+ грунд опция',
+      icon:`<svg viewBox="0 0 24 24"><rect x="4" y="4" width="14" height="5" rx="1" class="sg-roller"/><line x1="10" y1="9" x2="10" y2="18" class="sg-roller"/><circle cx="10" cy="19" r="2" class="sg-roller"/></svg>` },
+    { next:'gk_menu',       badge:'🔥 Комбо',       badgeCls:'sg-badge-red',
+      name:'Гипсокартон',   price:()=>`от ${eur(P.ceiling_flat)} €/м²`,  meta:'тавани · стени · LED ниши',
+      icon:`<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="8" y1="5" x2="8" y2="19" class="sg-gk-line"/><line x1="16" y1="5" x2="16" y2="19" class="sg-gk-line"/></svg>` },
+    { next:'windows_menu',  badge:'⚡ Бърза услуга',badgeCls:'sg-badge-blue',
+      name:'Обръщане на прозорци', price:()=>`от ${eur(P.window_lm)} €/л.м.`, meta:'гаранция 2 год.',
+      icon:`<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="4" x2="12" y2="20"/><rect x="5" y="6" width="5" height="4" class="sg-win-inner"/><rect x="14" y="6" width="5" height="4" class="sg-win-inner"/></svg>` },
+    { next:'vik_menu',      badge:'🔥 Топ поръчка', badgeCls:'sg-badge-red',
+      name:'ВиК услуги',    price:()=>`от ${eur(P.vik_siphon)} €/бр.`, meta:'днес / утре',
+      icon:`<svg viewBox="0 0 24 24"><path d="M5 12 H12 V8 H18"/><path d="M18 8 V15"/><circle cx="18" cy="18" r="2" class="sg-drop"/></svg>` },
+    { next:'contact_form_standalone', badge:'📅 Безплатен оглед', badgeCls:'sg-badge-green',
+      name:'Поискайте оглед', price:()=>'без ангажимент', meta:'обаждаме се до 1 час',
+      icon:`<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>` },
+  ];
+  const wrap = document.createElement('div'); wrap.className = 'sg-wrap';
+  const grid = document.createElement('div'); grid.className = 'sg-grid';
+  services.forEach((svc, i) => {
+    const card = document.createElement('div'); card.className = 'sg-card';
+    card.innerHTML = `
+      <div class="sg-icon">${svc.icon}</div>
+      <div class="sg-body">
+        <div class="sg-badge ${svc.badgeCls}">${svc.badge}</div>
+        <div class="sg-name" style="display:flex;align-items:center;gap:6px;">
+          <span class="sg-line"></span>${svc.name}<span class="sg-line"></span>
+        </div>
+        <div class="sg-meta">${svc.meta}</div>
+      </div>
+      <div class="sg-right">
+        <div class="sg-price">${svc.price()}</div>
+        <div class="sg-arr">→</div>
+      </div>`;
+    card.addEventListener('click', () => {
+      addBubble(svc.name, 'user', false);
+      clearCho(); setTimeout(() => go(svc.next), 300);
+    });
+    grid.appendChild(card);
+    setTimeout(() => card.classList.add('sg-in'), 100 + i * 65);
+  });
+  // Бонус карта — Доверен кръг
+  const bonusCard = document.createElement('div');
+  bonusCard.className = 'sg-card sg-full';
+  bonusCard.style.cssText = `background:rgba(76,175,130,0.06);border:1.5px solid rgba(76,175,130,0.3);animation:bonusPulse 2.5s ease-in-out infinite;`;
+  bonusCard.innerHTML = `
+    <div class="sg-icon" style="background:rgba(76,175,130,0.12);border-color:rgba(76,175,130,0.3);font-size:22px;">🤝</div>
+    <div class="sg-body">
+      <div class="sg-badge" style="background:rgba(76,175,130,0.15);color:#4CAF82;border-color:rgba(76,175,130,0.35);">✦ Само при нас</div>
+      <div class="sg-name" style="display:flex;align-items:center;gap:6px;white-space:nowrap;">
+        <span style="height:1.5px;background:#4CAF82;border-radius:2px;flex-shrink:0;animation:sgLine 2.5s ease-in-out infinite;"></span>
+        Доверен кръг
+        <span style="height:1.5px;background:#4CAF82;border-radius:2px;flex-shrink:0;animation:sgLine 2.5s ease-in-out infinite;"></span>
+      </div>
+      <div class="sg-meta">Бонуси за препоръка</div>
+    </div>
+    <div class="sg-right">
+      <div style="font-size:13px;font-weight:700;color:#4CAF82;">50€ + 10%</div>
+      <div style="font-size:16px;margin-top:3px;">🎁</div>
+    </div>`;
+  bonusCard.addEventListener('click', () => {
+    clearCho();
+    addBubble('🤝 Доверен кръг — Бонуси за препоръка', 'user', false);
+    setTimeout(() => {
+      addBubble(`<div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="font-size:15px;color:var(--text);line-height:1.7;">Работим предимно с доверен кръг от хора — клиенти, които ни познават и ни препоръчват на близки и колеги. Препоръчайте ни и получавате:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div style="background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);border-radius:10px;padding:12px 8px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:#4CAF82;font-family:Georgia,serif;">50€</div>
+            <div style="font-size:12px;color:#4CAF82;font-weight:600;margin-top:2px;">100 лв.</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;">Кеш бонус</div>
+          </div>
+          <div style="background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);border-radius:10px;padding:12px 8px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:#4CAF82;font-family:Georgia,serif;">10%</div>
+            <div style="font-size:11px;color:#888;margin-top:5px;">Отстъпка за следващ ремонт</div>
+          </div>
+          <div style="background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);border-radius:10px;padding:12px 8px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:#4CAF82;">⚡</div>
+            <div style="font-size:11px;color:#888;margin-top:5px;">Експресно обслужване с приоритет</div>
+          </div>
+        </div>
+        <div style="font-size:14px;color:var(--text2);line-height:1.7;background:rgba(76,175,130,0.06);border:1px solid rgba(76,175,130,0.2);border-radius:10px;padding:12px;">без чакане на опашка — просто се обадете и кажете кой ви е изпратил.</div>
+        <div style="font-size:13px;color:rgba(76,175,130,0.8);font-style:italic;text-align:center;">📞 Обадете се на ${PHONE_DISPLAY}</div>
+      </div>`, 'bot');
+      setTimeout(() => renderCho([
+        {label:'📞 Обадете се сега', next:null, specialCall:true},
+        {label:'➕ Към услугите', next:'start'}
+      ]), 400);
+    }, 300);
+  });
+  grid.appendChild(bonusCard);
+  setTimeout(() => bonusCard.classList.add('sg-in'), 100 + services.length * 65);
+
+  // Phone card — full width
+  const phoneCard = document.createElement('div'); phoneCard.className = 'sg-card sg-full';
+  phoneCard.innerHTML = `
+    <div class="sg-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.29 12.04a19.79 19.79 0 01-3.07-8.67A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.52-1.52a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+    <div class="sg-body">
+      <div class="sg-badge sg-badge-green">✔ Безплатен оглед</div>
+      <div class="sg-name">${PHONE_DISPLAY}</div>
+      <div class="sg-meta">Обадете се · Viber</div>
+    </div>
+    <div class="sg-right"><div class="sg-arr" style="font-size:16px;">📞</div></div>`;
+  phoneCard.addEventListener('click', () => callPhone());
+  grid.appendChild(phoneCard);
+  setTimeout(() => phoneCard.classList.add('sg-in'), 100 + services.length * 65);
+  wrap.appendChild(grid);
+  // Action buttons — 📞 Viber Оглед
+  const actions = document.createElement('div');
+  actions.style.cssText = 'display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;';
+  actions.innerHTML = `
+    <button id="sg-call" style="flex:1;background:var(--bg-btn);border:1px solid var(--gold);color:var(--gold);border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">📞 ${PHONE_DISPLAY}</button>
+    <button id="sg-viber" style="flex:1;background:var(--bg-btn);border:1px solid rgba(114,96,242,0.5);color:#9B8EF5;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">💜 Viber</button>
+    <button id="sg-inspect" style="flex:1;background:var(--bg-btn);border:1px solid rgba(76,175,130,0.4);color:#4CAF82;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">📅 Безплатен оглед</button>`;
+  wrap.appendChild(actions);
+  elMsgs.appendChild(wrap);
+  choEl = wrap;
+  document.getElementById('sg-call').addEventListener('click', () => callPhone());
+  document.getElementById('sg-viber').addEventListener('click', () => {
+    if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) window.open('viber://chat?number='+PHONE_VIBER);
+    else addBubble(`💜 <strong>Viber:</strong> <span style="color:var(--gold)">${PHONE_DISPLAY}</span><br><small style="color:var(--muted)">Отворете Viber и изпратете съобщение</small>`, 'bot');
+  });
+  document.getElementById('sg-inspect').addEventListener('click', () => { clearCho(); addBubble('📅 Безплатен оглед', 'user'); setTimeout(() => go('contact_form_standalone'), 300); });
+  setTimeout(() => { const bubbles = elMsgs.querySelectorAll('.bubble.bot'); if(bubbles.length) bubbles[bubbles.length-1].scrollIntoView({behavior:'smooth',block:'start'}); }, 120);
+}
+
 const S = {
-  start: { msg: () => window.innerWidth <= 600 ? `Изберете услуга или задайте въпрос:` : `<b>🏠 Добре дошли при нашия екип!</b><br><br>Изберете услуга или напишете въпроса си директно:`, choices: [
-    {label:'🧱 Гипсокартон', next:'gk_menu'},
-    {label:'🛠️ Шпакловки', next:'putty_menu'},
-    {label:'🎨 Боядисване', next:'painting_menu'},
-    {label:'🪟 Обръщане на прозорци', next:'windows_menu'},
-    {label:'🔧 ВиК услуги', next:'vik_menu'},
-    {label:'─────────────', next:null, separator:true},
-    {label:'💬 Задайте въпрос', next:'consultation'},
-    {label:'📞 Обадете се', next:null, specialCall:true}
-  ] },
+  start: {
+    msg: () => '',
+    onEnter: () => { setTimeout(() => renderStartGrid(), 350); },
+    choices: []
+  },
   before_we_start: {
-    msg: () => `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,0.2);">
-  <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#7A5520);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:2px solid rgba(201,168,76,0.35);">👷</div>
+    msg: () => `
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+  <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#7A5520);display:flex;align-items:center;justify-content:center;font-size:26px;border:2px solid rgba(201,168,76,0.4);flex-shrink:0;">👷</div>
   <div>
-    <div style="font-family:Georgia,serif;font-size:15px;color:var(--gold-light);letter-spacing:0.5px;">Траян Иванов</div>
-    <div style="font-size:10px;color:rgba(201,168,76,0.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px;">Собственик · Ivanov Remonti</div>
+    <div style="font-size:18px;font-weight:700;color:#F0EDE6;font-family:Georgia,serif;letter-spacing:0.3px;">Траян Иванов</div>
+    <div style="font-size:12px;color:rgba(201,168,76,0.6);margin-top:3px;letter-spacing:0.5px;">Собственик · Ivanov Remonti</div>
+    <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+      <span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:3px 10px;font-size:11px;color:#C9A84C;font-weight:600;">📍 София</span>
+      <span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:3px 10px;font-size:11px;color:#C9A84C;font-weight:600;">⭐ 10+ години</span>
+    </div>
   </div>
 </div>
-<div style="display:flex;flex-direction:column;gap:10px;">
-  <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🤝</div><div><div style="font-family:Georgia,serif;font-size:13px;color:var(--gold);margin-bottom:3px;">Равнопоставеност</div><div style="font-family:Georgia,serif;font-size:12px;color:var(--text2);line-height:1.55;font-style:italic;">"За мен няма малки и големи клиенти. Всеки заслужава работа свършена качествено, навреме и без изненади."</div></div></div>
-  <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">💬</div><div><div style="font-family:Georgia,serif;font-size:13px;color:var(--gold);margin-bottom:3px;">Намираме решение</div><div style="font-family:Georgia,serif;font-size:12px;color:var(--text2);line-height:1.55;font-style:italic;">"Ако бюджетът е ограничен — кажете ми. Намираме решение заедно, без да жертваме качеството."</div></div></div>
-  <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">✅</div><div><div style="font-family:Georgia,serif;font-size:13px;color:var(--gold);margin-bottom:3px;">Прозрачност</div><div style="font-family:Georgia,serif;font-size:12px;color:var(--text2);line-height:1.55;font-style:italic;">"Казвам цената преди да започна. Плащате когато сте доволни. Никакви скрити такси."</div></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+  <img src="https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20230322_134120.jpg" style="width:100%;height:130px;object-fit:cover;border-radius:10px;cursor:pointer;" loading="lazy" onclick="(function(s){var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;';var i=document.createElement('img');i.src=s;i.style.cssText='max-width:95vw;max-height:90vh;border-radius:12px;';o.appendChild(i);o.onclick=function(){o.remove();};document.body.appendChild(o);})(this.src)">
+  <img src="https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20240724_172122.jpg" style="width:100%;height:130px;object-fit:cover;border-radius:10px;cursor:pointer;" loading="lazy" onclick="(function(s){var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;';var i=document.createElement('img');i.src=s;i.style.cssText='max-width:95vw;max-height:90vh;border-radius:12px;';o.appendChild(i);o.onclick=function(){o.remove();};document.body.appendChild(o);})(this.src)">
 </div>
-<div style="margin-top:12px;padding-top:8px;border-top:1px solid rgba(201,168,76,0.15);text-align:right;font-family:Georgia,serif;font-size:11px;color:var(--muted);font-style:italic;">— Траян Иванов, собственик</div>
-<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px;border-radius:10px;overflow:hidden;">
-  <img src="https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20230322_134120.jpg" alt="Завършен ремонт — изпълнена работа от екипа" style="width:100%;height:110px;object-fit:cover;border-radius:8px;" loading="lazy">
-  <img src="https://raw.githubusercontent.com/Traqnivanov/Remonti-/main/IMG_20240724_172122.jpg" alt="Ремонтен проект — шпакловка и боядисване" style="width:100%;height:110px;object-fit:cover;border-radius:8px;" loading="lazy">
-</div>`,
-    choices: [{label:'➕ Към услугите', next:'start'},{label:'📞 Обадете се', next:null, specialCall:true}]
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+  <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:10px;text-align:center;">
+    <div style="font-size:22px;font-weight:700;color:#C9A84C;font-family:Georgia,serif;">100+</div>
+    <div style="font-size:11px;color:#888;margin-top:3px;">Клиенти</div>
+  </div>
+  <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:10px;text-align:center;">
+    <div style="font-size:22px;font-weight:700;color:#C9A84C;font-family:Georgia,serif;">100%</div>
+    <div style="font-size:11px;color:#888;margin-top:3px;">Гаранция</div>
+  </div>
+  <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:10px;text-align:center;">
+    <div style="font-size:22px;font-weight:700;color:#C9A84C;font-family:Georgia,serif;">0</div>
+    <div style="font-size:11px;color:#888;margin-top:3px;">Рекламации</div>
+  </div>
+</div>
+<div style="height:1px;background:rgba(201,168,76,0.15);margin-bottom:14px;"></div>
+<div style="display:flex;flex-direction:column;gap:12px;">
+  <div style="display:flex;gap:12px;align-items:flex-start;">
+    <div style="width:38px;height:38px;border-radius:10px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🤝</div>
+    <div><div style="font-size:15px;font-weight:700;color:#C9A84C;margin-bottom:4px;">Равнопоставеност</div><div style="font-size:13px;color:#C0BCB4;line-height:1.6;font-style:italic;">"За мен няма малки и големи клиенти. Всеки заслужава качество, навреме и без изненади."</div></div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:flex-start;">
+    <div style="width:38px;height:38px;border-radius:10px;background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">✅</div>
+    <div><div style="font-size:15px;font-weight:700;color:#4CAF82;margin-bottom:4px;">Прозрачност</div><div style="font-size:13px;color:#C0BCB4;line-height:1.6;font-style:italic;">"Казвам цената преди да започна. Плащате когато сте доволни. Никакви скрити такси."</div></div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:flex-start;">
+    <div style="width:38px;height:38px;border-radius:10px;background:rgba(114,96,242,0.1);border:1px solid rgba(114,96,242,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💬</div>
+    <div><div style="font-size:15px;font-weight:700;color:#9B8EF5;margin-bottom:4px;">Намираме решение</div><div style="font-size:13px;color:#C0BCB4;line-height:1.6;font-style:italic;">"Ако бюджетът е ограничен — кажете ми. Намираме решение заедно, без да жертваме качеството."</div></div>
+  </div>
+</div>
+<div style="margin-top:14px;background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05));border:1.5px solid rgba(201,168,76,0.45);border-radius:14px;padding:14px;">
+  <div style="font-size:16px;font-weight:700;color:#C9A84C;margin-bottom:6px;">🤝 Доверен кръг — Бонус за препоръка</div>
+  <div style="font-size:13px;color:#C0BCB4;line-height:1.6;margin-bottom:12px;">Препоръчайте ни на близки или колеги и получавате:</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+    <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:#C9A84C;font-family:Georgia,serif;">50€</div>
+      <div style="font-size:11px;color:#888;margin-top:3px;">Кеш бонус</div>
+    </div>
+    <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:#C9A84C;font-family:Georgia,serif;">10%</div>
+      <div style="font-size:11px;color:#888;margin-top:3px;">Отстъпка</div>
+    </div>
+    <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:#C9A84C;font-family:Georgia,serif;">⚡</div>
+      <div style="font-size:11px;color:#888;margin-top:3px;">Приоритет</div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:rgba(201,168,76,0.7);font-style:italic;text-align:center;">Обадете се и кажете кой ви е препоръчал</div>
+</div>
+<div style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.15);text-align:right;font-family:Georgia,serif;font-size:13px;color:var(--muted);font-style:italic;">— Траян Иванов, собственик</div>`,
+        choices: [{label:'➕ Към услугите', next:'start'},{label:'📞 Обадете се', next:null, specialCall:true}]
   },
   vik_menu: { msg: () => 'Изберете ВиК услуга:', choicesFn: () => [
     {label:'Смяна на смесител', priceLabel:pTag(P.vik_mixer,'бр.'), desc:'Демонтаж на стария, монтаж на новия, проверка за теч', next:'vik_count', price:P.vik_mixer, serviceType:'Смяна на смесител', serviceName:'ВиК услуги', displayUnit:'бр.'},
@@ -2120,7 +2610,7 @@ const S = {
     {id:'vm3', label:'Смяна на сифон / гъвкава връзка', desc:'Демонтаж, монтаж, проверка', price:P.vik_siphon, serviceType:'Смяна на сифон', serviceName:'ВиК услуги', resultState:'vik_direct', saveKey:'vik', displayUnit:'бр.', qty:1},
   ] },
   vik_after: { msg: () => '✅ Добавено! Какво следва?', choices: [{label:'📋 Виж офертата', next:'offer_summary'},{label:'➕ Добави още ВиК услуга', next:'vik_menu'},{label:'➕ Друга услуга', next:'start'}], onEnter: () => { ctx.serviceType = ''; ctx.serviceName = ''; } },
-  vik_call: { msg: () => `За тази услуга е необходим безплатен оглед.<br><br>📞 <strong style="color:var(--gold)">0877 810 418</strong><br><button class="call-btn" onclick="window.location.href='tel:0877810418'">📞 Обадете се сега</button>`, choices: [{label:'➕ Добави друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
+  vik_call: { msg: () => `За тази услуга е необходим безплатен оглед.<br><br>📞 <strong style="color:var(--gold)">${PHONE_DISPLAY}</strong><br><button class="call-btn" onclick="callPhone()">📞 Обадете се сега</button>`, choices: [{label:'➕ Добави друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
 
 
   gk_menu: { msg: () => 'Изберете вид конструкция:<br><small style="color:rgba(201,168,76,0.6);font-style:italic;">Всички цени са само за труд — без материали</small>', choicesFn: () => [
@@ -2130,8 +2620,8 @@ const S = {
     {label:'Преградна стена от гипсокартон', priceLabel:pTag(P.gk_wall2,'м²'), desc:'Нова преградна стена', next:'gk_area', price:P.gk_wall2, serviceType:'Преградна стена', serviceName:'Гипсокартон', displayUnit:'м²'},
     {label:'📞 Обадете се', next:null, specialCall:true}
   ] },
-  gk_length: { msg: () => '📏 Въведете линейни метри (л.м.). Ако не знаете, напишете <span class="ne-znam-hint">🆘 "не знам"</span>:', input:'number', label:'л.м.', displayUnit:'л.м.', next:'gk_result_led' },
-  gk_area: { msg: () => '📏 Въведете квадратура (м²).<br><small style="color:var(--muted);">Дължина × Ширина. Например: 5м × 4м = 20 м²</small><br><small style="color:var(--muted);">Ако не знаете — напишете <span class="ne-znam-hint">🆘 "не знам"</span></small>', input:'number', label:'м²', displayUnit:'м²', next:'gk_packages' },
+  gk_length: { msg: () => '📏 Въведете линейни метри (л.м.).<br><button onclick="(function(){document.querySelector(\'#tb-input\').value=\'не знам\';document.querySelector(\'#tb-input\').dispatchEvent(new KeyboardEvent(\'keydown\',{key:\'Enter\',bubbles:true}))})()" style="margin-top:8px;background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.35);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;color:#E05555;cursor:pointer;">🆘 Не знам — помогнете ми</button>', input:'number', label:'л.м.', displayUnit:'л.м.', next:'gk_result_led' },
+  gk_area: { msg: () => '📏 Въведете квадратура (м²).<br><button onclick="(function(){document.querySelector(\'#tb-input\').value=\'не знам\';document.querySelector(\'#tb-input\').dispatchEvent(new KeyboardEvent(\'keydown\',{key:\'Enter\',bubbles:true}))})()" style="margin-top:8px;background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.35);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;color:#E05555;cursor:pointer;">🆘 Не знам — помогнете ми</button>', input:'number', label:'м²', displayUnit:'м²', next:'gk_packages' },
   gk_packages: { msg: () => '📦 Изберете пакет:', onEnter: () => { setTimeout(() => { const area = ctx.value || ctx.prevValue || ctx._lastArea; const st = ctx.serviceType || ''; const base = {name:st, price:ctx.price}; const packages = [{ tier:'🥉', label:'Само конструкция', items:[base] },{ tier:'🥈', label:'С фуги и фина шпакловка', items:[base,{name:'Шпакловка на фуги', price:P.putty_fuge},{name:'Фина шпакловка', price:P.putty_fina}] },{ tier:'🥇', label:'До боядисване', items:[base,{name:'Шпакловка на фуги', price:P.putty_fuge},{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer},{name:'Боядисване 2 ръце', price:P.paint_walls_ceilings}] }]; renderPackages(packages, area); }, 350); } },
   gk_result_led: { msg: (c) => calcMsg(c,'л.м.'), autoNext:'add_more_services', save:{pre:'Гипсокартон', unit:'л.м.', last:'gk'} },
   gk_result: { msg: (c) => calcMsg(c,'м²'), autoNext:'ceiling_gk_step1_fuge', save:{pre:'Гипсокартон', unit:'м²', last:'gk'} },
@@ -2141,65 +2631,77 @@ const S = {
     {label:'Фина шпакловка', priceLabel:pTag(P.putty_fina,'м²'), desc:'Огледална гладкост, финален слой преди боядисване', next:'putty_area', price:P.putty_fina, serviceType:'Фина', serviceName:'Шпакловки', displayUnit:'м²'},
     {label:'📞 Обадете се', next:null, specialCall:true}
   ] },
-  putty_area: { msg: () => '📏 Въведете квадратура (м²).<br><small style="color:var(--muted);">Дължина × Ширина. Например: 5м × 4м = 20 м²</small><br><small style="color:var(--muted);">Ако не знаете — напишете <span class="ne-znam-hint">🆘 "не знам"</span></small>', input:'number', label:'м²', displayUnit:'м²', next:'putty_packages' },
-  putty_packages: { msg: () => '📦 Изберете пакет:', onEnter: () => { setTimeout(() => { const area = ctx.value || ctx.prevValue || ctx._lastArea; const st = ctx.serviceType || ''; let packages = []; if(st.includes('Основна')){ packages = [{ tier:'🥉', label:'Само основна', items:[{name:'Основна укрепваща шпакловка', price:P.putty_basic}] },{ tier:'🥈', label:'Стандартен', items:[{name:'Основна укрепваща шпакловка', price:P.putty_basic},{name:'Гипсова шпакловка', price:P.putty_gypsum},{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer}] },{ tier:'🥇', label:'До боядисване', items:[{name:'Основна укрепваща шпакловка', price:P.putty_basic},{name:'Гипсова шпакловка', price:P.putty_gypsum},{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer},{name:'Боядисване 2 ръце (цветна боя)', price:P.paint_walls_ceilings}] }]; } else if(st.includes('Гипсова')){ packages = [{ tier:'🥉', label:'Само гипсова', items:[{name:'Гипсова шпакловка', price:P.putty_gypsum}] },{ tier:'🥈', label:'Стандартен', items:[{name:'Гипсова шпакловка', price:P.putty_gypsum},{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer}] },{ tier:'🥇', label:'До боядисване', items:[{name:'Гипсова шпакловка', price:P.putty_gypsum},{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer},{name:'Боядисване 2 ръце (цветна боя)', price:P.paint_walls_ceilings}] }]; } else { packages = [{ tier:'🥉', label:'Само фина', items:[{name:'Фина шпакловка', price:P.putty_fina}] },{ tier:'🥈', label:'Стандартен', items:[{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer}] },{ tier:'🥇', label:'До боядисване', items:[{name:'Фина шпакловка', price:P.putty_fina},{name:'Шлайфане', price:P.sanding},{name:'Грунд', price:P.primer},{name:'Боядисване 2 ръце (цветна боя)', price:P.paint_walls_ceilings}] }]; } renderPackages(packages, area); }, 350); } },
+  putty_area: { msg: () => '📏 Въведете квадратура (м²).<br><button onclick="(function(){document.querySelector(\'#tb-input\').value=\'не знам\';document.querySelector(\'#tb-input\').dispatchEvent(new KeyboardEvent(\'keydown\',{key:\'Enter\',bubbles:true}))})()" style="margin-top:8px;background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.35);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;color:#E05555;cursor:pointer;">🆘 Не знам — помогнете ми</button>', input:'number', label:'м²', displayUnit:'м²', next:'putty_result' },
   painting_menu: { msg: () => 'Изберете тип боядисване:<br><small style="color:rgba(201,168,76,0.6);font-style:italic;">Всички цени са само за труд — без материали</small>', choicesFn: () => [
     {label:'Един цвят – Бяло', priceLabel:pTag(P.paint_white,'м²'), desc:'Бюджетно решение – свеж резултат без излишни разходи', next:'painting_area', price:P.paint_white, serviceType:'Един цвят – Бяло', serviceName:'Боядисване', displayUnit:'м²'},
-    {label:'Стени и тавани – 2 ръце', priceLabel:pTag(P.paint_walls_ceilings,'м²'), desc:'Латекс, двуслойно нанасяне за трайно покритие', next:'painting_area', price:P.paint_walls_ceilings, serviceType:'Стени и тавани – 2 ръце', serviceName:'Боядисване', displayUnit:'м²'},
+    {label:'Стандартно — стени и тавани', priceLabel:pTag(P.paint_walls_ceilings,'м²'), desc:'Латекс, двуслойно нанасяне за трайно покритие', next:'painting_area', price:P.paint_walls_ceilings, serviceType:'Стандартно — стени и тавани', serviceName:'Боядисване', displayUnit:'м²'},
     {label:'Премиум покритие', priceLabel:pTag(P.paint_premium,'м²'), desc:'Висок клас — максимална трайност и визия', next:'painting_area', price:P.paint_premium, serviceType:'Премиум', serviceName:'Боядисване', displayUnit:'м²'},
+    {label:'Боядисване с корекции', priceLabel:pTag(P.paint_corrections,'м²'), desc:'Запълване на дупки и надраскванията, грунд и боядисване — пълна подготовка и финиш', next:'painting_area', price:P.paint_corrections, serviceType:'С корекции', serviceName:'Боядисване', displayUnit:'м²'},
     {label:'📞 Обадете се', next:null, specialCall:true}
   ] },
-  painting_area: { msg: () => '📏 Въведете квадратура (м²).<br><small style="color:var(--muted);">Дължина × Ширина. Например: 5м × 4м = 20 м²</small><br><small style="color:var(--muted);">Ако не знаете — напишете <span class="ne-znam-hint">🆘 "не знам"</span></small>', input:'number', label:'м²', displayUnit:'м²', next:'painting_packages' },
-  painting_packages: { msg: () => '📦 Изберете пакет:', onEnter: () => { setTimeout(() => { const area = ctx.value || ctx.prevValue || ctx._lastArea; const st = ctx.serviceType || ''; const paintPrice = ctx.price; const packages = [{ tier:'🥉', label:'Само боядисване', items:[{name:'Боядисване 2 ръце', price:paintPrice}] },{ tier:'🥈', label:'Грунд + боядисване', items:[{name:'Грунд', price:P.primer},{name:'Боядисване 2 ръце', price:paintPrice}] },{ tier:'🥇', label:'С корекции', items:[{name:'Запълване на дупки и надраскванията', price:2},{name:'Грунд', price:P.primer},{name:'Боядисване 2 ръце', price:paintPrice}] }]; renderPackages(packages, area); }, 350); } },
-
+  painting_area: { msg: () => '📏 Въведете квадратура (м²).<br><button onclick="(function(){document.querySelector(\'#tb-input\').value=\'не знам\';document.querySelector(\'#tb-input\').dispatchEvent(new KeyboardEvent(\'keydown\',{key:\'Enter\',bubbles:true}))})()" style="margin-top:8px;background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.35);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;color:#E05555;cursor:pointer;">🆘 Не знам — помогнете ми</button>', input:'number', label:'м²', displayUnit:'м²', next:'painting_ask_primer' },
+  painting_ask_primer: { msg: () => ctx.serviceType === 'С корекции' ? '' : '🪣 Препоръчваме грунд преди боядисване.<br><small style="color:rgba(201,168,76,0.6);">Без грунд боята не лепи трайно. Цена: 1.02 €/м² — само труд</small>', onEnter: () => { if(ctx.serviceType === 'С корекции'){ setTimeout(() => go('painting_result'), 300); return; } ctx._paintServiceType = ctx.serviceType; ctx._paintServiceName = ctx.serviceName; ctx._paintPrice = ctx.price; }, choices: [{label:'✅ Да, добави грунд  ⭐ Препоръчано', next:'painting_with_primer', price:P.primer, serviceName:'Грунд', serviceType:'', displayUnit:'м²'},{label:'❌ Не, само боядисване', next:'painting_result'}] },
+  painting_with_primer: { msg: (c) => '✅ Грунд добавен.', save:{pre:'Грунд (боядисване)', unit:'м²', last:'primer'}, autoNext:'painting_result' },
+  painting_result: { msg: (c) => { if(ctx._paintServiceType !== undefined){ ctx.serviceType = ctx._paintServiceType; ctx.serviceName = ctx._paintServiceName || 'Боядисване'; ctx.price = ctx._paintPrice; ctx._paintServiceType = undefined; } const unit = 'м²'; const label = 'Боядисване' + (ctx.serviceType ? ` (${ctx.serviceType})` : ''); const total = Math.round(ctx.price * ctx.value * 100)/100; if(!panelItems.some(p => p.label === label && p.unit === unit)){ panelItems.push({id:++idSeq, label, qty:ctx.value, unit, price:ctx.price, total}); renderPanel(); } ctx.prevValue = ctx.value; ctx.prevUnit = unit; ctx.lastService = 'painting'; return calcMsg(c,'м²'); }, autoNext:'add_more_services' },
   windows_menu: { msg: () => 'Прецизно обръщане около врати и прозорци след смяна на дограма. Перфектни ъгли и безупречен финиш.', onEnter: () => { ctx.displayUnit = 'л.м.'; ctx.usesPrevArea = false; ctx.prevUnit = null; ctx.prevValue = null; }, choicesFn: () => [
     {label:'Обръщане с лайсна', priceLabel:pTag(P.window_lm,'л.м.'), desc:'Шпакловаме и заглаждаме около дограмата, монтираме лайсна за перфектен ъгъл', next:'windows_count', price:P.window_lm, serviceType:'С лайсна', serviceName:'Обръщане на прозорци', displayUnit:'л.м.'},
     {label:'📞 Обадете се', next:null, specialCall:true}
   ] },
-  windows_count: { msg: () => '🔢 Въведете линейни метри (л.м.). Ако не знаете, напишете <span class="ne-znam-hint">"не знам"</span>:', input:'number', label:'л.м.', displayUnit:'л.м.', next:'windows_result' },
-  windows_result: { msg: (c) => calcMsg(c,'л.м.'), autoNext:'after_windows', save:{pre:'Прозорци', unit:'л.м.', last:'window'} },
-  after_windows: { msg: () => '✅ Добавено! Искате ли да добавите боядисване?', choices: [{label:'🎨 Да, избери боядисване', next:'painting_menu'},{label:'➕ Друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
+  windows_count: { msg: () => '🔢 Въведете линейни метри (л.м.).<br><small style="color:var(--muted);">Обиколката около прозореца/вратата.</small><br><button onclick="(function(){document.querySelector(\'#tb-input\').value=\'не знам\';document.querySelector(\'#tb-input\').dispatchEvent(new KeyboardEvent(\'keydown\',{key:\'Enter\',bubbles:true}))})()" style="margin-top:8px;background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.35);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;color:#E05555;cursor:pointer;">🆘 Не знам — помогнете ми</button>', input:'number', label:'л.м.', displayUnit:'л.м.', next:'windows_result' },
+  windows_result: { msg: (c) => calcMsg(c,'л.м.'), autoNext:'after_windows', save:{pre:'Обръщане на прозорци', unit:'л.м.', last:'window'} },
+  after_windows: { msg: () => '✅ Добавено! Какво следва?', choices: [{label:'➕ Добави друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
   ceiling_gk_step1_fuge: { msg: (c) => {
     const priceHtml = (c.value && c.price) ? `<div style="margin-bottom:14px;padding:12px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:12px;">
       <div style="font-size:22px;font-weight:700;color:var(--gold);">${eur(c.value * c.price)} € / ${(c.value * c.price).toFixed(2)} лв</div>
       <div style="font-size:11px;color:var(--muted);margin-top:3px;">${c.serviceName||'Гипсокартон'} · ${c.serviceType||''} · ${c.value} ${c.displayUnit||'м²'} × ${eur(c.price)} €/${c.displayUnit||'м²'}</div>
       <div style="font-size:11px;color:rgba(201,168,76,0.7);margin-top:3px;font-style:italic;">⚠️ Само за труд — без материали</div>
+      <div style="height:1px;background:rgba(201,168,76,0.15);margin:10px 0;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <span style="font-size:13px;color:var(--muted);font-style:italic;">📋 Готови? Вземете офертата</span>
+        <button onclick="showOfferOverlay()" style="background:linear-gradient(135deg,#C9A84C,#9A7530);border:none;border-radius:9px;padding:9px 16px;font-size:14px;font-weight:700;color:#0E0E0F;cursor:pointer;white-space:nowrap;flex-shrink:0;">Виж офертата →</button>
+      </div>
     </div>` : '';
     return `${priceHtml}✅ <strong>Добавено!</strong><br><br>Изберете следващите стъпки за довършване:`;
   }, onEnter: () => { setTimeout(() => { const area = ctx.prevValue || null; const allItems = [
-    {id:'cg_fuge', label:'Шпакловка на фуги', emoji:'🔧', desc:'Задължително след таван/GK', price:P.putty_fuge, serviceName:'Шпакловки', serviceType:'Шпакловка на фуги', displayUnit:'м²'},
-    {id:'cg_fina', label:'Фина шпакловка', emoji:'✨', desc:'За гладка повърхност', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
-    {id:'cg_sand', label:'Шлайфане', emoji:'🔲', desc:'След фина шпакловка', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
-    {id:'cg_prim', label:'Грунд', emoji:'🪣', desc:'Преди боядисване', price:P.primer, serviceName:'Грунд', serviceType:'Грунд', displayUnit:'м²'},
-    {id:'cg_paint', label:'Боядисване', emoji:'🎨', desc:'Два вида по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
+    {id:'cg_fuge', label:'Шпакловка на фуги', emoji:'🔧', desc:'Задължително след монтаж на гипсокартон — запълва и армира фугите между плочите', price:P.putty_fuge, serviceName:'Шпакловки', serviceType:'Шпакловка на фуги', displayUnit:'м²'},
+    {id:'cg_fina', label:'Фина шпакловка', emoji:'✨', desc:'Огледална гладкост — финален слой преди боядисване', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
+    {id:'cg_sand', label:'Шлайфане', emoji:'🔲', desc:'Шлайфане след фина шпакловка за перфектно гладка повърхност', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
+    {id:'cg_prim', label:'Грунд (шпакловка)', emoji:'🪣', desc:'Задължително преди боядисване — осигурява трайно залепване на боята', price:P.primer, serviceName:'Грунд', serviceType:'шпакловка', displayUnit:'м²'},
+    {id:'cg_paint', label:'Боядисване', emoji:'🎨', desc:'Латекс двуслойно нанасяне — бяло, цветно или премиум покритие по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
   ]; const items = allItems.filter(it => !panelItems.some(p => p.label.includes(it.serviceType) || p.label === it.label)); if(items.length <= 1){ setTimeout(() => go('add_more_services'), 200); return; } renderGridCheckboxes(items, area, 'ceiling_gk'); }, 350); } },
+  putty_result: { msg: () => '', autoNext:'putty_step2_gypsum', save:{pre:'Шпакловка', unit:'м²', last:'putty'} },
   putty_step2_gypsum: { msg: (c) => {
     const st = c.serviceType || '';
     const priceHtml = (c.value && c.price) ? `<div style="margin-bottom:14px;padding:12px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:12px;">
-      <div style="font-size:22px;font-weight:700;color:var(--gold);">${eur(c.value * c.price)} € / ${(c.value * c.price).toFixed(2)} лв</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:3px;">${c.serviceName||'Шпакловка'} · ${st} · ${c.value} м² × ${eur(c.price)} €/м²</div>
-      <div style="font-size:11px;color:rgba(201,168,76,0.7);margin-top:3px;font-style:italic;">⚠️ Само за труд — без материали</div>
+      <div style="font-size:26px;font-weight:700;color:var(--gold);">${eur(c.value * c.price)} € / ${(c.value * c.price).toFixed(2)} лв</div>
+      <div style="font-size:14px;color:var(--text2);margin-top:5px;">${c.serviceName||'Шпакловка'} · ${st} · ${c.value} м² × ${eur(c.price)} €/м²</div>
+      <div style="font-size:13px;color:rgba(201,168,76,0.8);margin-top:4px;font-weight:600;">⚠️ Само за труд — без материали</div>
+      <div style="height:1px;background:rgba(201,168,76,0.15);margin:10px 0;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <span style="font-size:14px;color:var(--text2);font-weight:600;">📋 Готови? Вземете офертата</span>
+        <button onclick="showOfferOverlay()" style="background:linear-gradient(135deg,#C9A84C,#9A7530);border:none;border-radius:9px;padding:10px 18px;font-size:15px;font-weight:700;color:#0E0E0F;cursor:pointer;white-space:nowrap;flex-shrink:0;">Виж офертата →</button>
+      </div>
     </div>` : '';
-    if(st.includes('Основна укрепваща')) return `${priceHtml}✅ <strong>Основната шпакловка е първата стъпка.</strong><br><br><span style="font-size:13px;color:var(--text2);">За трайно и гладко покритие, готово за боядисване, препоръчвам да се довърши целия процес:</span>`;
-    if(st.includes('Гипсова')) return `${priceHtml}✅ <strong>Гипсовата шпакловка е готова.</strong><br><br><span style="font-size:13px;color:var(--text2);">Тя не е финалната стъпка. За огледална гладкост преди боядисване, препоръчвам да продължим с:</span>`;
-    return `${priceHtml}✅ <strong>Добавено!</strong><br><br>Изберете следващите стъпки:`;
+    if(st.includes('Основна укрепваща')) return `${priceHtml}<div style="background:rgba(201,168,76,0.12);border:1.5px solid rgba(201,168,76,0.5);border-radius:12px;padding:12px 14px;margin-top:4px;"><div style="font-size:16px;font-weight:700;color:var(--gold);margin-bottom:6px;">💡 Основната шпакловка е първата стъпка.</div><div style="font-size:14px;color:var(--text);line-height:1.5;">За трайно и гладко покритие, готово за боядисване, препоръчваме да се довърши целия процес:</div></div>`;
+    if(st.includes('Гипсова')) return `${priceHtml}<div style="background:rgba(201,168,76,0.12);border:1.5px solid rgba(201,168,76,0.5);border-radius:12px;padding:12px 14px;margin-top:4px;"><div style="font-size:16px;font-weight:700;color:var(--gold);margin-bottom:6px;">💡 Гипсовата шпакловка не е финалната стъпка.</div><div style="font-size:14px;color:var(--text);line-height:1.5;">За огледална гладкост преди боядисване, препоръчваме да продължим с:</div></div>`;
+    return `${priceHtml}<div style="background:rgba(201,168,76,0.12);border:1.5px solid rgba(201,168,76,0.5);border-radius:12px;padding:12px 14px;margin-top:4px;"><div style="font-size:15px;font-weight:700;color:var(--gold);">💡 Изберете следващите стъпки:</div></div>`;
   }, onEnter: () => { setTimeout(() => { const area = ctx.prevValue || null; const serviceType = ctx.serviceType || ''; let allItems = []; if (serviceType.includes('Основна укрепваща')) { allItems = [
-      {id:'ps_gyp', label:'Гипсова шпакловка', emoji:'🧱', desc:'Изравнява неравности', price:P.putty_gypsum, serviceName:'Шпакловки', serviceType:'Гипсова', displayUnit:'м²'},
-      {id:'ps_fina', label:'Фина шпакловка', emoji:'✨', desc:'Финален слой преди боядисване', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
-      {id:'ps_sand', label:'Шлайфане', emoji:'🔲', desc:'След фина шпакловка', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
-      {id:'ps_prim', label:'Грунд', emoji:'🪣', desc:'Задължително преди боя', price:P.primer, serviceName:'Грунд', serviceType:'Грунд', displayUnit:'м²'},
-      {id:'ps_paint', label:'Боядисване', emoji:'🎨', desc:'Два вида по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
+      {id:'ps_gyp', label:'Гипсова шпакловка', emoji:'🧱', desc:'За леки неравности, ронещи стени и малки дупки. При пукнатини се поставя армираща мрежа.', price:P.putty_gypsum, serviceName:'Шпакловки', serviceType:'Гипсова', displayUnit:'м²'},
+      {id:'ps_fina', label:'Фина шпакловка', emoji:'✨', desc:'Огледална гладкост — финален слой преди боядисване', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
+      {id:'ps_sand', label:'Шлайфане', emoji:'🔲', desc:'Шлайфане след фина шпакловка за перфектно гладка повърхност', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
+      {id:'ps_prim', label:'Грунд (шпакловка)', emoji:'🪣', desc:'Задължително преди боядисване — осигурява трайно залепване на боята', price:P.primer, serviceName:'Грунд', serviceType:'шпакловка', displayUnit:'м²'},
+      {id:'ps_paint', label:'Боядисване', emoji:'🎨', desc:'Латекс двуслойно нанасяне — бяло, цветно или премиум покритие по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
     ]; } else if (serviceType.includes('Гипсова')) { allItems = [
-      {id:'ps_fina', label:'Фина шпакловка', emoji:'✨', desc:'Финален слой преди боядисване', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
-      {id:'ps_sand', label:'Шлайфане', emoji:'🔲', desc:'След фина шпакловка', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
-      {id:'ps_prim', label:'Грунд', emoji:'🪣', desc:'Задължително преди боя', price:P.primer, serviceName:'Грунд', serviceType:'Грунд', displayUnit:'м²'},
-      {id:'ps_paint', label:'Боядисване', emoji:'🎨', desc:'Два вида по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
+      {id:'ps_fina', label:'Фина шпакловка', emoji:'✨', desc:'Огледална гладкост — финален слой преди боядисване', price:P.putty_fina, serviceName:'Шпакловки', serviceType:'Фина', displayUnit:'м²'},
+      {id:'ps_sand', label:'Шлайфане', emoji:'🔲', desc:'Шлайфане след фина шпакловка за перфектно гладка повърхност', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
+      {id:'ps_prim', label:'Грунд (шпакловка)', emoji:'🪣', desc:'Задължително преди боядисване — осигурява трайно залепване на боята', price:P.primer, serviceName:'Грунд', serviceType:'шпакловка', displayUnit:'м²'},
+      {id:'ps_paint', label:'Боядисване', emoji:'🎨', desc:'Латекс двуслойно нанасяне — бяло, цветно или премиум покритие по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
     ]; } else { allItems = [
-      {id:'ps_sand', label:'Шлайфане', emoji:'🔲', desc:'След фина шпакловка', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
-      {id:'ps_prim', label:'Грунд', emoji:'🪣', desc:'Задължително преди боя', price:P.primer, serviceName:'Грунд', serviceType:'Грунд', displayUnit:'м²'},
-      {id:'ps_paint', label:'Боядисване', emoji:'🎨', desc:'Два вида по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
+      {id:'ps_sand', label:'Шлайфане', emoji:'🔲', desc:'Шлайфане след фина шпакловка за перфектно гладка повърхност', price:P.sanding, serviceName:'Шлайфане', serviceType:'Шлайфане', displayUnit:'м²'},
+      {id:'ps_prim', label:'Грунд (шпакловка)', emoji:'🪣', desc:'Задължително преди боядисване — осигурява трайно залепване на боята', price:P.primer, serviceName:'Грунд', serviceType:'шпакловка', displayUnit:'м²'},
+      {id:'ps_paint', label:'Боядисване', emoji:'🎨', desc:'Латекс двуслойно нанасяне — бяло, цветно или премиум покритие по избор', price:null, serviceName:'Боядисване', serviceType:'', displayUnit:'м²', isPaintMenu:true},
     ]; } const items = allItems.filter(it => !panelItems.some(p => p.label.includes(it.serviceType) || p.label === it.label)); if (items.length === 0) { setTimeout(() => go('add_more_services'), 200); return; } renderGridCheckboxes(items, area, 'putty'); }, 350); } },
-  add_more_services: { msg: () => '✅ Добавено! Какво следва?', choices: [{label:'➕ Друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
+  add_more_services: { msg: () => { const total = panelItems.reduce((s,it)=>s+it.total,0); const cnt = panelItems.length; return '✅ Добавено! Общо: <strong style="color:var(--gold);">' + eur(total) + ' €</strong> · ' + cnt + ' ' + (cnt===1?'услуга':'услуги') + '<br><small style="color:var(--muted);">Добавете още или вижте офертата</small>'; }, choices: [{label:'➕ Добави друга услуга', next:'start'},{label:'📋 Виж офертата', next:'offer_summary'}] },
   confirm_area_once: { msg: (c) => {
     const unit = c.prevUnit || 'м²';
     const targetUnit = c.displayUnit || 'м²';
@@ -2215,59 +2717,11 @@ const S = {
     return [{label:`✅ Да, ${c.prevValue} ${unit} за всички`, next:'_queue_same', hi:true},{label:'✏️ Въведи различна', next:'_queue_new'}];
   } },
   consultation: { msg: () => `💬 <strong>Задайте въпрос</strong><br><br>Питайте за цени, срокове, материали, гаранция или каквото ви интересува. Ще получите отговор веднага:`, input:'text', label:'Вашият въпрос…' },
-  contact_form_standalone: { msg: () => `📋 <strong>Запишете се за безплатен оглед</strong><br>Оставете телефон и ще се свържем с вас:`, onEnter: () => { setTimeout(() => { renderContactForm((phone) => { if(phone){ addBubble(`✅ <strong>Получихме вашия контакт!</strong><br>📞 ${phone}<br><br>Ще се свържем с вас за безплатен оглед.<br><button class="call-btn" onclick="window.location.href='tel:0877810418'">📞 Обадете се сега</button>`, 'bot'); } else { addBubble('Можете да се обадите директно на 📞 <strong>0877 810 418</strong>', 'bot'); } setTimeout(() => { renderCho([{label:'➕ Изберете услуга', next:'start'},{label:'🔄 Нов разговор', next:'start', reset:true}]); }, 400); }); }, 400); } },
+  contact_form_standalone: { msg: () => `📋 <strong>Запишете се за безплатен оглед</strong><br>Оставете телефон и ще се свържем с вас:`, onEnter: () => { setTimeout(() => { renderContactForm((phone) => { if(phone){ addBubble(`✅ <strong>Получихме вашия контакт!</strong><br>📞 ${phone}<br><br>Ще се свържем с вас за безплатен оглед.<br><button class="call-btn" onclick="callPhone()">📞 Обадете се сега</button>`, 'bot'); } else { addBubble(`Можете да се обадите директно на 📞 <strong>${PHONE_DISPLAY}</strong>`, 'bot'); } setTimeout(() => { renderCho([{label:'➕ Изберете услуга', next:'start'},{label:'🔄 Нов разговор', next:'start', reset:true}]); }, 400); }); }, 400); } },
   offer_summary: {
     msg: () => {
       if (!panelItems.length) return 'Няма добавени услуги.';
-      const total = panelItems.reduce((s, it) => s + it.total, 0);
-      const rows = panelItems.map((it, idx) => `
-        <div style="background:var(--bg-btn);border:1px solid var(--border-bubble);border-radius:12px;padding:12px;margin-bottom:8px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0E0E0F;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${idx+1}</div>
-            <div style="font-size:14px;font-weight:700;color:var(--text);line-height:1.3;">${it.label}</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
-            <div style="background:var(--bg-msgs);border-radius:8px;padding:6px 4px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:2px;">Количество</div>
-              <div style="font-size:13px;font-weight:700;color:var(--text);">${it.qty} ${it.unit}</div>
-            </div>
-            <div style="background:var(--bg-msgs);border-radius:8px;padding:6px 4px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:2px;">Ед. цена</div>
-              <div style="font-size:12px;font-weight:700;color:var(--gold);">${eur(it.price)} €</div>
-              <div style="font-size:9px;color:var(--muted);">${it.price.toFixed(2)} лв</div>
-            </div>
-            <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:6px 4px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:2px;">Сума</div>
-              <div style="font-size:13px;font-weight:700;color:var(--gold);">${eur(it.total)} €</div>
-              <div style="font-size:9px;color:var(--muted);">${it.total.toFixed(2)} лв</div>
-            </div>
-          </div>
-        </div>
-      `).join('');
-      return `
-        <div style="width:100%;">
-          <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
-            📋 <span>Детайлна оферта</span>
-            <span style="font-size:10px;color:var(--muted);font-weight:400;font-style:italic;">· само за труд</span>
-          </div>
-          ${rows}
-          <div style="background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.08));border:2px solid rgba(201,168,76,0.4);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <div>
-              <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">ОБЩО ЗА ТРУД</div>
-              <div style="font-size:11px;color:var(--muted);font-style:italic;">без материали</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:22px;font-weight:700;color:var(--gold);">${eur(total)} €</div>
-              <div style="font-size:13px;color:var(--muted);">${total.toFixed(2)} лв</div>
-            </div>
-          </div>
-          <div style="font-size:10px;color:var(--muted);font-style:italic;margin-bottom:12px;">* Ориентировъчна цена. За точна — необходим е оглед на обекта.</div>
-          <div style="display:flex;gap:8px;">
-            <button class="cb-confirm" id="offer-more-services" style="flex:1;font-size:13px;">➕ Добави услуга</button>
-            <button class="cb-confirm" id="offer-finish" style="flex:1;font-size:13px;">✅ Завърши</button>
-          </div>
-        </div>
-      `;
+      return '';
     },
     onEnter: () => {
       clearCho();
@@ -2276,11 +2730,11 @@ const S = {
       setTimeout(() => showOfferOverlay(), 150);
     },
     choices: []
-  },
-  sanding_result: { msg: (c) => calcMsg(c,'м²'), autoNext:'add_more_services', save:{pre:'Шлайфане', unit:'м²', last:'sanding'} },
-  primer_result:  { msg: (c) => calcMsg(c,'м²'), autoNext:'add_more_services', save:{pre:'Грунд', unit:'м²', last:'primer'} },
-  vik_direct:     { msg: (c) => calcMsg(c, c.displayUnit || 'бр.'), autoNext:'vik_after', save:{pre:'ВиК', unit:'бр.', last:'vik'} }
+  }
 };
+S.sanding_result = { msg: (c) => calcMsg(c,'м²'), autoNext:'add_more_services', save:{pre:'Шлайфане', unit:'м²', last:'sanding'} };
+S.primer_result = { msg: (c) => calcMsg(c,'м²'), autoNext:'add_more_services', save:{pre:'Грунд', unit:'м²', last:'primer'} };
+S.vik_direct = { msg: (c) => calcMsg(c, c.displayUnit || 'бр.'), autoNext:'vik_after', save:{pre:'ВиК', unit:'бр.', last:'vik'} };
 
 // ======================== БУТОНИ И СЛУШАТЕЛИ ========================
 elToggle.addEventListener('click', () => {
@@ -2309,7 +2763,7 @@ function applyViewport(){
     elWidget.style.bottom = 'auto';
     elWidget.style.position = 'fixed';
   }
-  setTimeout(() => { const last = elMsgs.lastElementChild; if(last) last.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
+  setTimeout(() => { const last = elMsgs.lastElementChild; if(last) last.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 200);
 }
 function resetViewport(){
   if(window.innerWidth <= 600){
@@ -2326,7 +2780,7 @@ if(window.visualViewport){
   });
 }
 
-elOfferBtn.addEventListener('click', () => showOfferOverlay());
+if(elOfferBtn) elOfferBtn.addEventListener('click', () => showOfferOverlay());
 document.getElementById('ov-back-btn').addEventListener('click', hideOfferOverlay);
 // Клик върху тъмния backdrop (само на десктоп) затваря overlay-а
 document.getElementById('offer-overlay').addEventListener('click', (e) => {
@@ -2335,43 +2789,25 @@ document.getElementById('offer-overlay').addEventListener('click', (e) => {
 
 document.getElementById('btn-pdf').addEventListener('click', () => {
   if(!panelItems.length){ addBubble('Няма услуги за оферта.', 'bot'); return; }
-  function tryGenerate(retries){
-    if(window.jspdf){
-      try { generatePDF(); addBubble('✅ PDF офертата е изтеглена!', 'bot'); }
-      catch(e){ addBubble('⚠️ Грешка при генериране на PDF. Моля, опитайте отново.', 'bot'); console.error(e); }
-    } else if(retries > 0){
-      if(!document.getElementById('jspdf-script')){
-        const s = document.createElement('script'); s.id='jspdf-script';
-        s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-        s.onload = () => {
-          const s2 = document.createElement('script');
-          s2.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
-          s2.onload = () => setTimeout(() => tryGenerate(retries-1), 300);
-          document.head.appendChild(s2);
-        };
-        document.head.appendChild(s);
-      } else {
-        setTimeout(() => tryGenerate(retries-1), 800);
-      }
-      addBubble('⏳ Зареждам PDF... моля изчакайте.', 'bot');
-    } else {
-      addBubble('⚠️ PDF не може да се зареди. Проверете интернет връзката.', 'bot');
-    }
-  }
-  tryGenerate(3);
+  const btn = document.getElementById('btn-pdf');
+  btn.disabled = true; btn.textContent = '⏳ Подготвям...';
+  try { generatePDF(); }
+  catch(e){ addBubble('⚠️ Грешка при генериране на PDF. Моля, опитайте отново.', 'bot'); console.error(e); }
+  setTimeout(() => { btn.disabled = false; btn.textContent = '📄 PDF'; }, 2000);
 });
 
 document.getElementById('btn-viber').addEventListener('click', () => {
   const isDesktop = !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   if(isDesktop){
-    addBubble(`💜 <strong>Viber:</strong> <span style="color:var(--gold);font-size:16px;">0877 810 418</span><br><small style="color:var(--muted)">Отворете Viber и изпратете съобщение на този номер</small>`, 'bot');
+    addBubble(`💜 <strong>Viber:</strong> <span style="color:var(--gold);font-size:16px;">${PHONE_DISPLAY}</span><br><small style="color:var(--muted)">Отворете Viber и изпратете съобщение на този номер</small>`, 'bot');
   } else {
-    window.open('viber://chat?number=359877810418');
+    window.open('viber://chat?number='+PHONE_VIBER);
   }
 });
 
 document.getElementById('btn-new').addEventListener('click', fullReset);
 document.getElementById('panel-clear').addEventListener('click', () => {
+  if(!confirm('Сигурни ли сте? Всички добавени услуги ще бъдат изтрити.')) return;
   clearPanel(); offer = []; ctx = {}; hist = []; cur = 'start'; cbQueue = [];
   elActionBtns.style.display = 'none';
   elInputRow.style.display = 'flex';
@@ -2385,86 +2821,45 @@ const sbClearBtn = document.getElementById('sb-clear-btn');
 if(sbOfferBtn) sbOfferBtn.addEventListener('click', () => showOfferOverlay());
 if(sbOtherBtn) sbOtherBtn.addEventListener('click', () => { clearCho(); go('start'); });
 if(sbClearBtn) sbClearBtn.addEventListener('click', () => { clearPanel(); offer=[]; ctx={}; hist=[]; cur='start'; cbQueue=[]; elActionBtns.style.display='none'; elInputRow.style.display='flex'; setTimeout(()=>go('start'),100); });
-const bbClearBtnEl = document.getElementById('bb-clear-btn');
-if(bbClearBtnEl) bbClearBtnEl.addEventListener('click', () => { clearPanel(); offer=[]; ctx={}; hist=[]; cur='start'; cbQueue=[]; elActionBtns.style.display='none'; elInputRow.style.display='flex'; setTimeout(()=>go('start'),100); });
 
-const bbOfferBtn = document.getElementById('bb-offer-btn');
-if(bbOfferBtn) bbOfferBtn.addEventListener('click', () => showOfferOverlay());
 document.getElementById('tb-about-btn').addEventListener('click', () => { clearCho(); go('before_we_start'); });
 document.getElementById('tb-theme-btn').addEventListener('click', () => document.body.classList.toggle('light'));
-document.getElementById('tb-phone-btn').addEventListener('click', () => window.location.href = 'tel:0877810418');
+document.getElementById('tb-phone-btn').addEventListener('click', () => callPhone());
 elSend.addEventListener('click', handleInp);
 elInp.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleInp(); });
+// Бъг 3: затваряме клавиатурата на телефон след изпращане
+elSend.addEventListener('click', () => { if(window.innerWidth <= 600) elInp.blur(); });
 
 elMsgs.addEventListener('scroll', checkIfScrolledUp);
 
-// Scroll indicators
-const indUp = document.getElementById('scroll-ind-up');
-const indDown = document.getElementById('scroll-ind-down');
+const cartBarOffer = document.getElementById('cart-bar-offer');
+const cartBarClear = document.getElementById('cart-bar-clear');
+const cartBarReset = document.getElementById('cart-bar-reset');
+if(cartBarOffer) cartBarOffer.addEventListener('click', () => showOfferOverlay());
+if(cartBarReset) cartBarReset.addEventListener('click', () => {
+  if(!confirm('Започване наново? Всички добавени услуги ще бъдат изтрити.')) return;
+  fullReset();
+});
+if(cartBarClear) cartBarClear.addEventListener('click', () => {
+  if(!confirm('Сигурни ли сте? Всички добавени услуги ще бъдат изтрити.')) return;
+  clearPanel();
+  hist = []; cur = 'start'; ctx = {}; cbQueue = [];
+  ctx._queueAwaitingArea = false; ctx._savedQueueForNew = null;
+  updateCartBar();
+  elBack.classList.remove('on');
+  addBubble('🗑 Всички услуги са изчистени.', 'bot');
+  setTimeout(() => go('start'), 300);
+});
 
-function updateScrollIndicators(){
-  if(!elMsgs || !indUp || !indDown) return;
-  const scrollTop = elMsgs.scrollTop;
-  const scrollBottom = elMsgs.scrollHeight - elMsgs.scrollTop - elMsgs.clientHeight;
-  indUp.style.display = scrollTop > 60 ? 'block' : 'none';
-  indDown.style.display = scrollBottom > 60 ? 'block' : 'none';
-}
 
-elMsgs.addEventListener('scroll', updateScrollIndicators);
-indUp.addEventListener('click', () => { elMsgs.scrollTo({ top: 0, behavior:'smooth' }); });
-indDown.addEventListener('click', () => { elMsgs.scrollTo({ top: elMsgs.scrollHeight, behavior:'smooth' }); });
-
-
-elInp.addEventListener('focus', () => { setTimeout(() => smartScrollToBottom(true), 300); });
-if(window.visualViewport) window.visualViewport.addEventListener('resize', () => { setTimeout(() => smartScrollToBottom(), 100); });
+// Бъг 1: при focus — applyViewport + scroll за да се вижда полето под клавиатурата
+elInp.addEventListener('focus', () => {
+  if(window.innerWidth <= 600) setTimeout(() => { applyViewport(); smartScrollToBottom(true); }, 300);
+  else setTimeout(() => smartScrollToBottom(true), 500);
+});
+if(window.visualViewport) window.visualViewport.addEventListener('resize', () => { setTimeout(() => smartScrollToBottom(), 200); });
 
 setTimeout(() => { if(elMsgs.children.length === 0) go('start'); }, 100);
-
-// ============================================================
-// ЗАЩИТА НА КОДА — НЕ ПРЕМАХВАЙ
-// ============================================================
-
-// [1] Лицензен низ (воден знак)
-const __lic = "\u00A9\u00202025\u0020\u0049\u0076\u0061\u006E\u006F\u0076\u0020\u0052\u0065\u006D\u006F\u006E\u0074\u0069\u0020\u007C\u0020\u0069\u0076\u0061\u006E\u006F\u0076\u002D\u0072\u0065\u006D\u006F\u006E\u0074\u0069\u002E\u0063\u006F\u006D\u0020\u007C\u0020\u0054\u0065\u0072\u0079\u0042\u006F\u0074\u0020\u0076\u0035\u002E\u0030";
-void __lic;
-
-// [2] Домейн проверка
-(function(){
-  const _allowed = ['ivanov-remonti.com','www.ivanov-remonti.com','localhost','127.0.0.1','','traqnivanov.github.io'];
-  const _h = window.location.hostname;
-  if(!_allowed.some(function(d){ return _h === d || _h.endsWith('.' + d); })){
-    document.open();
-    document.write('<html><body style="margin:0;background:#0a0a0b;display:flex;align-items:center;justify-content:center;min-height:100vh;"><div style="text-align:center;padding:2rem;"><div style="font-size:48px;margin-bottom:16px;">\uD83D\uDD12</div><div style="color:#E05555;font-size:22px;font-weight:700;margin-bottom:12px;">\u041D\u0435\u043E\u0442\u043E\u0440\u0438\u0437\u0438\u0440\u0430\u043D\u043E \u043A\u043E\u043F\u0438\u0440\u0430\u043D\u0435</div><div style="color:#888;font-size:15px;">\u0422\u043E\u0437\u0438 \u0431\u043E\u0442 \u0435 \u043B\u0438\u0446\u0435\u043D\u0437\u0438\u0440\u0430\u043D \u0441\u0430\u043C\u043E \u0437\u0430<br><span style="color:#C9A84C;font-weight:700;">ivanov-remonti.com</span></div></div></body></html>');
-    document.close();
-    throw new Error('TeryBot: Unauthorized domain — ' + _h);
-  }
-})();
-
-// [3] Console warning
-(function(){
-  var _s = 'font-size:16px;font-weight:bold;';
-  console.log('%c\uD83D\uDD12 TeryBot \u00A9 Ivanov Remonti 2025', _s + 'color:#C9A84C;');
-  console.log('%c\u0422\u043E\u0437\u0438 \u043A\u043E\u0434 \u0435 \u0437\u0430\u0449\u0438\u0442\u0435\u043D. \u041A\u043E\u043F\u0438\u0440\u0430\u043D\u0435\u0442\u043E \u0435 \u0437\u0430\u0431\u0440\u0430\u043D\u0435\u043D\u043E.', _s + 'color:#E05555;');
-  console.log('%cLicensed for: ivanov-remonti.com', 'color:#888;font-size:13px;');
-})();
-
-// [4] DevTools detection
-(function(){
-  var _dt = false;
-  var _thr = 160;
-  setInterval(function(){
-    var _w = window.outerWidth - window.innerWidth > _thr;
-    var _h = window.outerHeight - window.innerHeight > _thr;
-    if((_w || _h) && !_dt){
-      _dt = true;
-      console.clear();
-      console.log('%c\uD83D\uDEAB \u0421\u0442\u043E\u043F!', 'font-size:48px;color:#E05555;font-weight:bold;');
-      console.log('%c\u0422\u043E\u0437\u0438 \u043A\u043E\u0434 \u0435 \u0437\u0430\u0449\u0438\u0442\u0435\u043D \u00A9 Ivanov Remonti 2025', 'font-size:16px;color:#C9A84C;font-weight:bold;');
-    } else if(!_w && !_h){ _dt = false; }
-  }, 1000);
-})();
-
-// ============================================================
 </script>
 </body>
 </html>
